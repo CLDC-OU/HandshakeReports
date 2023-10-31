@@ -61,7 +61,7 @@ The ...Referral Columns, Date Scheduled, Appointment Date, and Appointment Type 
 
 Cancelled appointments (or appointments that were otherwise never completed) are also included in the report. These rows can be identified as rows where the Appointment Date has already passed but the appointment is not "Completed". If a new appointment is scheduled, a new row for the referral will be added. This may be repeated until one appointment is completed.
 
-The format of the Scheduled and Completed columns are setup to be formatted as checkboxes in Google Sheets.
+The format of the Scheduled and Completed columns are formatted in such a way that they can be checkboxes in Google Sheets.
 
 ## Setup
 
