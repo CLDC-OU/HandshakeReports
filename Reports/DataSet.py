@@ -7,7 +7,7 @@ from Utils.file_utils import filter_files, get_most_recent_file
 from .AppointmentStatus import AppointmentStatus
 from Utils.appointment_survey_results import get_emails_input, get_months_input, get_year_input
 from Utils.df_utils import filter_target_isin, filter_target_pattern, sort_columns_by_date
-from Utils.utils import get_month_range, config
+from Utils.utils import get_month_range
 
 
 class Column(Enum):
@@ -137,39 +137,6 @@ def __remove_numbers_from_column(column_name):
 def _remove_numbers_from_columns(df):
     df.columns = df.columns.map(__remove_numbers_from_column)
     return df
-
-def load_appointments_from_config() -> list:
-    # appointment_dict = {}
-    appointments = []
-    for file in config["files"]:
-        for key in file:
-            if key == "appointments":
-                rename_cols = {}
-                cols = {}
-                for i in file[key]["column_names"]:
-                    if "map" in file[key]["column_names"][i]:
-                        rename_cols[file[key]["column_names"][i]["map"]] = file[key]["column_names"][i]["name"]
-                    cols[i] = file[key]["column_names"][i]["name"]
-                appointments.append(DataSet(
-                    DataSet.Type.APPOINTMENT,
-                    file[key]["id"], 
-                    load_df(
-                        file_dir=file[key]["dir"], 
-                        must_contain=file[key]["must_contain"], 
-                        rename_columns=rename_cols, 
-                        date_col=None
-                        # date_col=file[key]["column_names"]["date"]["name"]
-                    ), 
-                    cols
-                ))
-                # appointment_dict[file[key["id"]]] = {
-                #     "df": load_appointments(file[key]["dir"], rename_cols, file[key]["column_names"]["date"]["name"]),
-                #     "columns": cols
-                # }
-                
-                # file[key]["id"]
-                # appointment_dfs.append()
-    return appointments
 
 def load_df(file_dir:str, must_contain:str, rename_columns:dict, date_col:str|None=None) -> pd.DataFrame:
     df = pd.read_csv(file_dir + "\\" + get_most_recent_file(filter_files(
