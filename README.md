@@ -16,6 +16,20 @@ See [Setup](#setup) for the necessary setup for these scripts to run automatical
 
 This script can currently create 3 different types of reports based on a user-defined config file.
 
+- [x] Report survey results by staff member
+- [x] Report students that need a followup appointment
+- [x] Report referrals with merged followup appointment data
+- [x] Fully configurable reports
+    - [x] Filter one or more months and by year
+    - [ ] Filter a range of followup appointments
+- [x] Variable number of files to run reports on
+- [x] Variable number of reports
+- [x] Creates csv files in variable locations for each report
+- [x] Support for archiving report with all columns, but saving a report with specific columns
+- [ ] Automatically download Handshake survey results
+- [ ] Download multiple survey results
+- [ ] Configurable survey results by school
+
 ### Survey Results Report
 
 Combines Handshake survey response data with appointments data to link each survey response to the staff member that the appointment was with.
