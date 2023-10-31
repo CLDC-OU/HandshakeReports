@@ -106,6 +106,19 @@ python -m pip install selenium
 
 ## Environmental Variables
 
+> [!NOTE]
+>
+> Environmental variables are only needed in order to download survey results from Handshake. If you are not using this feature, this step is not necessary.
+
+It is recommended that you create a dedicated Handshake account using an extra email address to access the survey results. Make sure to setup this Handshake account as a Career Services staff member with the "Surveys" Role.
+
+1. Create a file called ".env" in the root of the project directory.
+2. Add the following environmental variables (see an example in [example.env](example.env)):
+    - `HS_USERNAME` - The username of the Handshake account that will be downloading the survey results
+    - `HS_PASSWORD` - The password of the Handshake account that will be downloading the survey results
+    - (optional) `INSTITUTIONAL_EMAIL` - TRUE if `HS_USERNAME` refers to an institutional email address (e.g. oakland.edu). FALSE or omitted otherwise.
+
+
 ## Configuring Files
 
 ## Configuring Reports
