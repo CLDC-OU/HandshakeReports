@@ -29,6 +29,7 @@ This script can currently create 3 different types of reports based on a user-de
 - [ ] Automatically download Handshake survey results
 - [ ] Download multiple survey results
 - [ ] Configurable survey results by school
+- [ ] Support for both institutional and non-institutional Handshake logins
 
 ### Survey Results Report
 
