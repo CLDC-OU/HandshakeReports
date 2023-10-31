@@ -5,7 +5,6 @@ from enum import Enum
 
 from Utils.file_utils import filter_files, get_most_recent_file
 from .AppointmentStatus import AppointmentStatus
-from Utils.appointment_survey_results import get_emails_input, get_months_input, get_year_input
 from Utils.df_utils import filter_target_isin, filter_target_pattern, sort_columns_by_date
 from Utils.utils import get_month_range
 
@@ -149,3 +148,19 @@ def load_df(file_dir:str, must_contain:str, rename_columns:dict, date_col:str|No
     if date_col:
         df[date_col] = pd.to_datetime(date_col).dt.tz_localize(None)
     return df
+
+def get_year_input():
+    # Prompt for year
+    target_year = input("Enter the year you want to filter the data for (e.q. 2023)\n").strip()
+    return target_year
+
+def get_months_input():
+    # Prompt for month range(s)
+    target_months = input(
+        "Enter one or more months or month ranges you want to filter the data for (e.g. January-April, September-December)\n"
+    )
+    return target_months
+
+def get_emails_input():
+    email_input = input("Enter one or more email addresses (comma-separated): ")
+    return [email.strip() for email in email_input.split(',')]
