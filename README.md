@@ -1,4 +1,4 @@
-# Weekly Handshake Reports Script For the Career and Life Design Center at Oakland University
+# Handshake Reports Script For the Career and Life Design Center at Oakland University
 
 A script that combines data collected through Handshake (https://joinhandshake.com) to generate a variable number of reports that give insight on performance of Career Services staff members, students that need a followup appointment, and referral data.
 
