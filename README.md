@@ -54,7 +54,7 @@ This report can be filtered by months, year, student college/school (e.g. Colleg
 > [!IMPORTANT]
 >
 > Valid appointment types (the appointments that students need a followup after)
-> are filtered by containing a string specified in the config (i.e. "Walk-In" includes all appointments that include the text "Walk-In" somewhere in the appointment name). Specific appointments to disclude can be specified as an array (i.e ["Walk-In Headshot"] would include all "Walk-In" appointments except for "Walk-In Headshot")
+> are filtered by containing a string specified in the config (e.g., "Walk-In" includes all appointments that include the text "Walk-In" somewhere in the appointment name). Specific appointments to disclude can be specified as an array (e.g., ["Walk-In Headshot"] would include all "Walk-In" appointments except for "Walk-In Headshot")
 >
 > Valid followup appointments (appointments that count as a followup) on the other hand, matches with an array of appointment names. An empty array specifies the inclusion of all appointments that aren't the same as the valid appointment type.
 
