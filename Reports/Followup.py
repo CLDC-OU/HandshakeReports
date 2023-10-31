@@ -5,9 +5,8 @@ from .DataSet import Column, DataSet
 
 
 class Followup():
-    def __init__(self, appointments:DataSet, enrollment:DataSet, valid_schools:list, year:str, months:list, appointment_types:list, followup_types:list, remove_cols=None, rename_cols=None, final_cols=None) -> None:
+    def __init__(self, appointments:DataSet, valid_schools:list, year:str, months:list, appointment_types:list, followup_types:list, remove_cols=None, rename_cols=None, final_cols=None) -> None:
         self._appointments = appointments
-        self._enrollment = enrollment
         self._results = None
         self._valid_schools = valid_schools
         self._year = year

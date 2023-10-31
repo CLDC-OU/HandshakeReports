@@ -98,7 +98,6 @@ class Driver():
                         "type": report["type"],
                         "file_prefix": report["file_prefix"],
                         "appointments": appointment.deep_copy(),
-                        "enrollment": enrollment.deep_copy(),
                         "valid_schools": report["valid_schools"] if "valid_schools" in report else None,
                         "year": report["target_year"] if "target_year" in report else None, 
                         "months": report["target_months"] if "target_months" in report else None, 

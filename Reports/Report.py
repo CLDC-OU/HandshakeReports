@@ -27,7 +27,7 @@ class Report:
             self.results = None
         elif config["type"] == Report.Type.FOLLOWUP:
             print(f"[Report {dt.now()}] Creating new Followup Report")
-            self.report = Followup(config["appointments"], config["enrollment"], config["valid_schools"], config["year"], config["months"], config["appointment_types"], config["followup_types"], config["remove_cols"], config["rename_cols"], config["final_cols"])
+            self.report = Followup(config["appointments"], config["valid_schools"], config["year"], config["months"], config["appointment_types"], config["followup_types"], config["remove_cols"], config["rename_cols"], config["final_cols"])
             self.results = None
         elif config["type"] == Report.Type.REFERRALS:
             print(f"[Report {dt.now()}] Creating new Referrals Report")
