@@ -79,12 +79,20 @@ The format of the Scheduled and Completed columns are formatted in such a way th
 
 ## Setup
 
+1. Ensure all [dependencies](#dependencies) are configured and running properly
+2. Clone the repository
+    - If installing from github, use `-git clone https://github.com/CLDC-OU/HandshakeReports.git`
+3. Configure the [Environmental Variables](#environmental-variables)
+4. Configure [Files](#configuring-files)
+5. Configure [Reports](#configuring-reports)
+6. Run main.py
+
 > [!IMPORTANT]
 > 
 > 
 > 
 
-
+## Dependencies
 
 ### Chromium Driver
 - Download the most recent version [here](https://googlechromelabs.github.io/chrome-for-testing/). The Stable version should be good. Open the chromedriver URL for your system
@@ -94,3 +102,10 @@ The format of the Scheduled and Completed columns are formatted in such a way th
 python -m pip install python-dotenv
 python -m pip install selenium
 ```
+
+## Environmental Variables
+
+## Configuring Files
+
+## Configuring Reports
+
