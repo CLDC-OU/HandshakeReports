@@ -146,7 +146,10 @@ class Referrals():
         # keep students in results who had a referral after their most recent valid appointment, or have not had any valid appointment 
         self._results = self._results[~self._results[self._referrals.get_col(Column.DATE)].isna()]
         self._format_referral_dates()
-        self._results = self._results[~(self._results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self._results[self._referrals.get_col(Column.DATE)].dt.day_of_year)]
+        self._results = self._results[~(
+            (self._results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self._results[self._referrals.get_col(Column.DATE)].dt.day_of_year)
+            | (self._results[self._appointment.get_col(Column.DATE)].dt.year < self._results[self._appointment.get_col(Column.DATE)].dt.year)
+            )]
 
     def _format_referral_dates(self):
         self._results[self._referrals.get_col(Column.DATE)] = pd.to_datetime(self._results[self._referrals.get_col(Column.DATE)]).dt.tz_localize(None)
