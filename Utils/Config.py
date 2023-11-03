@@ -165,11 +165,11 @@ class ReportsConfig():
                         if "day_range" not in report:
                             print(f"ERROR! [ReportsConfig {dt.now()}] \"day_range\" key not present for {type} report in reports.config.json at index {report_index}")
                             error = True
-                        if "year" not in report:
-                            print(f"WARNING! [ReportsConfig {dt.now()}] \"year\" key not present for {type} report in reports.config.json at index {report_index}")
+                        if "target_year" not in report:
+                            print(f"WARNING! [ReportsConfig {dt.now()}] \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
                             error = True
-                        if "months" not in report:
-                            print(f"WARNING! [ReportsConfig {dt.now()}] \"months\" key not present for {type} in reports.config.json at index {report_index}")
+                        if "target_months" not in report:
+                            print(f"WARNING! [ReportsConfig {dt.now()}] \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
                             error = True
                         if "emails" not in report:
                             print(f"WARNING! [ReportsConfig {dt.now()}] \"emails\" key not present for {type} in reports.config.json at index {report_index}")
@@ -200,11 +200,11 @@ class ReportsConfig():
                     if "valid_schools" not in report:
                         print(f"ERROR! [ReportsConfig {dt.now()}] \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
                         error = True
-                    if "year" not in report:
-                        print(f"WARNING! [ReportsConfig {dt.now()}] \"year\" key not present for {type} report in reports.config.json at index {report_index}")
+                    if "target_year" not in report:
+                        print(f"WARNING! [ReportsConfig {dt.now()}] \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
                         error = True
-                    if "months" not in report:
-                        print(f"WARNING! [ReportsConfig {dt.now()}] \"months\" key not present for {type} in reports.config.json at index {report_index}")
+                    if "target_months" not in report:
+                        print(f"WARNING! [ReportsConfig {dt.now()}] \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
                         error = True
                     if "appointment_types" not in report:
                         print(f"WARNING! [ReportsConfig {dt.now()}] \"appointment_types\" key not present for {type} in reports.config.json at index {report_index}")
