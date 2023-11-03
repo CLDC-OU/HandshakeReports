@@ -48,8 +48,8 @@ def filter_target_pattern(df, col, pattern):
 
 def filter_target_pattern_isin(df:pd.DataFrame, col:str, patterns:list):
     df[col] = fill_na(df, col)
-    combined_pattern = '|'.join(patterns)
-    df = df[df[col].str.contains(combined_pattern, regex=True, case=False)]
+    pattern = '|'.join(patterns)
+    df = df[df[col].str.contains(pattern, regex=True, case=False)]
     return df
 
 def fill_na(df, col):
