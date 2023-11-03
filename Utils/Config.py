@@ -4,10 +4,10 @@ import os
 
 from dotenv import load_dotenv
 from datetime import datetime as dt
-from Reports.Report import Report
 
+from Reports.Report import Report
 from Reports.DataSet import DataSet, load_df
-from file_utils import filter_files, get_most_recent_file
+from Utils.file_utils import filter_files, get_most_recent_file
 
 
 class Config():
@@ -257,5 +257,3 @@ class ReportsConfig():
                         }
                         self.reports.append(Report(conf))
         return self.reports
-
-print(Config().is_institutional())
