@@ -60,48 +60,46 @@ class FilesConfig():
         
         self.files = []
         files = self.config["files"]
-        
         for file in files:
-            for type in file:
-                rename_cols = {}
-                cols = {}
-                for column in file[type]["column_names"]:
-                    if "map" in file[type]["column_names"][column]:
-                        rename_cols[file[type]["column_names"][column]["map"]] = file[type]["column_names"][column]["name"]
-                    cols[column] = file[type]["column_names"][column]["name"]
-                    # d = None
-                    # if "date" in file[type]["column_names"]:
-                    #     d = file[type]["column_names"]["date"]["name"]
-                
-                print(f"[FilesConfig {dt.now()}] Loaded new {type} file")
-                valid_files = filter_files(
-                    file_dir=file[type]["dir"],
-                    must_contain=file[type]["must_contain"],
-                    file_type=".csv"
-                )
-                if not valid_files:
-                    print(f'[FilesConfig {dt.now()}] Cannot load {type} file. No valid files were found in {file[type]["dir"]}')
-                    break
-                else:
-                    print(f'[FilesConfig {dt.now()}] Found valid file at {file[type]["dir"]}')
-                
-                file_loc = get_most_recent_file(valid_files)
-                print(f'[FilesConfig {dt.now()}] Found most recent file: {file_loc}')
+            rename_cols = {}
+            cols = {}
+            for column in file["column_names"]:
+                if "map" in file["column_names"][column]:
+                    rename_cols[file["column_names"][column]["map"]] = file["column_names"][column]["name"]
+                cols[column] = file["column_names"][column]["name"]
+                # d = None
+                # if "date" in file[type]["column_names"]:
+                #     d = file[type]["column_names"]["date"]["name"]
+            
+            print(f'[FilesConfig {dt.now()}] Loading new {file["type"]} file...')
+            valid_files = filter_files(
+                file_dir=file["dir"],
+                must_contain=file["must_contain"],
+                file_type=".csv"
+            )
+            if not valid_files:
+                print(f'[FilesConfig {dt.now()}] Cannot load {file["type"]} file. No valid files were found in {file[type]["dir"]}')
+                break
+            else:
+                print(f'[FilesConfig {dt.now()}] Found valid file at {file["dir"]}')
+            
+            file_loc = get_most_recent_file(valid_files)
+            print(f'[FilesConfig {dt.now()}] Found most recent file: {file_loc}')
 
 
-                self.files.append(
-                    DataSet(
-                        type,
-                        file[type]["id"], 
-                        load_df(
-                            file_dir=file[type]["dir"],
-                            must_contain=file[type]["must_contain"], 
-                            rename_columns=rename_cols
-                            # date_col=d
-                        ),
-                        cols
+            self.files.append(
+                DataSet(
+                    file["type"],
+                    file["id"], 
+                    load_df(
+                        file_dir=file["dir"],
+                        must_contain=file["must_contain"], 
+                        rename_columns=rename_cols
+                        # date_col=d
+                    ),
+                    cols
                 ))
-                print(f"[FilesConfig {dt.now()}] Loaded DataSet from file {file_loc}")
+            print(f"[FilesConfig {dt.now()}] Loaded DataSet from file {file_loc}")
         
         return self.files
 
