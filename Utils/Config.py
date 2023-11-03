@@ -131,7 +131,7 @@ class ReportsConfig():
         surveys = []
         enrollment = None
         referrals = []
-        for file in self.files:
+        for file in self.files.files:
             if file.type == DataSet.Type.APPOINTMENT:
                 appointments.append(file)
             elif file.type == DataSet.Type.ENROLLMENT:
