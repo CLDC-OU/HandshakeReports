@@ -5,7 +5,7 @@ from enum import Enum
 
 from Utils.file_utils import filter_files, get_most_recent_file
 from .AppointmentStatus import AppointmentStatus
-from Utils.df_utils import filter_target_isin, filter_target_pattern, sort_columns_by_date
+from Utils.df_utils import filter_target_isin, filter_target_pattern_isin, sort_columns_by_date
 from Utils.utils import get_month_range
 
 
@@ -122,13 +122,13 @@ class DataSet:
         return self.get_df()
     
     def filter_majors(self, majors):
-        self.set_df(filter_target_isin(self.get_df(), self.get_col(Column.STUDENT_MAJOR), majors))
+        self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.STUDENT_MAJOR), majors))
 
     def filter_schools(self, schools):
-        self.set_df(filter_target_isin(self.get_df(), self.get_col(Column.STUDENT_COLLEGE), schools))
+        self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.STUDENT_COLLEGE), schools))
     
     def filter_appointment_type(self, pattern):
-        self.set_df(filter_target_pattern(self.get_df(), self.get_col(Column.APPOINTMENT_TYPE), pattern))
+        self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.APPOINTMENT_TYPE), pattern))
     
 
 def __remove_numbers_from_column(column_name):
