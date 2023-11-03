@@ -37,15 +37,6 @@ def filter_target_isin(df, col, li):
     df = df[df[col].isin(li)]
     return df
 
-def filter_target_in(df, col, val):
-    df = df[df[col] in val]
-    return df
-
-def filter_target_pattern(df, col, pattern):
-    df[col] = fill_na(df, col)
-    df = df[df[col].str.contains(pattern)]
-    return df
-
 def filter_target_pattern_isin(df:pd.DataFrame, col:str, patterns:list):
     df[col] = fill_na(df, col)
     pattern = '|'.join(patterns)
