@@ -117,6 +117,7 @@ class ReportsConfig():
         finally:
             self.reports = None
             self.files = FilesConfig()
+            self.files.loadFiles()
     
     def loadReports(self) -> list[Report] | None:
         if not self.config:
