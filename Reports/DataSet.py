@@ -128,7 +128,7 @@ class DataSet:
         self.set_df(filter_target_isin(self.get_df(), self.get_col(Column.STUDENT_COLLEGE), schools))
     
     def filter_appointment_type(self, pattern):
-        return filter_target_pattern(self.get_df(), self.get_col(Column.APPOINTMENT_TYPE), pattern)
+        self.set_df(filter_target_pattern(self.get_df(), self.get_col(Column.APPOINTMENT_TYPE), pattern))
     
 
 def __remove_numbers_from_column(column_name):
