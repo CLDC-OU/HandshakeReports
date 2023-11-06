@@ -1,3 +1,4 @@
+import logging
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -24,7 +25,7 @@ def download_survey_results(survey_id):
         )
     )
     login_button.click()
-    print('[Selenium] navigated to login page')
+    logging.debug('[Selenium] navigated to login page')
 
     wait.until(
         EC.element_to_be_clickable(
@@ -46,11 +47,11 @@ def download_survey_results(survey_id):
     password_field = browser.find_element(By.ID, 'password')
     password_field.send_keys(os.getenv('HS_PASSWORD'))
 
-    print('[Selenium] entered login information')
+    logging.debug('[Selenium] entered login information')
     password_field.send_keys(Keys.RETURN)
 
     wait.until(EC.url_contains('edu'))
-    print('[Selenium] logged in')
+    logging.debug('[Selenium] logged in')
 
     #download_button = browser.find_element(By.XPATH, "//*[contains(text(),'Download Results (CSV)')]")
     download_button = wait.until(
@@ -58,11 +59,11 @@ def download_survey_results(survey_id):
             (By.XPATH, "//*[contains(text(),'Download Results (CSV)')]")
         )
     )
-    print('[Selenium] download button loaded')
+    logging.debug('[Selenium] download button loaded')
     download_button.click()
-    print('[Selenium] clicked download button')
+    logging.debug('[Selenium] clicked download button')
 
-    print('[Selenium] waiting for download to be ready...')
+    logging.debug('[Selenium] waiting for download to be ready...')
     wait = WebDriverWait(browser, 180)
     download_ready_button = wait.until(
         EC.element_to_be_clickable(
@@ -71,7 +72,7 @@ def download_survey_results(survey_id):
     )
 
     download_ready_button.click()
-    print('[Selenium] download prepared! downloading...')
+    logging.debug('[Selenium] download prepared! downloading...')
 
     # Wait for the download to finish
 
@@ -92,8 +93,8 @@ def download_survey_results(survey_id):
         time.sleep(1)  # Wait for 1 second before checking again
 
     if new_files:
-        print("[Selenium] Successfully downloaded", new_files)
+        logging.debug("[Selenium] Successfully downloaded", new_files)
     else:
-        print("[Selenium] Download timed out.")
+        logging.error("[Selenium] Download timed out.")
 
     browser.quit()

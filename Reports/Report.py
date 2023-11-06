@@ -1,4 +1,5 @@
 from enum import Enum
+import logging
 
 import pandas as pd
 from .Followup import Followup
@@ -22,24 +23,24 @@ class Report:
         self.archive_dir = config["archive_dir"]
         self.results_dir = config["results_dir"]
         if config["type"] == Report.Type.SURVEY_RESULTS:
-            print(f"[Report {dt.now()}] Creating new SurveyResults Report")
+            logging.debug(f"[Report {dt.now()}] Creating new SurveyResults Report")
             self.report = SurveyResults(config["appointments"], config["survey_results"], config["day_range"], config["year"], config["months"], config["emails"], config["remove_cols"])
             self.results = None
         elif config["type"] == Report.Type.FOLLOWUP:
-            print(f"[Report {dt.now()}] Creating new Followup Report")
+            logging.debug(f"[Report {dt.now()}] Creating new Followup Report")
             self.report = Followup(config["appointments"], config["valid_schools"], config["year"], config["months"], config["appointment_types"], config["followup_types"], config["remove_cols"], config["rename_cols"], config["final_cols"])
             self.results = None
         elif config["type"] == Report.Type.REFERRALS:
-            print(f"[Report {dt.now()}] Creating new Referrals Report")
+            logging.debug(f"[Report {dt.now()}] Creating new Referrals Report")
             self.report = Referrals(config["referrals"], config["appointments"], config["valid_appointments"], config["rename_cols"], config["final_cols"], config["enrollment"], config["merge_enrollment"])
             self.results = None
         else:
-            print(f"[Report {dt.now()}] Invalid Report Type {config['type']}")
+            logging.error(f"[Report {dt.now()}] Invalid Report Type {config['type']}")
             self.report = None
             self.results = pd.DataFrame(None)
     
     def run_report(self) -> None:
-        print(f"[Report {dt.now()}] Running report for {self.type}")
+        logging.debug(f"[Report {dt.now()}] Running report for {self.type}")
         self.report.run_report()
         self.results = self.report.get_results()
     

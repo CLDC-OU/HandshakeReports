@@ -1,3 +1,4 @@
+import logging
 import re
 import shutil
 import os
@@ -18,7 +19,7 @@ def rename_file(initial_loc, new_name):
     final_loc = path[0] + "\\" + new_name
 
     os.rename(initial_loc, final_loc)
-    print(f'Renamed {initial_filename} to {new_name}')
+    logging.debug(f'Renamed {initial_filename} to {new_name}')
     return final_loc
 
 def get_most_recent_file(files):
@@ -35,7 +36,7 @@ def filter_files(file_dir, must_contain, file_type):
     valid_files = [(filename, timestamp) for filename, timestamp in files_with_timestamps if
                    (must_contain in filename) & (filename.endswith(file_type) is True)]
     if not valid_files:
-        print(f'WARNING: No valid {file_type} filenames containing {must_contain} found in {file_dir}')
+        logging.warn(f'WARNING: No valid {file_type} filenames containing {must_contain} found in {file_dir}')
         return False
     return valid_files
 
@@ -47,7 +48,7 @@ def replace(string, replace_arr):
 def move_file(initial_loc, final_dir):
     filename = split_filepath(initial_loc)[1]
     shutil.move(initial_loc, final_dir + "\\" + filename)
-    print(f'Moved {filename} from {initial_loc} to {final_dir}')
+    logging.debug(f'Moved {filename} from {initial_loc} to {final_dir}')
     return final_dir + "\\" + filename
 
 def move_csv(initial_dir, final_dir, filename_must_contain, replace_arr):
@@ -65,5 +66,5 @@ def move_files_from_config():
     files = config["files"]
     for file in files:
         for key, value in file:
-            print(f"Initiating file move for {key}")
+            logging.debug(f"Initiating file move for {key}")
             move_csv(value["move"]["from"], value["dir"], value["move"]["must_contain"], value["move"]["replace"])

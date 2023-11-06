@@ -1,4 +1,5 @@
 
+import logging
 import pandas as pd
 from datetime import datetime as dt
 from .DataSet import Column, DataSet
@@ -28,22 +29,22 @@ class Followup():
     
     def run_report(self):
         self._filter_year()
-        print(f"[Followup {dt.now()}] filtered appointment year")
+        logging.debug(f"[Followup {dt.now()}] filtered appointment year")
         self._filter_months()
-        print(f"[Followup {dt.now()}] filtered appointment months")
+        logging.debug(f"[Followup {dt.now()}] filtered appointment months")
         self._filter_schools()
-        print(f"[Followup {dt.now()}] filtered student schools")
+        logging.debug(f"[Followup {dt.now()}] filtered student schools")
         self._get_all_need_followup()
         # print(self._appointments.df)
-        print(f"[Followup {dt.now()}] filtered students that need a followup {self._latest_followup_col} appointment")
+        logging.debug(f"[Followup {dt.now()}] filtered students that need a followup {self._latest_followup_col} appointment")
         self._add_latest_followup()
-        print(f"[Followup {dt.now()}] added latest followup column")
+        logging.debug(f"[Followup {dt.now()}] added latest followup column")
         self._remove_followed_up()
-        print(f"[Followup {dt.now()}] removed rows that already had a followup appointment")
+        logging.debug(f"[Followup {dt.now()}] removed rows that already had a followup appointment")
         self._keep_max_date()
-        print(f"[Followup {dt.now()}] removed rows where student had a more recent appointment")
+        logging.debug(f"[Followup {dt.now()}] removed rows where student had a more recent appointment")
         self._add_past_followup_count()
-        print(f"[Followup {dt.now()}] added previous followup appointment count")
+        logging.debug(f"[Followup {dt.now()}] added previous followup appointment count")
     
     def get_results(self):
         return self._results
@@ -87,7 +88,7 @@ class Followup():
         email_col = self._appointments.get_col(Column.STUDENT_EMAIL)
         date_col = self._appointments.get_col(Column.DATE)
         valid_followup = self._get_followup_appointments()
-        print(f"[Followup {dt.now()}] got valid followup appointments")
+        logging.debug(f"[Followup {dt.now()}] got valid followup appointments")
         return valid_followup.groupby(email_col)[date_col].max().reset_index(
             name=self._latest_followup_col
         )

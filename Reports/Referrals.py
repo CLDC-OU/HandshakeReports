@@ -1,3 +1,4 @@
+import logging
 import math
 import pandas as pd
 from datetime import datetime as dt
@@ -22,23 +23,23 @@ class Referrals():
 
     def run_report(self) -> None:
         self._filter_valid_appointments()
-        print(f"[Referrals {dt.now()}] filtered valid appointments")
+        logging.debug(f"[Referrals {dt.now()}] filtered valid appointments")
         self._normalize_email_col()
-        print(f"[Referrals {dt.now()}] normalized email column")
+        logging.debug(f"[Referrals {dt.now()}] normalized email column")
         self._merge_referrals()
-        print(f"[Referrals {dt.now()}] merged referrals with appointments")
+        logging.debug(f"[Referrals {dt.now()}] merged referrals with appointments")
         self._remove_past_appointments()
-        print(f"[Referrals {dt.now()}] removed past appointments")
+        logging.debug(f"[Referrals {dt.now()}] removed past appointments")
         self._re_merge()
-        print(f"[Referrals {dt.now()}] re-merged removed referrals")
+        logging.debug(f"[Referrals {dt.now()}] re-merged removed referrals")
         self._add_scheduled()
-        print(f"[Referrals {dt.now()}] added appointment scheduled columns")
+        logging.debug(f"[Referrals {dt.now()}] added appointment scheduled columns")
         self._add_completed()
-        print(f"[Referrals {dt.now()}] added appointment completed columns")
+        logging.debug(f"[Referrals {dt.now()}] added appointment completed columns")
         self._set_preferred_name()
-        print(f"[Referrals {dt.now()}] set student name to preferred name")
+        logging.debug(f"[Referrals {dt.now()}] set student name to preferred name")
         self._merge_enrollment()
-        print(f"[Referrals {dt.now()}] merged enrollment data")
+        logging.debug(f"[Referrals {dt.now()}] merged enrollment data")
 
     def get_results(self) -> pd.DataFrame:
         return self._results

@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 from .DataSet import Column, DataSet
 from Utils.df_utils import filter_by_time_diff
@@ -7,7 +8,7 @@ from datetime import datetime as dt
 class SurveyResults():
     def __init__(self, appointments:DataSet, survey_results:DataSet, day_range:int, year:str, months:list, emails:list, remove_cols:list) -> None:
         if appointments.get_type() != DataSet.Type.APPOINTMENT or survey_results.get_type() != DataSet.Type.SURVEY:
-            print(f'[SurveyResults {dt.now()}] Invalid DataSet types provided at filter_appointment_surveys')
+            logging.error(f'[SurveyResults {dt.now()}] Invalid DataSet types provided at filter_appointment_surveys')
             return False
         self._appointments = appointments
         self._survey_results = survey_results
@@ -25,22 +26,22 @@ class SurveyResults():
     
     def run_report(self) -> None:
         self._appointments.sort_date()
-        print(f"[SurveyResults {dt.now()}] sorted appointments by date")
+        logging.debug(f"[SurveyResults {dt.now()}] sorted appointments by date")
         self._survey_results.sort_date()
-        print(f"[SurveyResults {dt.now()}] sorted survey results by date")
+        logging.debug(f"[SurveyResults {dt.now()}] sorted survey results by date")
 
         self._appointments.filter_appointment_status()
-        print(f"[SurveyResults {dt.now()}] filtered valid appointment statuses")
+        logging.debug(f"[SurveyResults {dt.now()}] filtered valid appointment statuses")
         self._appointments.filter_year(self._year)
-        print(f"[SurveyResults {dt.now()}] filtered year")
+        logging.debug(f"[SurveyResults {dt.now()}] filtered year")
         self._appointments.filter_months(self._months)
-        print(f"[SurveyResults {dt.now()}] filtered months")
+        logging.debug(f"[SurveyResults {dt.now()}] filtered months")
         self._appointments.filter_staff_emails(self._emails)
-        print(f"[SurveyResults {dt.now()}] filtered staff emails")
+        logging.debug(f"[SurveyResults {dt.now()}] filtered staff emails")
         
         self._normalize_email_cols()
         self._results = self._filter_by_time_diff()
-        print(f"[SurveyResults {dt.now()}] filtered time difference")
+        logging.debug(f"[SurveyResults {dt.now()}] filtered time difference")
 
     def get_results(self) -> pd.DataFrame | None:
         return self._results
