@@ -4,5 +4,5 @@ config.json
 __pycache__
 .gitattributes
 *config.json
-ignore/*
+ignore
 logs
