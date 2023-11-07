@@ -8,7 +8,7 @@ from datetime import datetime as dt
 class SurveyResults():
     def __init__(self, appointments:DataSet, survey_results:DataSet, day_range:int, year:str, months:list, emails:list, remove_cols:list) -> None:
         if appointments.get_type() != DataSet.Type.APPOINTMENT or survey_results.get_type() != DataSet.Type.SURVEY:
-            logging.error(f'[SurveyResults {dt.now()}] Invalid DataSet types provided at filter_appointment_surveys')
+            logging.error(f'Invalid DataSet types provided at filter_appointment_surveys')
             return False
         self._appointments = appointments
         self._survey_results = survey_results
@@ -26,22 +26,22 @@ class SurveyResults():
     
     def run_report(self) -> None:
         self._appointments.sort_date()
-        logging.debug(f"[SurveyResults {dt.now()}] sorted appointments by date")
+        logging.debug(f"Sorted appointments by date")
         self._survey_results.sort_date()
-        logging.debug(f"[SurveyResults {dt.now()}] sorted survey results by date")
+        logging.debug(f"Sorted survey results by date")
 
         self._appointments.filter_appointment_status()
-        logging.debug(f"[SurveyResults {dt.now()}] filtered valid appointment statuses")
+        logging.debug(f"Filtered valid appointment statuses")
         self._appointments.filter_year(self._year)
-        logging.debug(f"[SurveyResults {dt.now()}] filtered year")
+        logging.debug(f"Filtered year")
         self._appointments.filter_months(self._months)
-        logging.debug(f"[SurveyResults {dt.now()}] filtered months")
+        logging.debug(f"Filtered months")
         self._appointments.filter_staff_emails(self._emails)
-        logging.debug(f"[SurveyResults {dt.now()}] filtered staff emails")
+        logging.debug(f"Filtered staff emails")
         
         self._normalize_email_cols()
         self._results = self._filter_by_time_diff()
-        logging.debug(f"[SurveyResults {dt.now()}] filtered time difference")
+        logging.debug(f"Filtered time difference")
 
     def get_results(self) -> pd.DataFrame | None:
         return self._results

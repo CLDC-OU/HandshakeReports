@@ -16,9 +16,9 @@ class Config():
         try:
             with open('config.json') as json_file:
                 self.config = json.load(json_file)
-            logging.debug(f"[Config {dt.now()}] Project config loaded")
+            logging.debug(f"Project config loaded")
         except:
-            logging.error(f"WARNING! [Config {dt.now()}] Could not find config.json")
+            logging.error(f"WARNING! Could not find config.json")
             self.config = None
         self.reports = ReportsConfig()
         self.env = False
@@ -36,10 +36,10 @@ class Config():
 
     def _load_env(self):
         if load_dotenv():
-            logging.debug(f"[Config {dt.now()}] Environmental variables successfully loaded")
+            logging.debug(f"Environmental variables successfully loaded")
             self.env = True
         else:
-            logging.warn(f"WARNING! [Config {dt.now()}] There was an error loading the environmental variables. Check that the path variables are correct and the .env file exists")
+            logging.warn(f"WARNING! There was an error loading the environmental variables. Check that the path variables are correct and the .env file exists")
 
     
 class FilesConfig():
@@ -47,9 +47,9 @@ class FilesConfig():
         try:
             with open('files.config.json') as json_file:
                 self.config = json.load(json_file)
-            logging.debug(f"[FilesConfig {dt.now()}] Files config loaded")
+            logging.debug(f"Files config loaded")
         except:
-            logging.warn(f"WARNING! [FilesConfig {dt.now()}] Could not find files.config.json")
+            logging.warn(f"WARNING! Could not find files.config.json")
             self.config = None
         finally:
             self.files = None
@@ -72,20 +72,20 @@ class FilesConfig():
                 # if "date" in file[type]["column_names"]:
                 #     d = file[type]["column_names"]["date"]["name"]
             
-            logging.debug(f'[FilesConfig {dt.now()}] Loading new {file["type"]} file...')
+            logging.debug(f'Loading new {file["type"]} file...')
             valid_files = filter_files(
                 file_dir=file["dir"],
                 must_contain=file["must_contain"],
                 file_type=".csv"
             )
             if not valid_files:
-                logging.error(f'[FilesConfig {dt.now()}] Cannot load {file["type"]} file. No valid files were found in {file[type]["dir"]}')
+                logging.error(f'Cannot load {file["type"]} file. No valid files were found in {file[type]["dir"]}')
                 break
             else:
-                logging.debug(f'[FilesConfig {dt.now()}] Found valid file at {file["dir"]}')
+                logging.debug(f'Found valid file at {file["dir"]}')
             
             file_loc = get_most_recent_file(valid_files)
-            logging.debug(f'[FilesConfig {dt.now()}] Found most recent file: {file_loc}')
+            logging.debug(f'Found most recent file: {file_loc}')
 
 
             self.files.append(
@@ -100,7 +100,7 @@ class FilesConfig():
                     ),
                     cols
                 ))
-            logging.debug(f"[FilesConfig {dt.now()}] Loaded DataSet from file {file_loc}")
+            logging.debug(f"Loaded DataSet from file {file_loc}")
         
         return self.files
 
@@ -111,9 +111,9 @@ class ReportsConfig():
         try:
             with open('reports.config.json') as json_file:
                 self.config = json.load(json_file)
-            logging.debug(f"[ReportsConfig {dt.now()}] Reports config loaded")
+            logging.debug(f"Reports config loaded")
         except:
-            logging.warn(f"WARNING! [ReportsConfig {dt.now()}] Could not find reports.config.json")
+            logging.warn(f"WARNING! Could not find reports.config.json")
             self.config = None
         finally:
             self.reports = None
@@ -147,16 +147,16 @@ class ReportsConfig():
             report_index += 1
             error = False
             if "type" not in report:
-                logging.error(f"ERROR! [ReportsConfig {dt.now()}] \"type\" key not present in reports.config.json at index {report_index}")
+                logging.error(f"ERROR! \"type\" key not present in reports.config.json at index {report_index}")
                 error = True
             if "file_prefix" not in report:
-                logging.error(f"ERROR! [ReportsConfig {dt.now()}] \"file_prefix\" key not present in reports.config.json at index {report_index}")
+                logging.error(f"ERROR! \"file_prefix\" key not present in reports.config.json at index {report_index}")
                 error = True
             if "results_dir" not in report:
-                logging.error(f"ERROR! [ReportsConfig {dt.now()}] \"results_dir\" key not present in reports.config.json at index {report_index}")
+                logging.error(f"ERROR! \"results_dir\" key not present in reports.config.json at index {report_index}")
                 error = True
             if error:
-                logging.error(f"ERROR! [ReportsConfig {dt.now()}] Report {report_index} could not be loaded due to missing essential keys")
+                logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
                 break
             type = report["type"]
             if type == Report.Type.SURVEY_RESULTS.value:
@@ -164,19 +164,19 @@ class ReportsConfig():
                     for survey in surveys:
                         error = False
                         if "day_range" not in report:
-                            logging.error(f"ERROR! [ReportsConfig {dt.now()}] \"day_range\" key not present for {type} report in reports.config.json at index {report_index}")
+                            logging.error(f"ERROR! \"day_range\" key not present for {type} report in reports.config.json at index {report_index}")
                             error = True
                         if "target_year" not in report:
-                            logging.warn(f"WARNING! [ReportsConfig {dt.now()}] \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
+                            logging.warn(f"WARNING! \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
                             error = True
                         if "target_months" not in report:
-                            logging.warn(f"WARNING! [ReportsConfig {dt.now()}] \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
+                            logging.warn(f"WARNING! \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
                             error = True
                         if "emails" not in report:
-                            logging.warn(f"WARNING! [ReportsConfig {dt.now()}] \"emails\" key not present for {type} in reports.config.json at index {report_index}")
+                            logging.warn(f"WARNING! \"emails\" key not present for {type} in reports.config.json at index {report_index}")
                             error = True
                         if error:
-                            logging.warn(f"WARNING! [ReportsConfig {dt.now()}] Report {report_index} could not be loaded due to missing essential keys")
+                            logging.warn(f"WARNING! Report {report_index} could not be loaded due to missing essential keys")
                             break
 
                         conf = {
@@ -199,22 +199,22 @@ class ReportsConfig():
                 for appointment in appointments:
                     error = False
                     if "valid_schools" not in report:
-                        logging.error(f"ERROR! [ReportsConfig {dt.now()}] \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
+                        logging.error(f"ERROR! \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
                         error = True
                     if "target_year" not in report:
-                        logging.warn(f"WARNING! [ReportsConfig {dt.now()}] \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
+                        logging.warn(f"WARNING! \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
                         error = True
                     if "target_months" not in report:
-                        logging.warn(f"WARNING! [ReportsConfig {dt.now()}] \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
+                        logging.warn(f"WARNING! \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
                         error = True
                     if "appointment_types" not in report:
-                        logging.warn(f"WARNING! [ReportsConfig {dt.now()}] \"appointment_types\" key not present for {type} in reports.config.json at index {report_index}")
+                        logging.warn(f"WARNING! \"appointment_types\" key not present for {type} in reports.config.json at index {report_index}")
                         error = True
                     if "followup_types" not in report:
-                        logging.warn(f"WARNING! [ReportsConfig {dt.now()}] \"followup_types\" key not present for {type} in reports.config.json at index {report_index}")
+                        logging.warn(f"WARNING! \"followup_types\" key not present for {type} in reports.config.json at index {report_index}")
                         error = True
                     if error:
-                        logging.warn(f"WARNING! [ReportsConfig {dt.now()}] Report {report_index} could not be loaded due to missing essential keys")
+                        logging.warn(f"WARNING! Report {report_index} could not be loaded due to missing essential keys")
                         break
                     conf = {
                         "type": report["type"],
@@ -237,10 +237,10 @@ class ReportsConfig():
                     for appointment in appointments:
                         error = False
                         if "valid_appointments" not in report:
-                            logging.error(f"ERROR! [ReportsConfig {dt.now()}] \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
+                            logging.error(f"ERROR! \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
                             error = True
                         if error:
-                            logging.warn(f"WARNING! [ReportsConfig {dt.now()}] Report {report_index} could not be loaded due to missing essential keys")
+                            logging.warn(f"WARNING! Report {report_index} could not be loaded due to missing essential keys")
                             break
                         conf = {
                             "type": report["type"],

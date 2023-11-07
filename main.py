@@ -3,7 +3,7 @@ from datetime import datetime as dt
 import logging
 
 logfile = f"logs/{dt.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
-logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.DEBUG, filemode='w')
+logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.DEBUG, filemode='w', format='%(levelname)s:%(asctime)s:[%(module)s] %(message)s')
 
 from Utils.Config import Config
 
@@ -26,11 +26,11 @@ class Driver():
         for report in self._getReports().reports:
             report.run_report()
             
-            logging.info(f"[Driver {dt.now()}] Successfully ran {report.type} report")
+            logging.info(f"Successfully ran {report.type} report")
             report.save_archive()
-            logging.info(f"[Driver {dt.now()}] Saved archive of {report.type} report to {report.archive_dir}")
+            logging.info(f"Saved archive of {report.type} report to {report.archive_dir}")
             report.save_results()
-            logging.info(f"[Driver {dt.now()}] Saved results of {report.type} report to {report.results_dir}")
+            logging.info(f"Saved results of {report.type} report to {report.results_dir}")
         return True
 
 Driver().run()
