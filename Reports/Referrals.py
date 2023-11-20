@@ -40,6 +40,7 @@ class Referrals():
         logging.debug(f"Set student name to preferred name")
         self._merge_enrollment()
         logging.debug(f"Merged enrollment data")
+        self._remove_duplicates()
 
     def get_results(self) -> pd.DataFrame:
         return self._results
@@ -49,6 +50,15 @@ class Referrals():
     #     merge = self._merge_referrals()
     #     unscheduled = self.get_unscheduled()
     #     self._remove_past_appointments()
+
+    def _remove_duplicates(self):
+        unique_col = self._referrals.get_col(Column.UNIQUE_REFERRAL)
+        if unique_col is None:
+            logging.debug("No unique col name to remove duplicates. If no unique_col is specified in files.config.json, this is expected behavior.")
+            return
+        logging.debug(f"Removing duplicate rows on: {unique_col}")
+        self._results.drop_duplicates(inplace=True, subset=[unique_col])
+        logging.debug(f"Removed duplicate rows")
 
     def _add_scheduled(self):
         dates = self._results[self._appointment.get_col(Column.DATE_SCHEDULED)].values.tolist()

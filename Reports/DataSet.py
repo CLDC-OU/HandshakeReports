@@ -24,6 +24,7 @@ class Column(Enum):
     STUDENT_LAST_NAME = 'lname'
     STATUS = 'status'
     DATE_SCHEDULED = 'date_scheduled'
+    UNIQUE_REFERRAL = 'unique_referral'
 
 
 class DataSet:
