@@ -243,7 +243,7 @@ class ReportsConfig():
                     self.reports.append(Report(conf))
                     
             if type == Report.Type.FOLLOWUP.value:
-                for appointment in appointments:
+                for appointment in self.getAppointments():
                     error = False
                     if "valid_schools" not in report:
                         logging.error(f"ERROR! \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
@@ -280,8 +280,8 @@ class ReportsConfig():
                     }
                     self.reports.append(Report(conf))
             if type == Report.Type.REFERRALS.value:
-                for referral in referrals:
-                    for appointment in appointments:
+                for referral in self.getReferrals():
+                    for appointment in self.getAppointments():
                         error = False
                         if "valid_appointments" not in report:
                             logging.error(f"ERROR! \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
@@ -298,7 +298,7 @@ class ReportsConfig():
                             "remove_cols": report["remove_cols"] if "remove_cols" in report else None, 
                             "rename_cols": report["rename_cols"] if "rename_cols" in report else None, 
                             "final_cols": report["final_cols"] if "final_cols" in report else None,
-                            "enrollment": enrollment.deep_copy(),
+                            "enrollment": self.getEnrollment().deep_copy(),
                             "merge_enrollment": report["merge_enrollment"] if "merge_enrollment" in report else None,
                             "archive_dir": report["archive_dir"] if "archive_dir" in report else None,
                             "results_dir": report["results_dir"] if "results_dir" in report else None,
