@@ -6,7 +6,7 @@ from .DataSet import Column, DataSet
 
 
 class Followup():
-    def __init__(self, appointments:DataSet, valid_schools:list, year:str, months:list, appointment_types:list, followup_types:list, remove_cols=None, rename_cols=None, final_cols=None) -> None:
+    def __init__(self, appointments:DataSet, valid_schools:list|None, year:str|None, months:list|None, appointment_types:list, followup_types:list, remove_cols=None, rename_cols=None, final_cols=None) -> None:
         self._appointments = appointments
         self._results = None
         self._valid_schools = valid_schools
@@ -28,14 +28,16 @@ class Followup():
         self.final_cols = final_cols
     
     def run_report(self):
-        self._filter_year()
-        logging.debug(f"Filtered appointment year")
-        self._filter_months()
-        logging.debug(f"Filtered appointment months")
-        self._filter_schools()
-        logging.debug(f"Filtered student schools")
+        if self._year is not None:
+            self._filter_year()
+            logging.debug(f"Filtered appointment year")
+        if self._months is not None:
+            self._filter_months()
+            logging.debug(f"Filtered appointment months")
+        if self._valid_schools is not None:
+            self._filter_schools()
+            logging.debug(f"Filtered student schools")
         self._get_all_need_followup()
-        # print(self._appointments.df)
         logging.debug(f"Filtered students that need a followup {self._latest_followup_col} appointment")
         self._add_latest_followup()
         logging.debug(f"Added latest followup column")
