@@ -186,24 +186,10 @@ class ReportsConfig():
                 break
             type = report["type"]
             if type == Report.Type.SURVEY_RESULTS.value:
-                for appointment in appointments:
-                    for survey in surveys:
-                        error = False
-                        if "day_range" not in report:
-                            logging.error(f"ERROR! \"day_range\" key not present for {type} report in reports.config.json at index {report_index}")
-                            error = True
-                        if "target_year" not in report:
-                            logging.warn(f"WARNING! \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
-                            error = True
-                        if "target_months" not in report:
-                            logging.warn(f"WARNING! \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
-                            error = True
-                        if "emails" not in report:
-                            logging.warn(f"WARNING! \"emails\" key not present for {type} in reports.config.json at index {report_index}")
-                            error = True
-                        if error:
-                            logging.warn(f"WARNING! Report {report_index} could not be loaded due to missing essential keys")
-                            break
+                for appointment in self.getAppointments():
+                    if "survey_id" not in report:
+                        logging.error(f"ERROR! \"survey_id\" key not present for {type} report in reports.config.json at index {report_index}")
+                        break
 
                         conf = {
                             "type": report["type"],
@@ -221,6 +207,13 @@ class ReportsConfig():
                             "results_dir": report["results_dir"] if "results_dir" in report else None,
                         }
                         self.reports.append(Report(conf))
+                    survey_id = report["survey_id"]
+                    survey = self.getSurveyByID(survey_id)
+                    if survey is None:
+                        logging.error(f"ERROR! No survey was found with the ID {survey_id}")
+                        break
+                    else:
+                        logging.info(f"Found survey with id {survey_id}")
             if type == Report.Type.FOLLOWUP.value:
                 for appointment in appointments:
                     error = False
