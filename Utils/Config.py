@@ -41,6 +41,8 @@ class Config():
         else:
             logging.warn(f"WARNING! There was an error loading the environmental variables. Check that the path variables are correct and the .env file exists")
 
+    def getReports(self) -> list[Report]:
+        return self.reports.getReports()
     
 class FilesConfig():
     def __init__(self) -> None:
