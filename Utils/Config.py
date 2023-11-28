@@ -293,17 +293,17 @@ class ReportsConfig():
                     for appointment in self.getAppointments():
                         error = False
                         if "valid_appointments" not in report:
-                            logging.error(f"ERROR! \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
+                            logging.error(f"ERROR! \"valid_appointments\" key not present for {type} report in reports.config.json at index {report_index}")
                             error = True
                         if error:
-                            logging.warn(f"WARNING! Report {report_index} could not be loaded due to missing essential keys")
+                            logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
                             break
                         conf = {
                             "type": report["type"],
                             "file_prefix": report["file_prefix"],
                             "referrals": referral.deep_copy(),
                             "appointments": appointment.deep_copy(),
-                            "valid_appointments": report["valid_appointments"] if "valid_appointments" in report else None,
+                            "valid_appointments": report["valid_appointments"],
                             "remove_cols": report["remove_cols"] if "remove_cols" in report else None, 
                             "rename_cols": report["rename_cols"] if "rename_cols" in report else None, 
                             "final_cols": report["final_cols"] if "final_cols" in report else None,
