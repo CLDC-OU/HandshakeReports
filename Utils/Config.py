@@ -79,7 +79,7 @@ class FilesConfig():
                 file_type=".csv"
             )
             if not valid_files:
-                logging.error(f'Cannot load {file["type"]} file. No valid files were found in {file[type]["dir"]}')
+                logging.error(f'Cannot load {file["type"]} file. No valid files were found in {file["type"]["dir"]}')
                 break
             else:
                 logging.debug(f'Found valid file at {file["dir"]}')
