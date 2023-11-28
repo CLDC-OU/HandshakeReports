@@ -121,7 +121,22 @@ class ReportsConfig():
             self.reports = None
             self.files = FilesConfig()
             self.files.loadFiles()
+        self.loadFiles()
     
+    def loadFiles(self):
+        self._appointments = []
+        self._surveys = []
+        self._enrollment = None
+        self._referrals = []
+        for file in self.getFiles():
+            if file.type == DataSet.Type.APPOINTMENT:
+                self._appointments.append(file)
+            elif file.type == DataSet.Type.ENROLLMENT:
+                self._enrollment = file
+            elif file.type == DataSet.Type.SURVEY:
+                self._surveys.append(file)
+            elif file.type == DataSet.Type.REFERRAL:
+                self._referrals.append(file)
     def loadReports(self) -> list[Report] | None:
         if not self.config:
             return None
@@ -129,20 +144,6 @@ class ReportsConfig():
         self.reports = []
 
         reports = self.config["reports"]
-
-        appointments = []
-        surveys = []
-        enrollment = None
-        referrals = []
-        for file in self.files.files:
-            if file.type == DataSet.Type.APPOINTMENT:
-                appointments.append(file)
-            elif file.type == DataSet.Type.ENROLLMENT:
-                enrollment = file
-            elif file.type == DataSet.Type.SURVEY:
-                surveys.append(file)
-            elif file.type == DataSet.Type.REFERRAL:
-                referrals.append(file)
 
         report_index = 0
         for report in reports:
