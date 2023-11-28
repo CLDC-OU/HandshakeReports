@@ -24,15 +24,41 @@ class Report:
         self.results_dir = config["results_dir"]
         if config["type"] == Report.Type.SURVEY_RESULTS:
             logging.debug(f"Creating new SurveyResults Report")
-            self.report = SurveyResults(config["appointments"], config["survey_results"], config["day_range"], config["year"], config["months"], config["emails"], config["remove_cols"])
+            self.report = SurveyResults(
+                appointments=config["appointments"],
+                survey_results=config["survey_results"],
+                day_range=config["day_range"],
+                year=config["year"],
+                months=config["months"],
+                emails=config["emails"],
+                remove_cols=config["remove_cols"]
+            )
             self.results = None
         elif config["type"] == Report.Type.FOLLOWUP:
             logging.debug(f"Creating new Followup Report")
-            self.report = Followup(config["appointments"], config["valid_schools"], config["year"], config["months"], config["appointment_types"], config["followup_types"], config["remove_cols"], config["rename_cols"], config["final_cols"])
+            self.report = Followup(
+                appointments=config["appointments"], 
+                valid_schools=config["valid_schools"], 
+                year=config["year"], 
+                months=config["months"], 
+                appointment_types=config["appointment_types"], 
+                followup_types=config["followup_types"], 
+                remove_cols=config["remove_cols"], 
+                rename_cols=config["rename_cols"], 
+                final_cols=config["final_cols"]
+            )
             self.results = None
         elif config["type"] == Report.Type.REFERRALS:
             logging.debug(f"Creating new Referrals Report")
-            self.report = Referrals(config["referrals"], config["appointments"], config["valid_appointments"], config["rename_cols"], config["final_cols"], config["enrollment"], config["merge_enrollment"])
+            self.report = Referrals(
+                referrals=config["referrals"], 
+                appointment=config["appointments"], 
+                valid_appointment_pattern=config["valid_appointments"], 
+                rename_cols=config["rename_cols"], 
+                final_cols=config["final_cols"], 
+                enrollment=config["enrollment"], 
+                merge_on=config["merge_enrollment"]
+            )
             self.results = None
         else:
             logging.error(f"Invalid Report Type {config['type']}")
