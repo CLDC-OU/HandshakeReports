@@ -246,32 +246,41 @@ class ReportsConfig():
                 for appointment in self.getAppointments():
                     error = False
                     if "valid_schools" not in report:
-                        logging.error(f"ERROR! \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}")
-                        error = True
+                        logging.warn(f"WARNING! \"valid_schools\" key not present for {type} report in reports.config.json at index {report_index}. Setting to default including all schools")
+                        report["valid_schools"] = None
+                    else:
+                        if report["valid_schools"] == "" or report["valid_schools"] == []:
+                            report["valid_schools"] = None
                     if "target_year" not in report:
-                        logging.warn(f"WARNING! \"target_year\" key not present for {type} report in reports.config.json at index {report_index}")
-                        error = True
+                        logging.warn(f"WARNING! \"target_year\" key not present for {type} report in reports.config.json at index {report_index}. Setting to default including all years")
+                        report["target_year"] == None
+                    else:
+                        if report["target_year"] == "" or report["target_year"] == []:
+                            report["target_year"] = None
                     if "target_months" not in report:
-                        logging.warn(f"WARNING! \"target_months\" key not present for {type} in reports.config.json at index {report_index}")
-                        error = True
+                        logging.warn(f"WARNING! \"target_months\" key not present for {type} in reports.config.json at index {report_index}. Setting to default including all months")
+                        report["target_months"] = None
+                    else:
+                        if report["target_months"] == "" or report["target_months"] == []:
+                            report["target_months"] = None
                     if "appointment_types" not in report:
-                        logging.warn(f"WARNING! \"appointment_types\" key not present for {type} in reports.config.json at index {report_index}")
+                        logging.error(f"WARNING! \"appointment_types\" key not present for {type} in reports.config.json at index {report_index}")
                         error = True
                     if "followup_types" not in report:
-                        logging.warn(f"WARNING! \"followup_types\" key not present for {type} in reports.config.json at index {report_index}")
+                        logging.error(f"WARNING! \"followup_types\" key not present for {type} in reports.config.json at index {report_index}")
                         error = True
                     if error:
-                        logging.warn(f"WARNING! Report {report_index} could not be loaded due to missing essential keys")
+                        logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
                         break
                     conf = {
                         "type": report["type"],
                         "file_prefix": report["file_prefix"],
                         "appointments": appointment.deep_copy(),
-                        "valid_schools": report["valid_schools"] if "valid_schools" in report else None,
-                        "year": report["target_year"] if "target_year" in report else None, 
-                        "months": report["target_months"] if "target_months" in report else None, 
-                        "appointment_types": report["appointment_types"] if "appointment_types" in report else None, 
-                        "followup_types": report["valid_followup"] if "valid_followup" in report else None,
+                        "valid_schools": report["valid_schools"],
+                        "year": report["target_year"],
+                        "months": report["target_months"],
+                        "appointment_types": report["appointment_types"], 
+                        "followup_types": report["valid_followup"],
                         "remove_cols": report["remove_cols"] if "remove_cols" in report else None, 
                         "rename_cols": report["rename_cols"] if "rename_cols" in report else None, 
                         "final_cols": report["final_cols"] if "final_cols" in report else None,
