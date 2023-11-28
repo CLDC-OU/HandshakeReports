@@ -191,22 +191,6 @@ class ReportsConfig():
                         logging.error(f"ERROR! \"survey_id\" key not present for {type} report in reports.config.json at index {report_index}")
                         break
 
-                        conf = {
-                            "type": report["type"],
-                            "file_prefix": report["file_prefix"],
-                            "appointments": appointment.deep_copy(),
-                            "survey_results": survey.deep_copy(),
-                            "day_range": report["day_range"] if "day_range" in report else None,
-                            "year": report["target_year"] if "target_year" in report else None, 
-                            "months": report["target_months"] if "target_months" in report else None, 
-                            "emails": report["emails"] if "emails" in report else None, 
-                            "remove_cols": report["remove_cols"] if "remove_cols" in report else None, 
-                            "rename_cols": report["rename_cols"] if "rename_cols" in report else None, 
-                            "final_cols": report["final_cols"] if "final_cols" in report else None,
-                            "archive_dir": report["archive_dir"] if "archive_dir" in report else None,
-                            "results_dir": report["results_dir"] if "results_dir" in report else None,
-                        }
-                        self.reports.append(Report(conf))
                     survey_id = report["survey_id"]
                     survey = self.getSurveyByID(survey_id)
                     if survey is None:
@@ -214,6 +198,50 @@ class ReportsConfig():
                         break
                     else:
                         logging.info(f"Found survey with id {survey_id}")
+                    
+                    error = False
+                    if "day_range" not in report:
+                        logging.error(f"ERROR! \"day_range\" key not present for {type} report in reports.config.json at index {report_index}")
+                        error = True
+                    if "target_year" not in report:
+                        report["target_year"] = None
+                        logging.warn(f"WARNING! \"target_year\" key not present for {type} report in reports.config.json at index {report_index}. Setting to default including all years")
+                    else:
+                        if report["target_year"] == "" or report["target_year"] == []:
+                            report["target_year"] = None
+                    if "target_months" not in report:
+                        logging.warn(f"WARNING! \"target_months\" key not present for {type} in reports.config.json at index {report_index}. Setting to default including all months")
+                        report["target_months"] = None
+                    else:
+                        if report["target_months"] == "" or report["target_months"] == []:
+                            report["target_months"] = None
+                    if "emails" not in report:
+                        logging.warn(f"WARNING! \"emails\" key not present for {type} in reports.config.json at index {report_index}. Setting to default including all emails")
+                        report["emails"] = None
+                    else:
+                        if report["emails"] == "" or report["emails"] == []:
+                            report["emails"] = None
+                    if error:
+                        logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
+                        break
+
+                    conf = {
+                        "type": report["type"],
+                        "file_prefix": report["file_prefix"],
+                        "appointments": appointment.deep_copy(),
+                        "survey_results": survey.deep_copy(),
+                        "day_range": report["day_range"],
+                        "year": report["target_year"],
+                        "months": report["target_months"], 
+                        "emails": report["emails"],
+                        "remove_cols": report["remove_cols"] if "remove_cols" in report else None, 
+                        "rename_cols": report["rename_cols"] if "rename_cols" in report else None, 
+                        "final_cols": report["final_cols"] if "final_cols" in report else None,
+                        "archive_dir": report["archive_dir"] if "archive_dir" in report else None,
+                        "results_dir": report["results_dir"] if "results_dir" in report else None
+                    }
+                    self.reports.append(Report(conf))
+                    
             if type == Report.Type.FOLLOWUP.value:
                 for appointment in appointments:
                     error = False
