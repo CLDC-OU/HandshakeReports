@@ -280,7 +280,7 @@ class ReportsConfig():
                         "year": report["target_year"],
                         "months": report["target_months"],
                         "appointment_types": report["appointment_types"], 
-                        "followup_types": report["valid_followup"],
+                        "followup_types": report["followup_types"],
                         "remove_cols": report["remove_cols"] if "remove_cols" in report else None, 
                         "rename_cols": report["rename_cols"] if "rename_cols" in report else None, 
                         "final_cols": report["final_cols"] if "final_cols" in report else None,
