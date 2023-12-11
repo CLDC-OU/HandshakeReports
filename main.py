@@ -7,7 +7,7 @@ logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.DEBUG, fil
 logging.info("Log started")
 
 from Utils.Config import Config
-
+from Reports.Report import Report
 
 class Driver():
     def __init__(self) -> None:
@@ -15,16 +15,17 @@ class Driver():
         
 
     def run(self):
-        self._getReports().loadReports()
+        self._config.reports.loadReports()
         self._run_reports()
     
-    def _getReports(self):
-        return self._config.reports
+    def _getReports(self) -> list[Report]:
+        return self._config.getReports()
     
     def _run_reports(self):
         if not self._getReports():
             return False
-        for report in self._getReports().reports:
+        for report in self._getReports():
+            
             report.run_report()
             
             logging.info(f"Successfully ran {report.type} report")
