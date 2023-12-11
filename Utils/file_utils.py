@@ -28,9 +28,12 @@ def get_most_recent_file(files):
     return max(files, key=lambda x: x[1])[0]
 
 def filter_files(file_dir, must_contain, file_type):
+    logging.debug(f"searching for \"{file_type}\" files in \"{file_dir}\" that contain \"{must_contain}\"")
     # Get files with their timestamps from path
     files_with_timestamps = [(filename, os.path.getmtime(os.path.join(file_dir, filename))) for filename in
                              os.listdir(file_dir)]
+    logging.debug(f"found {len(files_with_timestamps)} total files in {file_dir}")
+
 
     # Filter files
     valid_files = [(filename, timestamp) for filename, timestamp in files_with_timestamps if
@@ -38,6 +41,7 @@ def filter_files(file_dir, must_contain, file_type):
     if not valid_files:
         logging.warn(f'WARNING: No valid {file_type} filenames containing {must_contain} found in {file_dir}')
         return False
+    logging.debug(f"found {len(valid_files)} valid files")
     return valid_files
 
 def replace(string, replace_arr):
