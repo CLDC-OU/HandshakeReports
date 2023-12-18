@@ -3,7 +3,6 @@ import logging
 from selenium import webdriver
 from dotenv import load_dotenv
 import os
-from datetime import datetime as dt
 
 with open('config.json') as json_file:
     config = json.load(json_file)
@@ -11,9 +10,10 @@ with open('config.json') as json_file:
 
 # Load the environmental variables
 if load_dotenv():
-    logging.debug(f"Environmental variables successfully loaded")
+    logging.debug("Environmental variables successfully loaded")
 else:
-    logging.warn(f"There was an error loading the environmental variables. Check that the path variables are correct and the .env file exists")
+    logging.warn("There was an error loading the environmental variables. Check that the path variables are correct and the .env file exists")
+
 
 def initialize_selenium():
     # Set PATH environmental variable to chromedriver-win64
