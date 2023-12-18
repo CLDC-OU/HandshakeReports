@@ -2,6 +2,7 @@ import logging
 import re
 import shutil
 import os
+from numpy import isin
 from selenium import webdriver
 
 from .utils import config
@@ -22,25 +23,27 @@ def rename_file(initial_loc, new_name):
     logging.debug(f'Renamed {initial_filename} to {new_name}')
     return final_loc
 
-def get_most_recent_file(files):
-    if not files:
-        return False
+
+def get_most_recent_file(files: list[tuple[str, float]]):
+    if not isinstance(files, list):
+        raise ValueError("files must be a list")
+
     return max(files, key=lambda x: x[1])[0]
+
 
 def filter_files(file_dir, must_contain, file_type):
     logging.debug(f"searching for \"{file_type}\" files in \"{file_dir}\" that contain \"{must_contain}\"")
     # Get files with their timestamps from path
     files_with_timestamps = [(filename, os.path.getmtime(os.path.join(file_dir, filename))) for filename in
-                             os.listdir(file_dir)]
+                             os.listdir(file_dir) if isinstance(filename, str)]
     logging.debug(f"found {len(files_with_timestamps)} total files in {file_dir}")
-
 
     # Filter files
     valid_files = [(filename, timestamp) for filename, timestamp in files_with_timestamps if
                    (must_contain in filename) & (filename.endswith(file_type) is True)]
     if not valid_files:
         logging.warn(f'WARNING: No valid {file_type} filenames containing {must_contain} found in {file_dir}')
-        return False
+        raise ValueError(f"No valid {file_type} files containing {must_contain} found in {file_dir}")
     logging.debug(f"found {len(valid_files)} valid files")
     return valid_files
 
