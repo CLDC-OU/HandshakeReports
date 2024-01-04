@@ -1,1 +1,52 @@
 
+{
+    "reports": [
+        {
+            "name": "Survey Results Report",
+            "type": "survey_results",
+            "archive_dir": "C:\\Users\\user\\Documents\\survey_results\\12345\\archive",
+            "results_dir": "C:\\Users\\user\\Documents\\survey_results\\12345\\results",
+            "file_prefix": "12345_survey_results_",
+            "survey_id": "12345",
+            "day_range": 4,
+            "target_years": "2023, 2024",
+            "target_months": "August-May",
+            "staff_emails": [
+                "staff@email.com",
+                "staff2@email.com",
+                "staff3@email.com"
+            ],
+            "remove_cols": [
+                "Student Card Id"
+            ]
+        },
+        {
+            "name": "Followup Appointment Report",
+            "type": "followup",
+            "archive_dir": "C:\\Users\\user\\Documents\\followup\\archive",
+            "results_dir": "C:\\Users\\user\\Documents\\followup\\results",
+            "file_prefix": "followup_",
+            "valid_schools": {
+                "include": "/School of Engineering and Computer Science/",
+                "exclude": ""
+            },
+            "require_followup": {
+                "include": "/Walk-In/",
+                "exclude": "/Walk-In Headshot|Walk-In Chat/"
+            },
+            "followup_types": {}
+        },
+        {
+            "name": "Referrals Report",
+            "type": "referrals",
+            "archive_dir": "C:\\Users\\user\\Documents\\referrals\\archive",
+            "results_dir": "C:\\Users\\user\\Documents\\referrals\\results",
+            "file_prefix": "referrals_",
+            "complete_types": {
+                "include": "/Career Exploration/",
+                "exclude": ""
+            },
+            "merge_enrollment": "card_id"
+        }
+    ]
+}
