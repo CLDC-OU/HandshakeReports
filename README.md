@@ -112,10 +112,9 @@ It is recommended that you create a dedicated Handshake account using an extra e
 
 1. Create a file called ".env" in the root of the project directory.
 2. Add the following environmental variables (see an example in [example.env](example.env)):
-    - `HS_USERNAME` - The username of the Handshake account that will be downloading the survey results
-    - `HS_PASSWORD` - The password of the Handshake account that will be downloading the survey results
-    - (optional) `INSTITUTIONAL_EMAIL` - TRUE if `HS_USERNAME` refers to an institutional email address (e.g. oakland.edu). FALSE or omitted otherwise.
-
+   - `HS_USERNAME` - The username of the Handshake account that will be downloading the survey results
+   - `HS_PASSWORD` - The password of the Handshake account that will be downloading the survey results
+   - (optional) `INSTITUTIONAL_EMAIL` - TRUE if `HS_USERNAME` refers to an institutional email address (e.g. oakland.edu). FALSE or omitted otherwise.
 
 ## Configuring Files
 
