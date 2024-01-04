@@ -122,3 +122,5 @@ Files are configured in [files.config.json](files.config.json). Create this file
 
 ## Configuring Reports
 
+Reports are configured in [reports.config.json](reports.config.json). Create this file in the root of the project directory.
+
