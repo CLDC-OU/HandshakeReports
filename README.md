@@ -118,5 +118,7 @@ It is recommended that you create a dedicated Handshake account using an extra e
 
 ## Configuring Files
 
+Files are configured in [files.config.json](files.config.json). Create this file in the root of the project directory.
+
 ## Configuring Reports
 
