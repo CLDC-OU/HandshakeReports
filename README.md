@@ -124,3 +124,72 @@ Files are configured in [files.config.json](files.config.json). Create this file
 
 Reports are configured in [reports.config.json](reports.config.json). Create this file in the root of the project directory.
 
+Each report is represented as a JSON object and is included in the `reports` list
+
+```json
+{
+  "reports": []
+}
+```
+
+### Basic Report Configuration
+
+#### Required Values
+
+Each report MUST have the following values configured
+
+- `type` [***required***] <`"survey_results"` | `"followup"` | `"referrals"`>: The type of the report. This indicates which other values are be configured and the operations to run on the files.
+- `file_prefix` [***required***] (string): The prefix of the filename for the results. A timestamp will be added directly to the end of this prefix.
+- `results_dir` [***required***] _string_: The file directory that the results of the report will be saved to
+
+#### Optional Values
+
+Each report may have the following values configured
+
+- `name` [*optional*] _string_: The name of the report. This is completely optional and unused in any script. It is used only for labeling purposes
+- `archive_dir` [*optional*] _string_: The file directory that an archive of the results will be saved to. This will include all columns before the final rename/remove/final operations
+- `rename_cols` [*optional*] _obj_: A JSON object where each key is the name of a column and the value is what the column should be renamed to in the final results. Note that this only applies to the final results.
+- `remove_cols` [*optional*] _list[string]_: A list of names of columns that should not be included in the final results. Helpful when a few known columns should not be present in the final report.
+- `final_cols` [*optional*] _list[string]_: A list of all of the names of columns that should be included in the final results. Note that ONLY these columns will be present in the final results. Helpful when unknown columns exist that should not be included in the final results or very few should be included.
+
+> [!IMPORTANT]
+>
+> `rename_cols`, `remove_cols`, and `final_cols` are not applied until the end of the script and are not used in any operations. They only used for final output.
+>
+> If the column names are renamed in [files.config.json](#configuring-files), make sure the column names exactly match the renamed names rather than the original column names.
+
+- `target_years` (Used in Survey Results and Followup Reports)
+
+  - `target_years` (string): A comma separated string of ranges of years representing the years (4 digit) to include in the provided data files. A range can be a single year or two years separated by a hyphen representing all years between the two, inclusive (e.g., `"2020, 2022-2024"` is equivalent to `"2020, 2022, 2023, 2024"`)
+
+- `target_months` (Used in Survey Results and Followup Reports)
+  - `target_months` (string): A comma separated string of ranges of months (by their full names) representing the months to include in the provided data files. A range can be a single month or two months separated by a hyphen representing all months between the two, inclusive (e.g., "August, October-January, March-April" is equivalent to "August, October, November, January, March, April")
+
+### Survey Results Report
+
+- `survey_id` [***required***] (string): The survey id of the report on Handshake. This is used to identify the survey results file configured in [files.config.json](#configuring-files).
+- `day_range` [***required***] (int): The maximum number of days that a survey response will be considered as a match for an appointment with the same student email. Larger values may cause false matches if a student has multiple appointments in that period of time. The most recent appointment within the range will always be the one matched.
+- `target_years` [*optional*] (string): see [target_years](#target_years-used-in-survey-results-and-followup-reports)
+- `target_months` [*optional*] (string): see [target_months](#target_months)
+- `staff_emails` [*optional*] (list[string]): A list of email addresses of staff members to include in the report. If this is left out or blank, all staff members will be included.
+
+### Followup Report
+
+- `valid_schools` [*optional*] (obj): Specifies the names of schools (colleges) of students to include in this report
+  - `include` [***required***]: A regex string that matches schools to be included in valid schools
+  - `exclude` [*optional*]: A regex string that matches schools that `include` might match, but should not be included in the schools
+- `require_followup` (obj): Specifies the names of appointment types to require a followup for. Students that have had a matching appointment and have not had a followup (from `followup_types`) at a later date will be in the final results of this report.
+  - `include` [***required***] (string): A regex string that matches names of appointment types that require a followup.
+  - `exclude` [*optional*] (string): A regex string that matches appointment types that `include` might include, but should not be considered as appointment types that require a followup.
+- `followup_types` [*optional*] (obj): Specifies the names of appointment types that should be considered a followup appointment. Leaving this out or as an empty object causes any appointment to count as a followup appointment.
+  - `include` [***required***] (string): A regex string that matches names of appointment types that count as followup appointments
+  - `exclude` [*optional*] (string): A regex string that matches names of appointment types that `include` might include, but should not be considered followups.
+- `target_years` [*optional*] (string): see [target_years](#target_years-used-in-survey-results-and-followup-reports)
+- `target_months` [*optional*] (string): see [target_months](#target_months)
+
+### Referrals Report
+
+- `complete_types` [***required***] (obj): Specifies the names of appointment types that should mark students referrals as completed.
+  - `include` [***required***] (string): A regex string that matches names of appointment types.
+  - `exclude` [*optional*] (string): A regex string that matches names of appointment types that `include` might include but should not consider the referral as completed.
+- `merge_enrollment` [*optional*] (string): The column type that the enrollment data should be merged with the referrals data file. Ensure this is the column type and not the column name and that it is present and configured for both files. See [Configuring Files](#configuring-files) for more information on column types.
