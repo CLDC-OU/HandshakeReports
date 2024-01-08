@@ -8,14 +8,16 @@ from .DataSet import Column, DataSet
 
 
 class Referrals():
-    def __init__(self, referrals:DataSet, appointment:DataSet, valid_appointment_pattern:str, rename_cols:list, final_cols:list, enrollment:DataSet|None = None, merge_on:Column = None) -> None:
+    def __init__(self, referrals: DataSet, appointment: DataSet, valid_appointment_pattern: str, rename_cols: list,
+                 final_cols: list, enrollment: DataSet | None = None, merge_on: Column = None) -> None:
         self._referrals = referrals
         # print(set(self._referrals.df))
         self._appointment = appointment
         self._valid_appointment_pattern = valid_appointment_pattern
         self._enrollment = enrollment
         self._merge_on = merge_on
-        self._appointment_cols = [appointment.get_col(Column.STUDENT_EMAIL), appointment.get_col(Column.DATE), appointment.get_col(Column.STATUS)]
+        self._appointment_cols = [appointment.get_col(Column.STUDENT_EMAIL), appointment.get_col(Column.DATE),
+                                  appointment.get_col(Column.STATUS)]
         self._results = pd.DataFrame(None)
         self.remove_cols = None
         self.rename_cols = rename_cols
@@ -54,7 +56,8 @@ class Referrals():
     def _remove_duplicates(self):
         unique_col = self._referrals.get_col(Column.UNIQUE_REFERRAL)
         if unique_col is None:
-            logging.debug("No unique col name to remove duplicates. If no unique_col is specified in files.config.json, this is expected behavior.")
+            logging.debug(
+                "No unique col name to remove duplicates. If no unique_col is specified in files.config.json, this is expected behavior.")
             return
         logging.debug(f"Removing duplicate rows on: {unique_col}")
         self._results.drop_duplicates(inplace=True, subset=[unique_col])
@@ -63,13 +66,13 @@ class Referrals():
     def _add_scheduled(self):
         dates = self._results[self._appointment.get_col(Column.DATE_SCHEDULED)].values.tolist()
         scheduled = list(map(lambda x: "FALSE" if pd.isna(x) else "TRUE", dates))
-        
+
         self._results.insert(
             loc=0,
             column="Scheduled",
             value=scheduled
         )
-    
+
     def _merge_enrollment(self):
         self._normalize_card_id()
         # make sure card ids are normalized and then merge enrollment data with it, then check that all of the correct data is there and there aren't any key errors
@@ -81,7 +84,6 @@ class Referrals():
                 how="left",
                 suffixes=('', '_')
             )
-        
 
     def _set_preferred_name(self):
         pref_names = self._results[self._referrals.get_col(Column.STUDENT_PREFERRED_NAME)].values.tolist()
@@ -100,7 +102,7 @@ class Referrals():
     def _add_completed(self):
         statuses = self._results[self._appointment.get_col(Column.STATUS)].values.tolist()
         completed = list(map(lambda x: "TRUE" if x in AppointmentStatus.VALID_COMPLETED.value else "FALSE", statuses))
-        
+
         self._results.insert(
             loc=0,
             column="Completed",
@@ -109,12 +111,12 @@ class Referrals():
 
     def _filter_valid_appointments(self):
         self._appointment.filter_appointment_type(self._valid_appointment_pattern)
-    
+
     # def get_unscheduled(self):
     #     # get list of unique student emails that have an appointment
     #     li = self.appointment.get_df()[self.appointment.get_col(Column.STUDENT_EMAIL)].drop_duplicates().to_list()
     #     return filter_target_isin(self.referrals.get_df(), self.referrals.get_col(Column.STUDENT_EMAIL) , li)
-    
+
     def _merge_referrals(self):
         self._results = pd.merge(
             left=self._referrals.get_df(),
@@ -131,7 +133,7 @@ class Referrals():
     #         on=col,
     #         how="left"
     #     ))
-    
+
     def _normalize_email_col(self) -> str:
         appointment_col = self._appointment.get_col(Column.STUDENT_EMAIL)
         referral_col = self._referrals.get_col(Column.STUDENT_EMAIL)
@@ -141,7 +143,7 @@ class Referrals():
             ))
 
         return referral_col
-    
+
     def _normalize_card_id(self):
         enrollment_col = self._enrollment.get_col(Column.STUDENT_CARD_ID)
         referral_col = self._referrals.get_col(Column.STUDENT_CARD_ID)
@@ -149,8 +151,9 @@ class Referrals():
             self._results = self._results.rename(
                 columns={referral_col: enrollment_col}
             )
-        self._results[enrollment_col] = self._results[enrollment_col].str.replace(r'^G', '', regex=True).fillna(-1).astype(int)
-    
+        self._results[enrollment_col] = self._results[enrollment_col].str.replace(r'^G', '', regex=True).fillna(
+            -1).astype(int)
+
     def _remove_past_appointments(self):
         # first remove any null referral dates (students that had a valid appointment but not a referral)
         self._results = self._results[~self._results[self._referrals.get_col(Column.DATE)].isnull()]
@@ -158,12 +161,15 @@ class Referrals():
         self._results = self._results[~self._results[self._referrals.get_col(Column.DATE)].isna()]
         self._format_referral_dates()
         self._results = self._results[~(
-            (self._results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self._results[self._referrals.get_col(Column.DATE)].dt.day_of_year)
-            | (self._results[self._appointment.get_col(Column.DATE)].dt.year < self._results[self._appointment.get_col(Column.DATE)].dt.year)
-            )]
+                (self._results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self._results[
+                    self._referrals.get_col(Column.DATE)].dt.day_of_year)
+                | (self._results[self._appointment.get_col(Column.DATE)].dt.year < self._results[
+            self._appointment.get_col(Column.DATE)].dt.year)
+        )]
 
     def _format_referral_dates(self):
-        self._results[self._referrals.get_col(Column.DATE)] = pd.to_datetime(self._results[self._referrals.get_col(Column.DATE)]).dt.tz_localize(None)
+        self._results[self._referrals.get_col(Column.DATE)] = pd.to_datetime(
+            self._results[self._referrals.get_col(Column.DATE)]).dt.tz_localize(None)
         # self._results[self._referrals.get_col(Column.DATE)] = self._results[self._referrals.get_col(Column.DATE)].str.replace(' GMT-0400 (Eastern Daylight Time)', '')
         # self._results[self._referrals.get_col(Column.DATE)] = pd.to_datetime(self._results[self._referrals.get_col(Column.DATE)], format='%a %b %d %Y %H:%M:%S').dt.strftime('%Y-%m-%d')
 
@@ -178,7 +184,7 @@ class Referrals():
 
     def _repair_only_past_appointments(self):
         # from referrals add rows for students that are no longer in results
-        
+
         # get a list of unique emails in referrals
         ref_emails = self._referrals.get_df()[self._referrals.get_col(Column.STUDENT_EMAIL)].unique()
         # get a list of unique emails in results
@@ -191,7 +197,6 @@ class Referrals():
     #     self.appointment.set_df(
     #         df[df[self.appointment.get_col(Column.DATE)] > df[self.referrals.get_col(Column.DATE)]]
     #     )
-
 
     # def combine(self):
     #     pd.concat([self.appointment.get_df(), self.referrals.get_df().reindex(self.appointment.get_df().index)], axis=1)
