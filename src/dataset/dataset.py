@@ -73,13 +73,6 @@ class DataSet:
         self.set_df(sort_columns_by_date(self.get_df(), self.get_col(Column.DATE)))
 
 
-    def filter_year(self, year):
-        if not year:
-            year = get_year_input()
-        # Filter dataframe by year
-        self.set_df(self.get_df()[self.get_df()[self.get_col(Column.DATE)].dt.strftime('%Y') == year])
-        return self.get_df()
-
     def filter_months(self, *months: str) -> None:
         if not months:
             month_input = get_months_input()
@@ -114,6 +107,50 @@ class DataSet:
         for range in ranges:
             month_set.update(DataSet.split_month_range(range))
         return month_set
+
+    @staticmethod
+    def split_year_range(year_range: str) -> list[str]:
+        if '-' in year_range:
+            split_range = year_range.split('-')
+            split_range[0] = split_range[0].strip()
+            split_range[1] = split_range[1].strip()
+            if not split_range[0].isdigit() or not split_range[1].isdigit():
+                raise ValueError("Invalid year range - start year and end year must be parseable as integers")
+            if int(split_range[0]) > int(split_range[1]):
+                raise ValueError("Invalid year range - start year must be less than end year")
+            range_list = list(range(
+                int(split_range[0]), int(split_range[1]) + 1
+            ))
+            str_list = []
+            for i in range(len(range_list)):
+                str_list.append(str(range_list[i]))
+        else:
+            if not year_range.isdigit():
+                raise ValueError("Invalid year range - year must be parseable as integer")
+            str_list = [year_range]
+        return str_list
+
+    @staticmethod
+    def split_year_ranges(year_ranges: tuple[str, ...]) -> set[str]:
+        year_set = set()
+        for year_range in year_ranges:
+            year_set.update(DataSet.split_year_range(year_range))
+        return year_set
+
+    def filter_years(self, *years: str):
+        if not years:
+            year_input = get_year_input()
+            year_input.strip()
+            years = tuple(year_input.split(','))
+
+        # Separate year ranges into individual years
+        year_set = DataSet.split_year_ranges(years)
+
+        # Filter DataFrame by years
+        self.get_df().drop(
+            self.get_df()[~self.get_col(Column.DATE).dt.strftime('%Y').isin(year_set)].index,
+            inplace=True
+        )
 
     def filter_staff_emails(self, emails: list):
         if not emails:
