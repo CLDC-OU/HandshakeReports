@@ -11,15 +11,6 @@ from utils.general_utils import get_month_range
 
 
 class DataSet:
-    class Type(Enum):
-        APPOINTMENT = 'appointments'
-        SURVEY = 'survey_results'
-        REFERRAL = 'referral'
-        ENROLLMENT = 'enrollment'
-
-        def __eq__(self, __value: object) -> bool:
-            return self.value.__eq__(__value.value)
-
     def deep_copy(self):
         return DataSet(self.type.value, self.id, self.df, self.cols)
 
