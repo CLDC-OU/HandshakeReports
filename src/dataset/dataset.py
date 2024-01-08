@@ -35,7 +35,7 @@ class DataSet:
         if not cols or not isinstance(cols, dict):
             raise ValueError("cols must be a valid dictionary")
         self.id = id
-        self.df = _remove_numbers_from_columns(df)
+        self.df = df
         self.cols = cols
 
     def getType(type: str) -> Type:
