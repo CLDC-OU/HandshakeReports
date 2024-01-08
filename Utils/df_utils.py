@@ -1,3 +1,4 @@
+from argparse import ArgumentTypeError
 import pandas as pd
 
 
@@ -43,10 +44,15 @@ def filter_target_isin(df: pd.DataFrame, col: str, li: list) -> None:
 
 
 def filter_target_pattern_isin(df: pd.DataFrame, col: str | None, patterns: list):
+    if col is None:
+        raise ArgumentTypeError('Column cannot be None')
     df[col] = fill_na(df, col)
     pattern = '|'.join(patterns)
-    df = df[df[col].str.contains(pattern, regex=True, case=False)]
-    return df
+    df.drop(
+        df[~df[col].str.contains(pattern, regex=True, case=False)].index,
+        inplace=True
+    )
+
 
 def fill_na(df, col):
     return df[col].fillna('NA')
