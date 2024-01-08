@@ -75,3 +75,11 @@ def move_files_from_config():
         for key, value in file:
             logging.debug(f"Initiating file move for {key}")
             move_csv(value["move"]["from"], value["dir"], value["move"]["must_contain"], value["move"]["replace"])
+
+
+def dir_format(file_dir: str):
+    # if the file_dir is relative, make it absolute from the project directory
+    if file_dir.startswith("..\\"):
+        ROOT_DIR = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0]
+        return os.path.join(ROOT_DIR, file_dir[3:])
+    return file_dir
