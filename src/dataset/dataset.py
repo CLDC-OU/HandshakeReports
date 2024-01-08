@@ -46,11 +46,13 @@ class DataSet:
             return self.get_id() == __value.get_id()
         return False
 
-    def same_type(self, value: object):
-        return self.get_type() == value.get_type()
 
     def get_type(self) -> Type:
         return self.type
+    def same_type(self, __value: object) -> bool:
+        if isinstance(__value, self.__class__):
+            return True
+        return False
 
     def get_id(self) -> str:
         return self.id
