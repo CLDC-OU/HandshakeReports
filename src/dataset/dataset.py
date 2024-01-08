@@ -11,18 +11,8 @@ from utils.general_utils import get_month_range
 
 
 class DataSet:
+    type_name = None
 
-    def __init__(self, type: str, id: str, df: pd.DataFrame, cols: dict):
-        if type == DataSet.Type.APPOINTMENT.value:
-            self.type = DataSet.Type.APPOINTMENT
-        elif type == DataSet.Type.SURVEY.value:
-            self.type = DataSet.Type.SURVEY
-        elif type == DataSet.Type.REFERRAL.value:
-            self.type = DataSet.Type.REFERRAL
-        elif type == DataSet.Type.ENROLLMENT.value:
-            self.type = DataSet.Type.ENROLLMENT
-        else:
-            return
     class Column(Enum):
         ID = 'id'
         DATE = 'date'
@@ -47,8 +37,6 @@ class DataSet:
     def deep_copy(self) -> DataSet:
         return self.__class__(self.id, self.df.copy(deep=True), self.cols.copy())
 
-    def get_type(self) -> Type:
-        return self.type
     def same_type(self, __value: object) -> bool:
         if isinstance(__value, self.__class__):
             return True
