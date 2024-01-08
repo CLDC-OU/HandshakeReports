@@ -25,6 +25,9 @@ class DataSet:
             self.type = DataSet.Type.ENROLLMENT
         else:
             return
+    class Column(Enum):
+        ID = 'id'
+        DATE = 'date'
         self.id = id
         self.df = _remove_numbers_from_columns(df)
         self.cols = cols
