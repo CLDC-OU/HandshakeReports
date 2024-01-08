@@ -1,5 +1,19 @@
 from argparse import ArgumentTypeError
 import pandas as pd
+from Utils.file_utils import filter_files, get_most_recent_file
+
+
+def load_df(file_dir: str, must_contain: str, rename_columns: dict, date_col: str | None = None) -> pd.DataFrame:
+    df = pd.read_csv(file_dir + "\\" + get_most_recent_file(filter_files(
+        file_dir=file_dir,
+        must_contain=must_contain,
+        file_type=".csv"
+    )))
+    if rename_columns:
+        df.rename(columns=rename_columns, inplace=True)
+    if date_col:
+        df[date_col] = pd.to_datetime(date_col).dt.tz_localize(None)
+    return df
 
 
 def remove_columns(df, cols):
@@ -9,6 +23,7 @@ def remove_columns(df, cols):
         return df
     return df.drop(columns=cols)
 
+
 def filter_columns(df, columns_to_display):
     if columns_to_display:
         if len(columns_to_display) > 0:
@@ -16,10 +31,12 @@ def filter_columns(df, columns_to_display):
         return df
     return df
 
+
 def sort_columns_by_date(df, column_name):
     df[column_name] = pd.to_datetime(df[column_name]).dt.tz_localize(None)
     df.sort_values(by=column_name, inplace=True)
     return df
+
 
 def filter_by_time_diff(df_1, col_1, df_2, col_2, days, merge_col):
     df_1[col_1] = pd.to_datetime(df_1[col_1]).dt.tz_localize(None)
