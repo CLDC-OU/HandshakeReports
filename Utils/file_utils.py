@@ -2,11 +2,8 @@ import logging
 import re
 import shutil
 import os
-from numpy import isin
-from selenium import webdriver
 
 from .utils import config
-from dotenv import load_dotenv
 
 
 def split_filepath(path):  # returns the file and the directory of a file path as an ordered pair
