@@ -41,8 +41,10 @@ class DataSet:
     def __str__(self) -> str:
         return self.id
 
-    def equal(self, value: object):
-        return self.get_id() == value.get_id()
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, DataSet):
+            return self.get_id() == __value.get_id()
+        return False
 
     def same_type(self, value: object):
         return self.get_type() == value.get_type()
