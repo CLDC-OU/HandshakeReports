@@ -38,9 +38,6 @@ class DataSet:
         self.df = df
         self.cols = cols
 
-    def getType(type: str) -> Type:
-        return DataSet.Type[type]
-
     def __str__(self) -> str:
         return self.id
 
