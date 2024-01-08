@@ -48,7 +48,20 @@ class DataSet:
     def get_df(self) -> pd.DataFrame:
         return self.df
 
-    def get_col(self, col_id: Column) -> str | None:
+    def get_col(self, col_id: Enum) -> pd.Series:
+        if not isinstance(col_id, Column):
+            raise ValueError("col_id must be a Column Enum")
+        if col_id.value not in self.cols:
+            raise ValueError("col_id must be a defined column")
+        if self.get_col_name(col_id) not in self.get_df().columns:
+            raise ValueError("col_id must be in DataFrame")
+
+        return self.get_df()[self.get_col_name(col_id)]
+
+    def get_col_name(self, col_id: Enum) -> str | None:
+        if not isinstance(col_id, Column):
+            raise ValueError("col_id must be a Column Enum")
+
         if col_id.value in self.cols:
             return self.cols[col_id.value]
         return None
