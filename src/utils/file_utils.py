@@ -3,8 +3,6 @@ import re
 import shutil
 import os
 
-from .utils import config
-
 
 def split_filepath(path):  # returns the file and the directory of a file path as an ordered pair
     directory = path.split("\\")
@@ -69,14 +67,6 @@ def move_csv(initial_dir, final_dir, filename_must_contain, replace_arr):
     updated_path = move_file(initial_dir + "\\" + file_name, final_dir)
     updated_name = replace(file_name, replace_arr)
     return rename_file(updated_path, updated_name)
-
-
-def move_files_from_config():
-    files = config["files"]
-    for file in files:
-        for key, value in file:
-            logging.debug(f"Initiating file move for {key}")
-            move_csv(value["move"]["from"], value["dir"], value["move"]["must_contain"], value["move"]["replace"])
 
 
 def dir_format(file_dir: str):
