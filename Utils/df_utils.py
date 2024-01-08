@@ -33,11 +33,16 @@ def filter_by_time_diff(df_1, col_1, df_2, col_2, days, merge_col):
     # Filter rows where the survey was completed after the appointment
     return merged_df[merged_df['Time_Difference'] > pd.Timedelta(days=0)]
 
-def filter_target_isin(df, col, li):
-    df = df[df[col].isin(li)]
-    return df
 
-def filter_target_pattern_isin(df:pd.DataFrame, col:str, patterns:list):
+def filter_target_isin(df: pd.DataFrame, col: str, li: list) -> None:
+    df.drop(
+        df[~df[col].isin(li)].index,
+        inplace=True
+    )
+    # df = df[df[col].isin(li)]
+
+
+def filter_target_pattern_isin(df: pd.DataFrame, col: str | None, patterns: list):
     df[col] = fill_na(df, col)
     pattern = '|'.join(patterns)
     df = df[df[col].str.contains(pattern, regex=True, case=False)]
