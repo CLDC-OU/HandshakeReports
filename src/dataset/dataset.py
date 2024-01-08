@@ -4,6 +4,7 @@ from enum import Enum
 
 from utils.file_utils import filter_files, get_most_recent_file
 from .appointment_status import AppointmentStatus
+from dataset.column import Column
 from utils.df_utils import filter_target_isin, filter_target_pattern_isin, sort_columns_by_date
 from utils.general_utils import get_month_range
 
