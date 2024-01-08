@@ -11,8 +11,6 @@ from utils.general_utils import get_month_range
 
 
 class DataSet:
-    def deep_copy(self):
-        return DataSet(self.type.value, self.id, self.df, self.cols)
 
     def __init__(self, type: str, id: str, df: pd.DataFrame, cols: dict):
         if type == DataSet.Type.APPOINTMENT.value:
@@ -46,6 +44,8 @@ class DataSet:
             return self.get_id() == __value.get_id()
         return False
 
+    def deep_copy(self) -> DataSet:
+        return self.__class__(self.id, self.df.copy(deep=True), self.cols.copy())
 
     def get_type(self) -> Type:
         return self.type
