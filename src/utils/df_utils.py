@@ -1,6 +1,6 @@
 from argparse import ArgumentTypeError
 import pandas as pd
-from Utils.file_utils import filter_files, get_most_recent_file
+from file_utils import filter_files, get_most_recent_file
 
 
 def load_df(file_dir: str, must_contain: str, rename_columns: dict, date_col: str | None = None) -> pd.DataFrame:
