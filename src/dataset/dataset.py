@@ -28,6 +28,12 @@ class DataSet:
     class Column(Enum):
         ID = 'id'
         DATE = 'date'
+
+    def __init__(self, id: str, df: pd.DataFrame, cols: dict) -> None:
+        if not isinstance(df, pd.DataFrame):
+            raise ValueError("df must be a valid DataFrame")
+        if not cols or not isinstance(cols, dict):
+            raise ValueError("cols must be a valid dictionary")
         self.id = id
         self.df = _remove_numbers_from_columns(df)
         self.cols = cols
