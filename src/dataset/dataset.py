@@ -72,21 +72,6 @@ class DataSet:
     def sort_date(self) -> None:
         self.set_df(sort_columns_by_date(self.get_df(), self.get_col(Column.DATE)))
 
-    def filter_months(self, months):
-        if not months:
-            months = get_months_input()
-        # separate month ranges by commas
-        month_ranges = [m.strip() for m in months.split(',')]
-
-        months = []
-        # separate ranges by dashes
-        for r in month_ranges:
-            r = r.split('-')
-            months.extend(get_month_range(r))
-
-        # Filter dataframe by month
-        self.set_df(self.get_df()[self.get_df()[self.get_col(Column.DATE)].dt.strftime('%B').isin(months)])
-        return self.get_df()
 
     def filter_year(self, year):
         if not year:
@@ -95,7 +80,42 @@ class DataSet:
         self.set_df(self.get_df()[self.get_df()[self.get_col(Column.DATE)].dt.strftime('%Y') == year])
         return self.get_df()
 
-    def filter_staff_emails(self, emails):
+    def filter_months(self, *months: str) -> None:
+        if not months:
+            month_input = get_months_input()
+            month_input = month_input.strip()
+            months = tuple(month_input.split(','))
+
+        # Separate month ranges into individual months
+        month_set = DataSet.split_month_ranges(months)
+        if not month_set or len(month_set) == 0:
+            raise ValueError("Invalid month input")
+
+        # Filter DataFrame by month
+        self.get_df().drop(
+            self.get_df()[~self.get_col(Column.DATE).dt.strftime('%B').isin(month_set)].index,
+            inplace=True
+        )
+
+    @staticmethod
+    def split_month_range(range: str) -> list[str]:
+        if '-' in range:
+            split_range = range.split('-')
+            split_range[0] = split_range[0].strip()
+            split_range[1] = split_range[1].strip()
+            range_list = get_month_range(split_range[0], split_range[1])
+        else:
+            range_list = get_month_range(range)
+        return range_list
+
+    @staticmethod
+    def split_month_ranges(ranges: tuple[str, ...]) -> set[str]:
+        month_set = set()
+        for range in ranges:
+            month_set.update(DataSet.split_month_range(range))
+        return month_set
+
+    def filter_staff_emails(self, emails: list):
         if not emails:
             emails = get_emails_input()
         self.set_df(filter_target_isin(self.get_df(), self.get_col(Column.STAFF_EMAIL), emails))
