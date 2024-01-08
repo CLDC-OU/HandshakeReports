@@ -6,7 +6,7 @@ from datetime import datetime as dt
 
 
 class SurveyResults():
-    def __init__(self, appointments:DataSet, survey_results:DataSet, day_range:int, year:str|None, months:list|None, emails:list|None, remove_cols:list) -> None:
+    def __init__(self, appointments: DataSet, survey_results: DataSet, day_range: int, year: str | None, months: list | None, emails: list | None, remove_cols: list) -> None:
         if appointments.get_type() != DataSet.Type.APPOINTMENT or survey_results.get_type() != DataSet.Type.SURVEY:
             logging.error(f'Invalid DataSet types provided at filter_appointment_surveys')
             return False
@@ -23,7 +23,7 @@ class SurveyResults():
             self.remove_cols = remove_cols + ['Time_Difference']
         self.rename_cols = None
         self.final_cols = None
-    
+
     def run_report(self) -> None:
         self._appointments.sort_date()
         logging.debug(f"Sorted appointments by date")
@@ -41,14 +41,14 @@ class SurveyResults():
         if self._emails is not None:
             self._appointments.filter_staff_emails(self._emails)
             logging.debug(f"Filtered staff emails")
-        
+
         self._normalize_email_cols()
         self._results = self._filter_by_time_diff()
         logging.debug(f"Filtered time difference")
 
     def get_results(self) -> pd.DataFrame | None:
         return self._results
-    
+
     # ensure the student email columns have the same name. Rename the survey set to match
     def _normalize_email_cols(self) -> None:
         if self._survey_results.get_col(Column.STUDENT_EMAIL) != self._appointments.get_col(Column.STUDENT_EMAIL):
