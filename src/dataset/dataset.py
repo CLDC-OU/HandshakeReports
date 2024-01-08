@@ -109,14 +109,6 @@ class DataSet:
         self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.APPOINTMENT_TYPE), pattern))
 
 
-def __remove_numbers_from_column(column_name):
-    return re.sub(r'^[0-9\W]+', '', column_name)
-
-
-def _remove_numbers_from_columns(df):
-    df.columns = df.columns.map(__remove_numbers_from_column)
-    return df
-
 
 def load_df(file_dir: str, must_contain: str, rename_columns: dict, date_col: str | None = None) -> pd.DataFrame:
     df = pd.read_csv(file_dir + "\\" + get_most_recent_file(filter_files(
