@@ -2,10 +2,10 @@ from enum import Enum
 import logging
 
 import pandas as pd
-from .Followup import Followup
-from .Referrals import Referrals
-from .SurveyResults import SurveyResults
-from Utils.df_utils import remove_columns
+from src.reports.followup import Followup
+from src.reports.referrals import Referrals
+from src.reports.survey_results import SurveyResults
+from src.utils.df_utils import remove_columns
 from datetime import datetime as dt
 
 

@@ -5,11 +5,11 @@ from config.files_config import FilesConfig
 from src.reports.followup import Followup
 from src.reports.referrals import Referrals
 from src.reports.report import Report
-from dataset.appointment import AppointmentDataSet
-from dataset.dataset import DataSet
-from dataset.enrollment import EnrollmentDataSet
-from dataset.referral import ReferralDataSet
-from dataset.survey import SurveyDataSet
+from src.dataset.appointment import AppointmentDataSet
+from src.dataset.dataset import DataSet
+from src.dataset.enrollment import EnrollmentDataSet
+from src.dataset.referral import ReferralDataSet
+from src.dataset.survey import SurveyDataSet
 from src.reports.survey_results import SurveyResults
 
 REPORTS_CONFIG_FILE = "reports.config.json"

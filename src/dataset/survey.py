@@ -1,7 +1,7 @@
 from enum import Enum
 import re
 import pandas as pd
-from dataset.dataset import DataSet
+from src.dataset.dataset import DataSet
 
 
 class SurveyDataSet(DataSet):

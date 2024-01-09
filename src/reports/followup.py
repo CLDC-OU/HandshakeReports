@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
-from dataset.dataset import Column, DataSet
-from reports.report import Report
+from src.dataset.dataset import Column, DataSet
+from src.reports.report import Report
 
 
 class Followup:

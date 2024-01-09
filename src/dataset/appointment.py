@@ -1,6 +1,6 @@
 from enum import Enum
 import pandas as pd
-from dataset.dataset import DataSet
+from src.dataset.dataset import DataSet
 
 
 class AppointmentDataSet(DataSet):

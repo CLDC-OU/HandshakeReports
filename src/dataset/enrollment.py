@@ -1,5 +1,5 @@
 import pandas as pd
-from dataset.dataset import DataSet
+from src.dataset.dataset import DataSet
 
 
 class EnrollmentDataSet(DataSet):
