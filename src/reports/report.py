@@ -92,15 +92,3 @@ class Report:
             self.results = self.results[self.final_cols]
 
         self.results.to_csv(self.results_dir + "\\" + self.get_filename())
-
-    # def __init__(self, type, report:SurveyResults|Followup) -> None:
-    #     self.type = type
-    #     self.report = report
-    # def __init_subclass__(cls, config) -> None:
-    #     cls.type = config["type"]
-    #     if config["type"] == ReportType.SURVEY_RESULTS:
-    #         cls.report = SurveyResults(config["file_prefix"], config["appointments"], config["survey_results"], config["target_year"], config["target_months"], config["emails"], config["remove_cols"])
-    #     elif config["type"] == ReportType.FOLLOWUP:
-    #         cls.report = Followup(config["file_prefix"], config["appointments"], config["valid_majors"], config["target_year"], config["target_months"], config["remove_cols"], config["rename_cols"], config["final_cols"])
-    #     else:
-    #         cls.report = None
