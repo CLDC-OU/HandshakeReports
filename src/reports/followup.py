@@ -4,10 +4,10 @@ from src.dataset.dataset import Column, DataSet
 from src.reports.report import Report
 
 
-class Followup:
     def __init__(self, appointments: DataSet, valid_schools: list | None, year: str | None, months: list | None,
                  appointment_types: list, followup_types: list, remove_cols=None, rename_cols=None,
                  final_cols=None) -> None:
+class Followup(Report):
         self._appointments = appointments
         self._results = None
         self._valid_schools = valid_schools
