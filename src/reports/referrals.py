@@ -119,8 +119,8 @@ class Referrals(Report):
         )
 
     def _normalize_email_col(self) -> str:
-        appointment_col = self._appointment.get_col(Column.STUDENT_EMAIL)
-        referral_col = self._referrals.get_col(Column.STUDENT_EMAIL)
+        appointment_col = self._appointment.get_col_name(Column.STUDENT_EMAIL)
+        referral_col = self._referrals.get_col_name(Column.STUDENT_EMAIL)
         if appointment_col != referral_col:
             self._appointment.set_df(self._appointment.df.rename(
                 columns={appointment_col: referral_col}
@@ -129,8 +129,8 @@ class Referrals(Report):
         return referral_col
 
     def _normalize_card_id(self):
-        enrollment_col = self._enrollment.get_col(Column.STUDENT_CARD_ID)
-        referral_col = self._referrals.get_col(Column.STUDENT_CARD_ID)
+        enrollment_col = self._enrollment.get_col_name(Column.STUDENT_CARD_ID)
+        referral_col = self._referrals.get_col_name(Column.STUDENT_CARD_ID)
         if referral_col != enrollment_col:
             self._results = self._results.rename(
                 columns={referral_col: enrollment_col}
@@ -169,9 +169,8 @@ class Referrals(Report):
         # from referrals add rows for students that are no longer in results
 
         # get a list of unique emails in referrals
-        ref_emails = self._referrals.get_df()[self._referrals.get_col(Column.STUDENT_EMAIL)].unique()
+        ref_emails = self._referrals.get_df()[self._referrals.get_col_name(Column.STUDENT_EMAIL)].unique()
         # get a list of unique emails in results
-        res_emails = self._results[self._referrals.get_col(Column.STUDENT_EMAIL)].unique()
-        emails = list(ref_emails) - list(res_emails)
-        self._referrals.get_df()[self._referrals.get_col(Column.STUDENT_EMAIL)][emails]
-
+        res_emails = self._results[self._referrals.get_col_name(Column.STUDENT_EMAIL)].unique()
+        emails = list(set(ref_emails) - set(res_emails))
+        self._referrals.get_df()[self._referrals.get_col_name(Column.STUDENT_EMAIL)][emails]
