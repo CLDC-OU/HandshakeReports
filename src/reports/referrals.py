@@ -148,6 +148,7 @@ class Referrals(Report):
             (self._results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self._results[
                 self._referrals.get_col(Column.DATE)].dt.day_of_year) | (
                     self._results[self._appointment.get_col(Column.DATE)].dt.year < self._results[
+                        self._appointment.get_col(Column.DATE)].dt.year)
         )]
 
     def _format_referral_dates(self):
