@@ -192,8 +192,8 @@ class DataSet:
         self.get_col(col).fillna("None", inplace=True)
         self.get_df().drop(
             self.get_df()[
-                ~self.get_col(col).isin(filter.get_include())
-                | self.get_col(col).isin(filter.get_exclude())
+                ~self.get_col(col).str.contains(filter.get_include())
+                | self.get_col(col).str.contains(filter.get_exclude())
             ].index,
             inplace=True
         )
