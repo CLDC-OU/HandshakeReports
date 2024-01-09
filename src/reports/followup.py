@@ -84,11 +84,10 @@ class Followup(Report):
         # keep only rows where the latest followup appointment is before the latest needs followup, or the student
         # has never had a valid followup appointment
         self._results = self._results[(
-                (self._results[date_col].notna())
-                & (
-                        (self._results[self._latest_followup_col].isna())
-                        | (self._results[date_col] >= self._results[self._latest_followup_col])
-                )
+            (self._results[date_col].notna()) & (
+                (self._results[self._latest_followup_col].isna()) | (
+                    self._results[date_col] >= self._results[self._latest_followup_col])
+            )
         )]
 
     def _keep_max_date(self):
