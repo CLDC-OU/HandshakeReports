@@ -28,9 +28,9 @@ class SurveyResults(Report):
 
         self._appointments.filter_appointment_status()
         logging.debug(f"Filtered valid appointment statuses")
-        if self._year is not None:
-            self._appointments.filter_year(self._year)
-            logging.debug(f"Filtered year")
+        if self._years is not None:
+            self._appointments.filter_years(*self._years.split(','))
+            logging.debug("Filtered years")
         if self._months is not None:
             self._appointments.filter_months(self._months)
             logging.debug(f"Filtered months")
