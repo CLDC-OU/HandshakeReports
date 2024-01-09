@@ -38,7 +38,7 @@ class Report:
         self.results = None
 
     def run_report(self) -> None:
-        logging.debug(f"Running report for {self.type}")
+        logging.debug(f"Running report for {self.__class__.__name__}")
         self.report.run_report()
         self.results = self.report.get_results()
 
