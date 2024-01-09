@@ -29,6 +29,8 @@ class Report:
             final_cols: list[str] | None = None
     ) -> None:
         self.file_prefix = file_prefix
+        if not results_dir:
+            raise ValueError("results_dir must be a valid directory")
         self.results_dir = results_dir
         self.report = report
         self.archive_dir = archive_dir
@@ -71,11 +73,16 @@ class Report:
         return self.file_prefix + dt.now().strftime('%Y%m%d-%H%M%S') + '.csv'
 
     def save_archive(self):
+        if not self.archive_dir:
+            logging.debug("No archive directory specified. Skipping archive")
+            return
+        if not self.results or self.results.empty:
+            raise ValueError("No results to archive")
         self.results.to_csv(self.archive_dir + "\\" + self.get_filename(), index=False)
 
     def save_results(self):
-        if self.results.empty:
-            return None
+        if not self.results or self.results.empty:
+            raise ValueError("No results to save")
 
         if self.report.remove_cols:
             self.results = remove_columns(self.results, self.report.remove_cols)
