@@ -121,6 +121,8 @@ class Referrals(Report):
     def _normalize_email_col(self) -> str:
         appointment_col = self._appointment.get_col_name(Column.STUDENT_EMAIL)
         referral_col = self._referrals.get_col_name(Column.STUDENT_EMAIL)
+        if not appointment_col or not referral_col:
+            raise ValueError("Appointment or referral email column is not defined")
         if appointment_col != referral_col:
             self._appointment.set_df(self._appointment.df.rename(
                 columns={appointment_col: referral_col}
@@ -129,6 +131,8 @@ class Referrals(Report):
         return referral_col
 
     def _normalize_card_id(self):
+        if not self._enrollment:
+            return
         enrollment_col = self._enrollment.get_col_name(Column.STUDENT_CARD_ID)
         referral_col = self._referrals.get_col_name(Column.STUDENT_CARD_ID)
         if referral_col != enrollment_col:
