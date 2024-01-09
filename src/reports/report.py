@@ -42,8 +42,16 @@ class Report:
         self.report.run_report()
         self.results = self.report.get_results()
 
-    def get_results(self) -> pd.DataFrame | None:
+    @property
+    def results(self) -> pd.DataFrame | None:
+        if not isinstance(self.results, pd.DataFrame):
+            logging.warning(f"Invalid results type {type(self.results)}. Using None")
+            return None
         return self.results
+
+    @results.setter
+    def results(self, value: pd.DataFrame | None) -> None:
+        self.results = value
 
     def get_filename(self) -> str:
         return self.file_prefix + dt.now().strftime('%Y%m%d-%H%M%S') + '.csv'
