@@ -1,5 +1,7 @@
-# Returns an array of all months between start and end inclusive
-def get_month_range(start_m, end_m=None) -> list[str]:
+import re
+
+
+def get_month_range(start_m, end_m=None) -> list[str]:  # Returns an array of all months between start and end inclusive
     months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
               "November", "December"]
     if start_m is None or start_m not in months:
@@ -12,5 +14,5 @@ def get_month_range(start_m, end_m=None) -> list[str]:
     return months[months.index(start_m):months.index(end_m) + 1]
 
 
-def list_to_regex_includes(li: set[str] | list[str] | tuple[str]) -> str:
-    return '|'.join(li)
+def list_to_regex_includes(li: set[str] | list[str] | tuple[str]) -> re.Pattern[str]:
+    return re.compile('|'.join(li))

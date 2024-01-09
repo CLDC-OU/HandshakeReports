@@ -1,4 +1,8 @@
 
+import re
+from utils.general_utils import list_to_regex_includes
+
+
 class FilterType():
     def __init__(self, include: list[str] | str | None, exclude: list[str] | str | None) -> None:
         self.include = include
@@ -14,8 +18,8 @@ class FilterType():
             return set(input)
         return set()
 
-    def get_include(self) -> set:
-        return FilterType.get_set(self.include)
+    def get_include(self) -> re.Pattern[str]:
+        return list_to_regex_includes(FilterType.get_set(self.include))
 
-    def get_exclude(self) -> set:
-        return FilterType.get_set(self.exclude)
+    def get_exclude(self) -> re.Pattern[str]:
+        return list_to_regex_includes(FilterType.get_set(self.exclude))
