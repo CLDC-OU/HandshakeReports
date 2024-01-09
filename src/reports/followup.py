@@ -107,7 +107,7 @@ class Followup(Report):
     def _add_past_followup_count(self):
         email_col = self._appointments.get_col(Column.STUDENT_EMAIL)
 
-        col_name = f'# of past non {self._appointment_types["include"]} appointments'
+        col_name = '# of past followup appointments'
 
         duplicate_appointment_count = self._get_followup_appointments().pivot_table(
             index=[email_col],
