@@ -32,11 +32,11 @@ class SurveyResults(Report):
             self._appointments.filter_years(*self._years.split(','))
             logging.debug("Filtered years")
         if self._months is not None:
-            self._appointments.filter_months(self._months)
-            logging.debug(f"Filtered months")
         if self._emails is not None:
             self._appointments.filter_staff_emails(self._emails)
             logging.debug(f"Filtered staff emails")
+            self._appointments.filter_months(*self._months.split(','))
+            logging.debug("Filtered months")
 
         self._normalize_email_cols()
         self._results = self._filter_by_time_diff()
