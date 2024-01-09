@@ -50,7 +50,9 @@ class Followup(Report):
         self._appointments.filter_years(*self._years.split(','))
 
     def _filter_months(self):
-        self._appointments.filter_months(self._months)
+        if not self._months:
+            return
+        self._appointments.filter_months(*self._months.split(','))
 
     def _filter_schools(self):
         # print(self._valid_schools)
