@@ -122,163 +122,15 @@ class ReportsConfig:
             type = report["type"]
             if type == Report.Type.SURVEY_RESULTS.value:
                 for appointment in self.get_appointments():
-                    if "survey_id" not in report:
-                        logging.error(
-                            f"ERROR! \"survey_id\" key not present for {type} "
-                            f"report in {self.config_file} at index "
-                            f"{report_index}")
-                        break
-
-                    survey_id = report["survey_id"]
-                    survey = self.get_survey_by_id(survey_id)
-                    if survey is None:
-                        logging.error(f"ERROR! No survey was found with the ID "
-                                      f"{survey_id}")
-                        break
-                    else:
-                        logging.info(f"Found survey with id {survey_id}")
-
-                    error = False
-                    if "day_range" not in report:
-                        logging.error(
-                            f"ERROR! \"day_range\" key not present for {type} "
-                            f"report in {self.config_file} at index "
-                            f"{report_index}")
-                        error = True
-                    if "target_year" not in report:
-                        report["target_year"] = None
-                        logging.warning(
-                            f"WARNING! \"target_year\" key not present for "
-                            f"{type} report in {self.config_file} at index "
-                            f"{report_index}. Setting to default including "
-                            f"all years")
-                    else:
-                        if report["target_year"] == "" or report["target_year"] == []:
-                            report["target_year"] = None
-                    if "target_months" not in report:
-                        logging.warning(
-                            f"WARNING! \"target_months\" key not present for {type} "
-                            f"in {self.config_file} at index {report_index}. "
-                            f"Setting to default including all months")
-                        report["target_months"] = None
-                    else:
-                        if report["target_months"] == "" or report["target_months"] == []:
-                            report["target_months"] = None
-
-                    if "emails" not in report:
-                        logging.warning(
-                            f"WARNING! \"emails\" key not present for {type} "
-                            f"in {self.config_file} at index {report_index}. "
-                            f"Setting to default including all emails")
-                        report["emails"] = None
-                    else:
-                        if report["emails"] == "" or report["emails"] == []:
-                            report["emails"] = None
-                    if error:
-                        logging.error(f"ERROR! Report {report_index} could not be "
-                                      f"loaded due to missing essential keys")
-                        break
-
-                    report_obj = SurveyResults(
-                        appointments=appointment.deep_copy(),
-                        survey_results=survey.deep_copy(),
-                        day_range=report["day_range"],
-                        target_years=report["target_years"],
-                        target_months=report["target_months"],
-                        staff_emails=FilterType(include=report["emails"]["include"], exclude=report["emails"]["exclude"]),
-                    )
-                    self._reports.append(Report(
-                        file_prefix=report["file_prefix"],
-                        archive_dir=report["archive_dir"],
-                        results_dir=report["results_dir"],
-                        report=report_obj,
-                        remove_cols=report["remove_cols"] + ['Time_Difference'] if "remove_cols" in report else ['Time_Difference'],
-                        rename_cols=report["rename_cols"] if "rename_cols" in report else None,
-                        final_cols=report["final_cols"] if "final_cols" in report else None
-                    ))
+                    self.load_survey_results_report(report, report_index, appointment)
 
             if type == Report.Type.FOLLOWUP.value:
                 for appointment in self.get_appointments():
-                    error = False
-                    if "valid_schools" not in report:
-                        logging.warning(
-                            f"WARNING! \"valid_schools\" key not present for {type} report in {self.config_file} at index {report_index}. Setting to default including all schools")
-                        report["valid_schools"] = None
-                    else:
-                        if report["valid_schools"] == "" or report["valid_schools"] == []:
-                            report["valid_schools"] = None
-                    if "target_year" not in report:
-                        logging.warning(
-                            f"WARNING! \"target_year\" key not present for {type} report in {self.config_file} at index {report_index}. Setting to default including all years")
-                        report["target_year"] = None
-                    else:
-                        if report["target_year"] == "" or report["target_year"] == []:
-                            report["target_year"] = None
-                    if "target_months" not in report:
-                        logging.warning(
-                            f"WARNING! \"target_months\" key not present for {type} in {self.config_file} at index {report_index}. Setting to default including all months")
-                        report["target_months"] = None
-                    else:
-                        if report["target_months"] == "" or report["target_months"] == []:
-                            report["target_months"] = None
-                    if "appointment_types" not in report:
-                        logging.error(
-                            f"WARNING! \"appointment_types\" key not present for {type} in {self.config_file} at index {report_index}")
-                        error = True
-                    if "followup_types" not in report:
-                        logging.error(
-                            f"WARNING! \"followup_types\" key not present for {type} in {self.config_file} at index {report_index}")
-                        error = True
-                    if error:
-                        logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
-                        break
-
-                    report_obj = Followup(
-                        appointments=appointment.deep_copy(),
-                        valid_schools=FilterType(include=report["valid_schools"]["include"], exclude=report["valid_schools"]["exclude"]),
-                        target_years=report["target_years"],
-                        target_months=report["target_months"],
-                        require_followup=FilterType(include=report["require_followup"]["include"], exclude=report["require_followup"]["exclude"]),
-                        followup_types=FilterType(include=report["followup_types"]["include"], exclude=report["followup_types"]["exclude"])
-                    )
-                    self._reports.append(Report(
-                        file_prefix=report["file_prefix"],
-                        archive_dir=report["archive_dir"],
-                        results_dir=report["results_dir"],
-                        report=report_obj,
-                        remove_cols=report["remove_cols"] if "remove_cols" in report else None,
-                        rename_cols=report["rename_cols"] if "rename_cols" in report else None,
-                        final_cols=report["final_cols"] if "final_cols" in report else None
-                    ))
+                    self.load_followup_report(report, report_index, appointment)
             if type == Report.Type.REFERRALS.value:
                 for referral in self.get_referrals():
                     for appointment in self.get_appointments():
-                        error = False
-                        if "valid_appointments" not in report:
-                            logging.error(
-                                f"ERROR! \"valid_appointments\" key not present for {type} report in {self.config_file} at index {report_index}")
-                            error = True
-                        if error:
-                            logging.error(
-                                f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
-                            break
-
-                        report_obj = Referrals(
-                            referrals=referral.deep_copy(),
-                            appointment=appointment.deep_copy(),
-                            complete_types=FilterType(include=report["valid_appointments"]["include"], exclude=report["valid_appointments"]["exclude"]),
-                            enrollment=self.get_enrollment().deep_copy(),
-                            merge_on=report["merge_enrollment"] if "merge_enrollment" in report else None
-                        )
-                        self._reports.append(Report(
-                            file_prefix=report["file_prefix"],
-                            archive_dir=report["archive_dir"],
-                            results_dir=report["results_dir"],
-                            report=report_obj,
-                            remove_cols=report["remove_cols"] if "remove_cols" in report else None,
-                            rename_cols=report["rename_cols"] if "rename_cols" in report else None,
-                            final_cols=report["final_cols"] if "final_cols" in report else None
-                        ))
+                        self.load_referrals_report(report, report_index, referral, appointment)
         return self._reports
 
     def run_reports(self):
@@ -294,3 +146,167 @@ class ReportsConfig:
             logging.info(f"Saved archive of {report.__class__.__name__} report to {report.archive_dir}")
             report.save_results()
             logging.info(f"Saved results of {report.__class__.__name__} report to {report.results_dir}")
+
+    def load_survey_results_report(self, report, report_index, appointment):
+        if not self._reports:
+            return
+        if "survey_id" not in report:
+            logging.error(
+                f"ERROR! \"survey_id\" key not present for {type} "
+                f"report in {self.config_file} at index "
+                f"{report_index}")
+            return
+
+        survey_id = report["survey_id"]
+        survey = self.get_survey_by_id(survey_id)
+        if survey is None:
+            logging.error(f"ERROR! No survey was found with the ID "
+                          f"{survey_id}")
+            return
+        else:
+            logging.info(f"Found survey with id {survey_id}")
+
+        error = False
+        if "day_range" not in report:
+            logging.error(
+                f"ERROR! \"day_range\" key not present for {type} "
+                f"report in {self.config_file} at index "
+                f"{report_index}")
+            error = True
+        if "target_year" not in report:
+            report["target_year"] = None
+            logging.warning(
+                f"WARNING! \"target_year\" key not present for "
+                f"{type} report in {self.config_file} at index "
+                f"{report_index}. Setting to default including "
+                f"all years")
+        else:
+            if report["target_year"] == "" or report["target_year"] == []:
+                report["target_year"] = None
+        if "target_months" not in report:
+            logging.warning(
+                f"WARNING! \"target_months\" key not present for {type} "
+                f"in {self.config_file} at index {report_index}. "
+                f"Setting to default including all months")
+            report["target_months"] = None
+        else:
+            if report["target_months"] == "" or report["target_months"] == []:
+                report["target_months"] = None
+
+        if "emails" not in report:
+            logging.warning(
+                f"WARNING! \"emails\" key not present for {type} "
+                f"in {self.config_file} at index {report_index}. "
+                f"Setting to default including all emails")
+            report["emails"] = None
+        else:
+            if report["emails"] == "" or report["emails"] == []:
+                report["emails"] = None
+        if error:
+            logging.error(f"ERROR! Report {report_index} could not be "
+                          f"loaded due to missing essential keys")
+            return
+
+        report_obj = SurveyResults(
+            appointments=appointment.deep_copy(),
+            survey_results=survey.deep_copy(),
+            day_range=report["day_range"],
+            target_years=report["target_years"],
+            target_months=report["target_months"],
+            staff_emails=FilterType(include=report["emails"]["include"], exclude=report["emails"]["exclude"]),
+        )
+        self._reports.append(Report(
+            file_prefix=report["file_prefix"],
+            archive_dir=report["archive_dir"],
+            results_dir=report["results_dir"],
+            report=report_obj,
+            remove_cols=report["remove_cols"] + ['Time_Difference'] if "remove_cols" in report else ['Time_Difference'],
+            rename_cols=report["rename_cols"] if "rename_cols" in report else None,
+            final_cols=report["final_cols"] if "final_cols" in report else None
+        ))
+
+    def load_followup_report(self, report, report_index, appointment):
+        if not self._reports:
+            return
+
+        error = False
+        if "valid_schools" not in report:
+            logging.warning(
+                f"WARNING! \"valid_schools\" key not present for {type} report in {self.config_file} at index {report_index}. Setting to default including all schools")
+            report["valid_schools"] = None
+        else:
+            if report["valid_schools"] == "" or report["valid_schools"] == []:
+                report["valid_schools"] = None
+        if "target_year" not in report:
+            logging.warning(
+                f"WARNING! \"target_year\" key not present for {type} report in {self.config_file} at index {report_index}. Setting to default including all years")
+            report["target_year"] = None
+        else:
+            if report["target_year"] == "" or report["target_year"] == []:
+                report["target_year"] = None
+        if "target_months" not in report:
+            logging.warning(
+                f"WARNING! \"target_months\" key not present for {type} in {self.config_file} at index {report_index}. Setting to default including all months")
+            report["target_months"] = None
+        else:
+            if report["target_months"] == "" or report["target_months"] == []:
+                report["target_months"] = None
+        if "appointment_types" not in report:
+            logging.error(
+                f"WARNING! \"appointment_types\" key not present for {type} in {self.config_file} at index {report_index}")
+            error = True
+        if "followup_types" not in report:
+            logging.error(
+                f"WARNING! \"followup_types\" key not present for {type} in {self.config_file} at index {report_index}")
+            error = True
+        if error:
+            logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
+            return
+
+        report_obj = Followup(
+            appointments=appointment.deep_copy(),
+            valid_schools=FilterType(include=report["valid_schools"]["include"], exclude=report["valid_schools"]["exclude"]),
+            target_years=report["target_years"],
+            target_months=report["target_months"],
+            require_followup=FilterType(include=report["require_followup"]["include"], exclude=report["require_followup"]["exclude"]),
+            followup_types=FilterType(include=report["followup_types"]["include"], exclude=report["followup_types"]["exclude"])
+        )
+        self._reports.append(Report(
+            file_prefix=report["file_prefix"],
+            archive_dir=report["archive_dir"],
+            results_dir=report["results_dir"],
+            report=report_obj,
+            remove_cols=report["remove_cols"] if "remove_cols" in report else None,
+            rename_cols=report["rename_cols"] if "rename_cols" in report else None,
+            final_cols=report["final_cols"] if "final_cols" in report else None
+        ))
+
+    def load_referrals_report(self, report, report_index, referral, appointment):
+        if not self._reports:
+            return
+        error = False
+        if "valid_appointments" not in report:
+            logging.error(
+                f"ERROR! \"valid_appointments\" key not present for {type} report in {self.config_file} at index {report_index}")
+            error = True
+        if error:
+            logging.error(
+                f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
+            return
+
+        report_obj = Referrals(
+            referrals=referral.deep_copy(),
+            appointment=appointment.deep_copy(),
+            complete_types=FilterType(include=report["valid_appointments"]["include"], exclude=report["valid_appointments"]["exclude"]),
+            enrollment=self.get_enrollment().deep_copy(),
+            merge_on=report["merge_enrollment"] if "merge_enrollment" in report else None
+        )
+        self._reports.append(Report(
+            file_prefix=report["file_prefix"],
+            archive_dir=report["archive_dir"],
+            results_dir=report["results_dir"],
+            report=report_obj,
+            remove_cols=report["remove_cols"] if "remove_cols" in report else None,
+            rename_cols=report["rename_cols"] if "rename_cols" in report else None,
+            final_cols=report["final_cols"] if "final_cols" in report else None
+        ))
