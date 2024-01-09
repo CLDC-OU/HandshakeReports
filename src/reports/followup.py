@@ -32,23 +32,23 @@ class Followup:
     def run_report(self):
         if self._year is not None:
             self._filter_year()
-            logging.debug(f"Filtered appointment year")
+            logging.debug("Filtered appointment year")
         if self._months is not None:
             self._filter_months()
-            logging.debug(f"Filtered appointment months")
+            logging.debug("Filtered appointment months")
         if self._valid_schools is not None:
             self._filter_schools()
-            logging.debug(f"Filtered student schools")
+            logging.debug("Filtered student schools")
         self._get_all_need_followup()
         logging.debug(f"Filtered students that need a followup {self._latest_followup_col} appointment")
         self._add_latest_followup()
-        logging.debug(f"Added latest followup column")
+        logging.debug("Added latest followup column")
         self._remove_followed_up()
-        logging.debug(f"Removed rows that already had a followup appointment")
+        logging.debug("Removed rows that already had a followup appointment")
         self._keep_max_date()
-        logging.debug(f"Removed rows where student had a more recent appointment")
+        logging.debug("Removed rows where student had a more recent appointment")
         self._add_past_followup_count()
-        logging.debug(f"Added previous followup appointment count")
+        logging.debug("Added previous followup appointment count")
 
     def get_results(self):
         return self._results

@@ -29,9 +29,9 @@ class SurveyResults():
 
     def run_report(self) -> None:
         self._appointments.sort_date()
-        logging.debug(f"Sorted appointments by date")
+        logging.debug("Sorted appointments by date")
         self._survey_results.sort_date()
-        logging.debug(f"Sorted survey results by date")
+        logging.debug("Sorted survey results by date")
 
         self._appointments.filter_appointment_status()
         logging.debug(f"Filtered valid appointment statuses")
@@ -47,7 +47,7 @@ class SurveyResults():
 
         self._normalize_email_cols()
         self._results = self._filter_by_time_diff()
-        logging.debug(f"Filtered time difference")
+        logging.debug("Filtered time difference")
 
     def get_results(self) -> pd.DataFrame | None:
         return self._results
