@@ -71,7 +71,11 @@ class DataSet:
         self.df = df
 
     def sort_date(self) -> None:
-        self.set_df(sort_columns_by_date(self.get_df(), self.get_col(Column.DATE)))
+        try:
+            self.get_col(Column.DATE)
+        except ValueError:
+            raise ValueError("DataFrame must have a date column")
+        self.set_df(sort_columns_by_date(self.get_df(), self.get_col_name(Column.DATE)))
 
 
     def filter_months(self, *months: str) -> None:
