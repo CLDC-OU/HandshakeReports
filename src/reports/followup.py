@@ -143,6 +143,17 @@ class Followup(Report):
         )
 
     def _get_followup_appointments(self) -> pd.DataFrame:
+        if not self.followup_types:
+            return self._appointments.get_df()[
+                ~(
+                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+                        list_to_regex_includes(self._require_followup.get_include())
+                    )
+                ) | (
+                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+                        list_to_regex_includes(self._require_followup.get_exclude())
+                    )
+                )
             ]
         app_type_col = self._appointments.get_col_name(Column.APPOINTMENT_TYPE)
         self._appointments.get_df()[app_type_col] = self._appointments.get_col(Column.APPOINTMENT_TYPE).fillna('MissingData')
