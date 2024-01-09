@@ -8,7 +8,7 @@ from src.utils.df_utils import filter_by_time_diff
 from src.reports.report import Report
 
 
-class SurveyResults():
+class SurveyResults(Report):
     def __init__(self, appointments: DataSet, survey_results: DataSet, day_range: int, target_years: str | None, target_months: str | None, staff_emails: FilterType) -> None:
         if not isinstance(appointments, AppointmentDataSet) or not isinstance(survey_results, SurveyDataSet):
             raise ValueError('Invalid DataSet types provided at filter_appointment_surveys')
