@@ -53,6 +53,20 @@ class Report:
     def results(self, value: pd.DataFrame | None) -> None:
         self.results = value
 
+    @property
+    def rename_cols(self) -> dict[str, str] | None:
+        if not isinstance(self.rename_cols, dict):
+            logging.warning(f"Invalid rename_cols type {type(self.rename_cols)}. Using None")
+            return None
+        return self.rename_cols
+
+    @rename_cols.setter
+    def rename_cols(self, value: dict[str, str] | None) -> None:
+        if not isinstance(self.rename_cols, dict):
+            logging.warning(f"Invalid rename_cols type {type(value)}. Using None")
+            self.rename_cols = None
+        self.rename_cols = value
+
     def get_filename(self) -> str:
         return self.file_prefix + dt.now().strftime('%Y%m%d-%H%M%S') + '.csv'
 
