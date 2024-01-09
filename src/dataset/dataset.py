@@ -9,6 +9,7 @@ from src.utils.general_utils import get_month_range
 
 from enum import Enum
 
+from src.utils.type_utils import FilterType
 
 
 class DataSet:
