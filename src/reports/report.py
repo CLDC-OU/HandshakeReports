@@ -18,53 +18,24 @@ class Report:
         def __eq__(self, __value: object) -> bool:
             return self.value.__eq__(__value)
 
-    def __init__(self, config: dict) -> None:
-        self.type = config["type"]
-        self.file_prefix = config["file_prefix"]
-        self.archive_dir = config["archive_dir"]
-        self.results_dir = config["results_dir"]
-        if config["type"] == Report.Type.SURVEY_RESULTS:
-            logging.debug(f"Creating new SurveyResults Report")
-            self.report = SurveyResults(
-                appointments=config["appointments"],
-                survey_results=config["survey_results"],
-                day_range=config["day_range"],
-                year=config["year"],
-                months=config["months"],
-                emails=config["emails"],
-                remove_cols=config["remove_cols"]
-            )
-            self.results = None
-        elif config["type"] == Report.Type.FOLLOWUP:
-            logging.debug(f"Creating new Followup Report")
-            self.report = Followup(
-                appointments=config["appointments"],
-                valid_schools=config["valid_schools"],
-                year=config["year"],
-                months=config["months"],
-                appointment_types=config["appointment_types"],
-                followup_types=config["followup_types"],
-                remove_cols=config["remove_cols"],
-                rename_cols=config["rename_cols"],
-                final_cols=config["final_cols"]
-            )
-            self.results = None
-        elif config["type"] == Report.Type.REFERRALS:
-            logging.debug(f"Creating new Referrals Report")
-            self.report = Referrals(
-                referrals=config["referrals"],
-                appointment=config["appointments"],
-                valid_appointment_pattern=config["valid_appointments"],
-                rename_cols=config["rename_cols"],
-                final_cols=config["final_cols"],
-                enrollment=config["enrollment"],
-                merge_on=config["merge_enrollment"]
-            )
-            self.results = None
-        else:
-            logging.error(f"Invalid Report Type {config['type']}")
-            self.report = None
-            self.results = pd.DataFrame(None)
+    def __init__(
+            self,
+            file_prefix: str,
+            results_dir: str,
+            report: SurveyResults | Followup | Referrals,
+            archive_dir: str | None = None,
+            remove_cols: list[str] | None = None,
+            rename_cols: dict | None = None,
+            final_cols: list[str] | None = None
+    ) -> None:
+        self.file_prefix = file_prefix
+        self.results_dir = results_dir
+        self.report = report
+        self.archive_dir = archive_dir
+        self.remove_cols = remove_cols
+        self.rename_cols = rename_cols
+        self.final_cols = final_cols
+        self.results = None
 
     def run_report(self) -> None:
         logging.debug(f"Running report for {self.type}")
