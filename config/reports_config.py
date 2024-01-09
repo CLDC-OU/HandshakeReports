@@ -178,21 +178,6 @@ class ReportsConfig:
                                       f"loaded due to missing essential keys")
                         break
 
-                    # conf = {
-                    #     "type": report["type"],
-                    #     "file_prefix": report["file_prefix"],
-                    #     "appointments": appointment.deep_copy(),
-                    #     "survey_results": survey.deep_copy(),
-                    #     "day_range": report["day_range"],
-                    #     "year": report["target_year"],
-                    #     "months": report["target_months"],
-                    #     "emails": report["emails"],
-                    #     "remove_cols": report["remove_cols"] if "remove_cols" in report else None,
-                    #     "rename_cols": report["rename_cols"] if "rename_cols" in report else None,
-                    #     "final_cols": report["final_cols"] if "final_cols" in report else None,
-                    #     "archive_dir": report["archive_dir"] if "archive_dir" in report else None,
-                    #     "results_dir": report["results_dir"] if "results_dir" in report else None
-                    # }
                     report_obj = SurveyResults(
                         appointments=appointment.deep_copy(),
                         survey_results=survey.deep_copy(),
@@ -246,21 +231,7 @@ class ReportsConfig:
                     if error:
                         logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
                         break
-                    # conf = {
-                    #     "type": report["type"],
-                    #     "file_prefix": report["file_prefix"],
-                    #     "appointments": appointment.deep_copy(),
-                    #     "valid_schools": report["valid_schools"],
-                    #     "year": report["target_year"],
-                    #     "months": report["target_months"],
-                    #     "appointment_types": report["appointment_types"],
-                    #     "followup_types": report["followup_types"],
-                    #     "remove_cols": report["remove_cols"] if "remove_cols" in report else None,
-                    #     "rename_cols": report["rename_cols"] if "rename_cols" in report else None,
-                    #     "final_cols": report["final_cols"] if "final_cols" in report else None,
-                    #     "archive_dir": report["archive_dir"] if "archive_dir" in report else None,
-                    #     "results_dir": report["results_dir"] if "results_dir" in report else None,
-                    # }
+
                     report_obj = Followup(
                         appointments=appointment.deep_copy(),
                         valid_schools=report["valid_schools"],
@@ -290,20 +261,7 @@ class ReportsConfig:
                             logging.error(
                                 f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
                             break
-                        # conf = {
-                        #     "type": report["type"],
-                        #     "file_prefix": report["file_prefix"],
-                        #     "referrals": referral.deep_copy(),
-                        #     "appointments": appointment.deep_copy(),
-                        #     "valid_appointments": report["valid_appointments"],
-                        #     "remove_cols": report["remove_cols"] if "remove_cols" in report else None,
-                        #     "rename_cols": report["rename_cols"] if "rename_cols" in report else None,
-                        #     "final_cols": report["final_cols"] if "final_cols" in report else None,
-                        #     "enrollment": self.get_enrollment().deep_copy(),
-                        #     "merge_enrollment": report["merge_enrollment"] if "merge_enrollment" in report else None,
-                        #     "archive_dir": report["archive_dir"] if "archive_dir" in report else None,
-                        #     "results_dir": report["results_dir"] if "results_dir" in report else None,
-                        # }
+
                         report_obj = Referrals(
                             referrals=referral.deep_copy(),
                             appointment=appointment.deep_copy(),
