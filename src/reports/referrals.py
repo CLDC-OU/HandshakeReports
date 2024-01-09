@@ -4,23 +4,20 @@ import pandas as pd
 from src.dataset.appointment_status import AppointmentStatus
 from src.dataset.dataset import Column, DataSet
 from src.reports.report import Report
+from utils.type_utils import FilterType
 
 
-class Referrals():
-    def __init__(self, referrals: DataSet, appointment: DataSet, valid_appointment_pattern: str, rename_cols: list,
-                 final_cols: list, enrollment: DataSet | None = None, merge_on: Column = None) -> None:
+class Referrals(Report):
+    def __init__(self, referrals: DataSet, appointment: DataSet, complete_types: FilterType, enrollment: DataSet | None = None, merge_on: Column | None = None) -> None:
         self._referrals = referrals
         # print(set(self._referrals.df))
         self._appointment = appointment
-        self._valid_appointment_pattern = valid_appointment_pattern
+        self._valid_appointment_pattern = complete_types
         self._enrollment = enrollment
         self._merge_on = merge_on
         self._appointment_cols = [appointment.get_col(Column.STUDENT_EMAIL), appointment.get_col(Column.DATE),
                                   appointment.get_col(Column.STATUS)]
         self._results = pd.DataFrame(None)
-        self.remove_cols = None
-        self.rename_cols = rename_cols
-        self.final_cols = final_cols
 
     def run_report(self) -> None:
         self._filter_valid_appointments()
