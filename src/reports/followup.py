@@ -8,17 +8,17 @@ from utils.type_utils import FilterType
 class Followup(Report):
     def __init__(self, appointments: DataSet, valid_schools: FilterType, target_years: str | None, target_months: str | None,
                  require_followup: FilterType, followup_types: FilterType) -> None:
+        if not isinstance(require_followup, FilterType):
+            raise ValueError("require_followup must be a FilterType")
+        if not isinstance(followup_types, FilterType):
+            raise ValueError("followup_types must be a FilterType")
         self._appointments = appointments
         self._results = None
         self._valid_schools = valid_schools
         self._years = target_years
         self._months = target_months
-        if not isinstance(require_followup, FilterType):
-            raise ValueError("require_followup must be a FilterType")
         self._require_followup = require_followup
         self._latest_followup_col = 'date of last followup appointment'
-        if not isinstance(followup_types, FilterType):
-            raise ValueError("followup_types must be a FilterType")
         self.followup_types = followup_types
 
     def run_report(self):
