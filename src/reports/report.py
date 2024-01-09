@@ -84,13 +84,12 @@ class Report:
         if not self.results or self.results.empty:
             raise ValueError("No results to save")
 
-        if self.report.remove_cols:
-            self.results = remove_columns(self.results, self.report.remove_cols)
-        if self.report.rename_cols:
-            # print(self.report.rename_cols)
-            self.results = self.results.rename(columns=self.report.rename_cols)
-        if self.report.final_cols:
-            self.results = self.results[self.report.final_cols]
+        if self.remove_cols:
+            self.results = remove_columns(self.results, self.remove_cols)
+        if self.rename_cols:
+            self.results = self.results.rename(columns=self.rename_cols)
+        if self.final_cols:
+            self.results = self.results[self.final_cols]
 
         self.results.to_csv(self.results_dir + "\\" + self.get_filename())
 
