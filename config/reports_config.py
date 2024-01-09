@@ -11,6 +11,7 @@ from src.dataset.enrollment import EnrollmentDataSet
 from src.dataset.referral import ReferralDataSet
 from src.dataset.survey import SurveyDataSet
 from src.reports.survey_results import SurveyResults
+from utils.type_utils import FilterType
 
 REPORTS_CONFIG_FILE = "reports.config.json"
 
@@ -182,9 +183,9 @@ class ReportsConfig:
                         appointments=appointment.deep_copy(),
                         survey_results=survey.deep_copy(),
                         day_range=report["day_range"],
-                        staff_emails=report["emails"],
                         target_years=report["target_years"],
                         target_months=report["target_months"],
+                        staff_emails=FilterType(include=report["emails"]["include"], exclude=report["emails"]["exclude"]),
                     )
                     self._reports.append(Report(
                         file_prefix=report["file_prefix"],
@@ -234,11 +235,11 @@ class ReportsConfig:
 
                     report_obj = Followup(
                         appointments=appointment.deep_copy(),
-                        valid_schools=report["valid_schools"],
-                        require_followup=report["appointment_types"],
-                        followup_types=report["followup_types"]
+                        valid_schools=FilterType(include=report["valid_schools"]["include"], exclude=report["valid_schools"]["exclude"]),
                         target_years=report["target_years"],
                         target_months=report["target_months"],
+                        require_followup=FilterType(include=report["require_followup"]["include"], exclude=report["require_followup"]["exclude"]),
+                        followup_types=FilterType(include=report["followup_types"]["include"], exclude=report["followup_types"]["exclude"])
                     )
                     self._reports.append(Report(
                         file_prefix=report["file_prefix"],
@@ -265,7 +266,7 @@ class ReportsConfig:
                         report_obj = Referrals(
                             referrals=referral.deep_copy(),
                             appointment=appointment.deep_copy(),
-                            valid_appointment_pattern=report["valid_appointments"],
+                            complete_types=FilterType(include=report["valid_appointments"]["include"], exclude=report["valid_appointments"]["exclude"]),
                             enrollment=self.get_enrollment().deep_copy(),
                             merge_on=report["merge_enrollment"] if "merge_enrollment" in report else None
                         )
