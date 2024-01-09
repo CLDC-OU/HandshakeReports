@@ -159,20 +159,24 @@ class DataSet:
             inplace=True
         )
 
-    def filter_staff_emails(self, emails: list):
-        if not emails:
-            emails = get_emails_input()
-        self.set_df(filter_target_isin(self.get_df(), self.get_col(Column.STAFF_EMAIL), emails))
+    def filter_staff_emails(self, emails: FilterType):
+        self.filter_by_col(Column.STAFF_EMAIL, emails)
 
-    def filter_student_emails(self, emails):
-        if not emails:
-            emails = get_emails_input()
-        self.set_df(filter_target_isin(self.get_df(), self.get_col(Column.STUDENT_EMAIL), emails))
+    def filter_student_emails(self, emails: FilterType):
+        self.filter_by_col(Column.STUDENT_EMAIL, emails)
 
     def filter_appointment_status(self):
-        self.set_df(
-            self.get_df()[self.get_df()[self.get_col(Column.STATUS)].isin(AppointmentStatus.VALID_SCHEDULED.value)])
-        return self.get_df()
+        def map_values(enum_obj: Enum) -> str:
+            if isinstance(enum_obj.value, str):
+                return enum_obj.value
+            return ''
+        valid = list(map(map_values, AppointmentStatus.VALID_SCHEDULED.value))
+        valid_scheduled = FilterType(
+            include=valid,
+            exclude=None
+        )
+        self.filter_by_col(Column.STATUS, valid_scheduled)
+
     def filter_by_col(self, col: Enum, filter: FilterType):
         if not filter:
             logging.debug("No filter to apply")
@@ -193,14 +197,14 @@ class DataSet:
             inplace=True
         )
 
-    def filter_majors(self, majors):
-        self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.STUDENT_MAJOR), majors))
+    def filter_majors(self, majors: FilterType):
+        self.filter_by_col(Column.STUDENT_MAJOR, majors)
 
-    def filter_schools(self, schools):
-        self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.STUDENT_COLLEGE), schools))
+    def filter_schools(self, schools: FilterType):
+        self.filter_by_col(Column.STUDENT_COLLEGE, schools)
 
-    def filter_appointment_type(self, pattern):
-        filter_target_pattern_isin(self.get_df(), self.get_col_name(Column.APPOINTMENT_TYPE), pattern)
+    def filter_appointment_type(self, appointment_types: FilterType):
+        self.filter_by_col(Column.APPOINTMENT_TYPE, appointment_types)
 
 
 def get_year_input():
