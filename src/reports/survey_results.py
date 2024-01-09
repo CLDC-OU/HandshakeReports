@@ -9,23 +9,16 @@ from src.reports.report import Report
 
 
 class SurveyResults():
-    def __init__(self, appointments: DataSet, survey_results: DataSet, day_range: int, year: str | None, months: list | None, emails: list | None, remove_cols: list) -> None:
-        if appointments.get_type() != DataSet.Type.APPOINTMENT or survey_results.get_type() != DataSet.Type.SURVEY:
-            logging.error(f'Invalid DataSet types provided at filter_appointment_surveys')
-            return False
+    def __init__(self, appointments: DataSet, survey_results: DataSet, day_range: int, target_years: str | None, target_months: str | None, staff_emails: FilterType) -> None:
+        if not isinstance(appointments, AppointmentDataSet) or not isinstance(survey_results, SurveyDataSet):
+            raise ValueError('Invalid DataSet types provided at filter_appointment_surveys')
         self._appointments = appointments
         self._survey_results = survey_results
         self._results = None
         self._day_range = day_range
-        self._year = year
-        self._months = months
-        self._emails = emails
-        if not remove_cols:
-            self.remove_cols = ['Time_Difference']
-        else:
-            self.remove_cols = remove_cols + ['Time_Difference']
-        self.rename_cols = None
-        self.final_cols = None
+        self._years = target_years
+        self._months = target_months
+        self._staff_emails = staff_emails
 
     def run_report(self) -> None:
         self._appointments.sort_date()
