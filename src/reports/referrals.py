@@ -43,9 +43,20 @@ class Referrals():
         logging.debug("Merged enrollment data")
         self._remove_duplicates()
 
-    def get_results(self) -> pd.DataFrame:
+    @property
+    def _results(self) -> pd.DataFrame:
+        if not isinstance(self._results, pd.DataFrame):
+            raise TypeError("Results is not a DataFrame")
         return self._results
 
+    @_results.setter
+    def _results(self, value: pd.DataFrame) -> None:
+        if not isinstance(value, pd.DataFrame):
+            raise TypeError("Results is not a DataFrame")
+        self._results = value
+
+    def get_results(self) -> pd.DataFrame:
+        return self._results
 
     def _remove_duplicates(self):
         unique_col = self._referrals.get_col(Column.UNIQUE_REFERRAL)
