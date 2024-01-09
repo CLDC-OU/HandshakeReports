@@ -10,7 +10,6 @@ from utils.type_utils import FilterType
 class Referrals(Report):
     def __init__(self, referrals: DataSet, appointment: DataSet, complete_types: FilterType, enrollment: DataSet | None = None, merge_on: Column | None = None) -> None:
         self._referrals = referrals
-        # print(set(self._referrals.df))
         self._appointment = appointment
         self._valid_appointment_pattern = complete_types
         self._enrollment = enrollment
