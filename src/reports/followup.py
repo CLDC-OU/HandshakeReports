@@ -60,6 +60,8 @@ class Followup(Report):
 
     def _get_all_need_followup(self):
         app_type_col = self._appointments.get_col_name(Column.APPOINTMENT_TYPE)
+        if not app_type_col:
+            raise ValueError("Appointment type column is not defined")
         self._appointments.get_df()[app_type_col] = self._appointments.get_df()[app_type_col].fillna('MissingData')
         self._results = self._appointments.get_df()[
             self._appointments.get_df()[app_type_col].str.startswith(self._appointment_types["include"])
@@ -70,6 +72,9 @@ class Followup(Report):
 
     def _remove_followed_up(self):
         date_col = self._appointments.get_col_name(Column.DATE)
+
+        if not self._results:
+            raise ValueError("Results are undefined. Is the script running in the correct order?")
 
         # keep only rows where the latest followup appointment is before the latest needs followup, or the student
         # has never had a valid followup appointment
@@ -84,11 +89,17 @@ class Followup(Report):
     def _keep_max_date(self):
         date_col = self._appointments.get_col_name(Column.DATE)
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        if not date_col or not email_col:
+            raise ValueError("Date or email column is not defined")
+        if not self._results:
+            raise ValueError("Results are undefined. Is the script running in the correct order?")
         self._results = self._results.loc[self._results.groupby(email_col)[date_col].idxmax()]
 
     def _get_latest_valid_followup_dates(self) -> pd.DataFrame:
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
         date_col = self._appointments.get_col_name(Column.DATE)
+        if not email_col or not date_col:
+            raise ValueError("Email or date column is not defined")
         valid_followup = self._get_followup_appointments()
         logging.debug("got valid followup appointments")
         return valid_followup.groupby(email_col)[date_col].max().reset_index(
@@ -97,6 +108,8 @@ class Followup(Report):
 
     def _add_latest_followup(self):
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        if not self._results:
+            raise ValueError("Results are undefined. Is the script running in the correct order?")
         self._results = pd.merge(
             left=self._results,
             right=self._get_latest_valid_followup_dates(),
@@ -113,6 +126,9 @@ class Followup(Report):
             index=[email_col],
             aggfunc='size'
         ).reset_index(col_fill=col_name)
+
+        if not self._results:
+            raise ValueError("Results are undefined. Is the script running in the correct order?")
 
         self._results = pd.merge(
             left=self._results,
