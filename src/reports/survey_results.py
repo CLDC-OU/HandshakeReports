@@ -28,7 +28,7 @@ class SurveyResults(Report):
         logging.debug("Sorted survey results by date")
 
         self._appointments.filter_appointment_status()
-        logging.debug(f"Filtered valid appointment statuses")
+        logging.debug("Filtered valid appointment statuses")
         if self._years is not None:
             self._appointments.filter_years(*self._years.split(','))
             logging.debug("Filtered years")
