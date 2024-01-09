@@ -46,11 +46,6 @@ class Referrals():
     def get_results(self) -> pd.DataFrame:
         return self._results
 
-    # def run_report(self):
-    #     self._filter_valid_appointments()
-    #     merge = self._merge_referrals()
-    #     unscheduled = self.get_unscheduled()
-    #     self._remove_past_appointments()
 
     def _remove_duplicates(self):
         unique_col = self._referrals.get_col(Column.UNIQUE_REFERRAL)
