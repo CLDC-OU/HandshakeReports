@@ -174,10 +174,7 @@ class DataSet:
         self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.STUDENT_COLLEGE), schools))
 
     def filter_appointment_type(self, pattern):
-        self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.APPOINTMENT_TYPE), pattern))
-
-
-
+        filter_target_pattern_isin(self.get_df(), self.get_col_name(Column.APPOINTMENT_TYPE), pattern)
 
 
 def get_year_input():
