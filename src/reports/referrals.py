@@ -66,7 +66,7 @@ class Referrals():
             return
         logging.debug(f"Removing duplicate rows on: {unique_col}")
         self._results.drop_duplicates(inplace=True, subset=[unique_col])
-        logging.debug(f"Removed duplicate rows")
+        logging.debug("Removed duplicate rows")
 
     def _add_scheduled(self):
         dates = self._results[self._appointment.get_col(Column.DATE_SCHEDULED)].values.tolist()
@@ -144,14 +144,13 @@ class Referrals():
     def _remove_past_appointments(self):
         # first remove any null referral dates (students that had a valid appointment but not a referral)
         self._results = self._results[~self._results[self._referrals.get_col(Column.DATE)].isnull()]
-        # keep students in results who had a referral after their most recent valid appointment, or have not had any valid appointment 
+        # keep students in results who had a referral after their most recent valid appointment, or have not had any valid appointment
         self._results = self._results[~self._results[self._referrals.get_col(Column.DATE)].isna()]
         self._format_referral_dates()
         self._results = self._results[~(
-                (self._results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self._results[
-                    self._referrals.get_col(Column.DATE)].dt.day_of_year)
-                | (self._results[self._appointment.get_col(Column.DATE)].dt.year < self._results[
-            self._appointment.get_col(Column.DATE)].dt.year)
+            (self._results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self._results[
+                self._referrals.get_col(Column.DATE)].dt.day_of_year) | (
+                    self._results[self._appointment.get_col(Column.DATE)].dt.year < self._results[
         )]
 
     def _format_referral_dates(self):
