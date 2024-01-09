@@ -173,6 +173,25 @@ class DataSet:
         self.set_df(
             self.get_df()[self.get_df()[self.get_col(Column.STATUS)].isin(AppointmentStatus.VALID_SCHEDULED.value)])
         return self.get_df()
+    def filter_by_col(self, col: Enum, filter: FilterType):
+        if not filter:
+            logging.debug("No filter to apply")
+            return
+        if not isinstance(filter, FilterType):
+            logging.warn("Invalid filter type")
+            return
+        if not isinstance(col, Column):
+            logging.warn("Invalid column type")
+            return
+
+        self.get_col(col).fillna("None", inplace=True)
+        self.get_df().drop(
+            self.get_df()[
+                ~self.get_col(col).isin(filter.get_include())
+                | self.get_col(col).isin(filter.get_exclude())
+            ].index,
+            inplace=True
+        )
 
     def filter_majors(self, majors):
         self.set_df(filter_target_pattern_isin(self.get_df(), self.get_col(Column.STUDENT_MAJOR), majors))
