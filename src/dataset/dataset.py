@@ -178,17 +178,6 @@ class DataSet:
 
 
 
-def load_df(file_dir: str, must_contain: str, rename_columns: dict, date_col: str | None = None) -> pd.DataFrame:
-    df = pd.read_csv(file_dir + "\\" + get_most_recent_file(filter_files(
-        file_dir=file_dir,
-        must_contain=must_contain,
-        file_type=".csv"
-    )))
-    if rename_columns:
-        df.rename(columns=rename_columns, inplace=True)
-    if date_col:
-        df[date_col] = pd.to_datetime(date_col).dt.tz_localize(None)
-    return df
 
 
 def get_year_input():
