@@ -59,7 +59,7 @@ class Followup(Report):
         self._appointments.filter_schools(self._valid_schools)
 
     def _get_all_need_followup(self):
-        app_type_col = self._appointments.get_col(Column.APPOINTMENT_TYPE)
+        app_type_col = self._appointments.get_col_name(Column.APPOINTMENT_TYPE)
         self._appointments.get_df()[app_type_col] = self._appointments.get_df()[app_type_col].fillna('MissingData')
         self._results = self._appointments.get_df()[
             self._appointments.get_df()[app_type_col].str.startswith(self._appointment_types["include"])
@@ -69,7 +69,7 @@ class Followup(Report):
         # print(self._appointment_types["disclude"])
 
     def _remove_followed_up(self):
-        date_col = self._appointments.get_col(Column.DATE)
+        date_col = self._appointments.get_col_name(Column.DATE)
 
         # keep only rows where the latest followup appointment is before the latest needs followup, or the student
         # has never had a valid followup appointment
@@ -82,13 +82,13 @@ class Followup(Report):
         )]
 
     def _keep_max_date(self):
-        date_col = self._appointments.get_col(Column.DATE)
-        email_col = self._appointments.get_col(Column.STUDENT_EMAIL)
+        date_col = self._appointments.get_col_name(Column.DATE)
+        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
         self._results = self._results.loc[self._results.groupby(email_col)[date_col].idxmax()]
 
     def _get_latest_valid_followup_dates(self) -> pd.DataFrame:
-        email_col = self._appointments.get_col(Column.STUDENT_EMAIL)
-        date_col = self._appointments.get_col(Column.DATE)
+        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        date_col = self._appointments.get_col_name(Column.DATE)
         valid_followup = self._get_followup_appointments()
         logging.debug(f"got valid followup appointments")
         return valid_followup.groupby(email_col)[date_col].max().reset_index(
@@ -96,7 +96,7 @@ class Followup(Report):
         )
 
     def _add_latest_followup(self):
-        email_col = self._appointments.get_col(Column.STUDENT_EMAIL)
+        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
         self._results = pd.merge(
             left=self._results,
             right=self._get_latest_valid_followup_dates(),
