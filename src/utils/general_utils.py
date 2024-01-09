@@ -10,3 +10,7 @@ def get_month_range(start_m, end_m=None) -> list[str]:
         return []
 
     return months[months.index(start_m):months.index(end_m) + 1]
+
+
+def list_to_regex_includes(li: set[str] | list[str] | tuple[str]) -> str:
+    return '|'.join(li)
