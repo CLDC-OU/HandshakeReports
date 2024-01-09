@@ -64,10 +64,10 @@ class Followup(Report):
         self._appointments.get_df()[app_type_col] = self._appointments.get_df()[app_type_col].fillna('MissingData')
 
         self._results = self._appointments.get_df()[
-            self._appointments.get_df()[app_type_col].str.match(
+            self._appointments.get_df()[app_type_col].str.contains(
                 self._require_followup.get_include()
             ) & ~(
-                self._appointments.get_df()[app_type_col].str.match(
+                self._appointments.get_df()[app_type_col].str.contains(
                     self._require_followup.get_exclude()
                 )
             )
@@ -143,11 +143,11 @@ class Followup(Report):
         if not self.followup_types:
             return self._appointments.get_df()[
                 ~(
-                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
                         self._require_followup.get_include()
                     )
                 ) | (
-                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
                         self._require_followup.get_exclude()
                     )
                 )
@@ -155,10 +155,10 @@ class Followup(Report):
         app_type_col = self._appointments.get_col_name(Column.APPOINTMENT_TYPE)
         self._appointments.get_df()[app_type_col] = self._appointments.get_col(Column.APPOINTMENT_TYPE).fillna('MissingData')
         return self._appointments.get_df()[
-            self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+            self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
                 self.followup_types.get_include()
             ) & ~(
-                self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+                self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
                     self.followup_types.get_exclude()
                 )
             )
