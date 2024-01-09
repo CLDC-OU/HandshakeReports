@@ -2,7 +2,6 @@ import logging
 import pandas as pd
 from src.dataset.dataset import Column, DataSet
 from src.reports.report import Report
-from utils.general_utils import list_to_regex_includes
 from utils.type_utils import FilterType
 
 
@@ -66,10 +65,10 @@ class Followup(Report):
 
         self._results = self._appointments.get_df()[
             self._appointments.get_df()[app_type_col].str.match(
-                list_to_regex_includes(self._require_followup.get_include())
+                self._require_followup.get_include()
             ) & ~(
                 self._appointments.get_df()[app_type_col].str.match(
-                    list_to_regex_includes(self._require_followup.get_exclude())
+                    self._require_followup.get_exclude()
                 )
             )
         ]
@@ -145,11 +144,11 @@ class Followup(Report):
             return self._appointments.get_df()[
                 ~(
                     self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
-                        list_to_regex_includes(self._require_followup.get_include())
+                        self._require_followup.get_include()
                     )
                 ) | (
                     self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
-                        list_to_regex_includes(self._require_followup.get_exclude())
+                        self._require_followup.get_exclude()
                     )
                 )
             ]
@@ -157,10 +156,10 @@ class Followup(Report):
         self._appointments.get_df()[app_type_col] = self._appointments.get_col(Column.APPOINTMENT_TYPE).fillna('MissingData')
         return self._appointments.get_df()[
             self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
-                list_to_regex_includes(self.followup_types.get_include())
+                self.followup_types.get_include()
             ) & ~(
                 self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
-                    list_to_regex_includes(self.followup_types.get_exclude())
+                    self.followup_types.get_exclude()
                 )
             )
         ]
