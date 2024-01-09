@@ -45,7 +45,9 @@ class Followup(Report):
         return self._results
 
     def _filter_year(self):
-        self._appointments.filter_year(self._year)
+        if not self._years:
+            return
+        self._appointments.filter_years(*self._years.split(','))
 
     def _filter_months(self):
         self._appointments.filter_months(self._months)
