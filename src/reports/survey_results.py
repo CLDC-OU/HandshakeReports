@@ -49,7 +49,7 @@ class SurveyResults(Report):
     def _normalize_email_cols(self) -> None:
         if self._survey_results.get_col(Column.STUDENT_EMAIL) != self._appointments.get_col(Column.STUDENT_EMAIL):
             self._survey_results.get_df().rename(
-                {self._survey_results.get_col(Column.STUDENT_EMAIL): self._appointments.get_col(Column.STUDENT_EMAIL)}
+                {self._survey_results.get_col_name(Column.STUDENT_EMAIL): self._appointments.get_col_name(Column.STUDENT_EMAIL)}
             )
 
     def _filter_by_time_diff(self) -> pd.DataFrame:
