@@ -182,9 +182,9 @@ class ReportsConfig:
                         appointments=appointment.deep_copy(),
                         survey_results=survey.deep_copy(),
                         day_range=report["day_range"],
-                        years=report["target_year"],
-                        months=report["target_months"],
                         staff_emails=report["emails"],
+                        target_years=report["target_years"],
+                        target_months=report["target_months"],
                     )
                     self._reports.append(Report(
                         file_prefix=report["file_prefix"],
@@ -235,10 +235,10 @@ class ReportsConfig:
                     report_obj = Followup(
                         appointments=appointment.deep_copy(),
                         valid_schools=report["valid_schools"],
-                        years=report["target_year"],
-                        months=report["target_months"],
                         require_followup=report["appointment_types"],
                         followup_types=report["followup_types"]
+                        target_years=report["target_years"],
+                        target_months=report["target_months"],
                     )
                     self._reports.append(Report(
                         file_prefix=report["file_prefix"],
