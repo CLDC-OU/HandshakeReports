@@ -2,6 +2,7 @@ import logging
 import pandas as pd
 from src.dataset.dataset import Column, DataSet
 from src.reports.report import Report
+from utils.general_utils import list_to_regex_includes
 from utils.type_utils import FilterType
 
 
@@ -63,12 +64,16 @@ class Followup(Report):
         if not app_type_col:
             raise ValueError("Appointment type column is not defined")
         self._appointments.get_df()[app_type_col] = self._appointments.get_df()[app_type_col].fillna('MissingData')
+
         self._results = self._appointments.get_df()[
-            self._appointments.get_df()[app_type_col].str.startswith(self._appointment_types["include"])
-            & ~(self._appointments.get_df()[app_type_col].isin(self._appointment_types["disclude"]))
-            ]
-        # print(self._appointment_types["include"])
-        # print(self._appointment_types["disclude"])
+            self._appointments.get_df()[app_type_col].str.match(
+                list_to_regex_includes(self._require_followup.get_include())
+            ) & ~(
+                self._appointments.get_df()[app_type_col].str.match(
+                    list_to_regex_includes(self._require_followup.get_exclude())
+                )
+            )
+        ]
 
     def _remove_followed_up(self):
         date_col = self._appointments.get_col_name(Column.DATE)
@@ -140,7 +145,13 @@ class Followup(Report):
     def _get_followup_appointments(self) -> pd.DataFrame:
         app_type_col = self._appointments.get_col(Column.APPOINTMENT_TYPE)
         self._appointments.get_df()[app_type_col] = self._appointments.get_df()[app_type_col].fillna('MissingData')
-        return self._appointments.get_df()[
-            ~(self._appointments.get_df()[app_type_col].str.startswith(self._appointment_types["include"]))
-            | (self._appointments.get_df()[app_type_col].isin(self._appointment_types["disclude"]))
             ]
+        return self._appointments.get_df()[
+            self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+                list_to_regex_includes(self.followup_types.get_include())
+            ) & ~(
+                self._appointments.get_col(Column.APPOINTMENT_TYPE).str.match(
+                    list_to_regex_includes(self.followup_types.get_exclude())
+                )
+            )
+        ]
