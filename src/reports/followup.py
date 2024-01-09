@@ -90,7 +90,7 @@ class Followup(Report):
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
         date_col = self._appointments.get_col_name(Column.DATE)
         valid_followup = self._get_followup_appointments()
-        logging.debug(f"got valid followup appointments")
+        logging.debug("got valid followup appointments")
         return valid_followup.groupby(email_col)[date_col].max().reset_index(
             name=self._latest_followup_col
         )
