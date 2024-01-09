@@ -24,15 +24,12 @@ class Followup(Report):
         self.followup_types = followup_types
 
     def run_report(self):
-        if self._year is not None:
-            self._filter_year()
-            logging.debug("Filtered appointment year")
-        if self._months is not None:
-            self._filter_months()
-            logging.debug("Filtered appointment months")
-        if self._valid_schools is not None:
-            self._filter_schools()
-            logging.debug("Filtered student schools")
+        self._filter_year()
+        logging.debug("Filtered appointment year")
+        self._filter_months()
+        logging.debug("Filtered appointment months")
+        self._filter_schools()
+        logging.debug("Filtered student schools")
         self._get_all_need_followup()
         logging.debug(f"Filtered students that need a followup {self._latest_followup_col} appointment")
         self._add_latest_followup()
