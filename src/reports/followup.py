@@ -2,32 +2,24 @@ import logging
 import pandas as pd
 from src.dataset.dataset import Column, DataSet
 from src.reports.report import Report
+from utils.type_utils import FilterType
 
 
-    def __init__(self, appointments: DataSet, valid_schools: list | None, year: str | None, months: list | None,
-                 appointment_types: list, followup_types: list, remove_cols=None, rename_cols=None,
-                 final_cols=None) -> None:
 class Followup(Report):
+    def __init__(self, appointments: DataSet, valid_schools: FilterType, target_years: str | None, target_months: str | None,
+                 require_followup: FilterType, followup_types: FilterType) -> None:
         self._appointments = appointments
         self._results = None
         self._valid_schools = valid_schools
-        self._year = year
-        self._months = months
-        if appointment_types:
-            self._appointment_types = appointment_types
-            include = self._appointment_types[self._appointment_types.index("include")]
-            self._latest_followup_col = f'date of last non {include} appointment'
-        else:
-            # raise ValueError
-            self._appointment_types = None
-            self._latest_followup_col = None
-        if followup_types:
-            self.followup_types = followup_types
-        else:
-            self.followup_types = None
-        self.remove_cols = remove_cols
-        self.rename_cols = rename_cols
-        self.final_cols = final_cols
+        self._years = target_years
+        self._months = target_months
+        if not isinstance(require_followup, FilterType):
+            raise ValueError("require_followup must be a FilterType")
+        self._require_followup = require_followup
+        self._latest_followup_col = 'date of last followup appointment'
+        if not isinstance(followup_types, FilterType):
+            raise ValueError("followup_types must be a FilterType")
+        self.followup_types = followup_types
 
     def run_report(self):
         if self._year is not None:
