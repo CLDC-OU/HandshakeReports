@@ -99,10 +99,6 @@ class Referrals():
 
         names = list(map(lambda x: x[1] if pd.isna(x[0]) else x[0], names))
         self._results[self._referrals.get_col(Column.STUDENT_FIRST_NAME)] = names
-        # self.__results[self.referrals.get_col(Column.STUDENT_FIRST_NAME)] = self.__results[
-        #     self.referrals.get_col(Column.STUDENT_PREFERRED_NAME) 
-        #         if self.__results[self.referrals.get_col(Column.STUDENT_PREFERRED_NAME)].notnull() 
-        #         else self.__results[self.referrals.get_col(Column.STUDENT_FIRST_NAME)]]
 
     def _add_completed(self):
         statuses = self._results[self._appointment.get_col(Column.STATUS)].values.tolist()
@@ -117,11 +113,6 @@ class Referrals():
     def _filter_valid_appointments(self):
         self._appointment.filter_appointment_type(self._valid_appointment_pattern)
 
-    # def get_unscheduled(self):
-    #     # get list of unique student emails that have an appointment
-    #     li = self.appointment.get_df()[self.appointment.get_col(Column.STUDENT_EMAIL)].drop_duplicates().to_list()
-    #     return filter_target_isin(self.referrals.get_df(), self.referrals.get_col(Column.STUDENT_EMAIL) , li)
-
     def _merge_referrals(self):
         self._results = pd.merge(
             left=self._referrals.get_df(),
@@ -129,15 +120,6 @@ class Referrals():
             how="outer",
             on=self._referrals.get_col(Column.STUDENT_EMAIL)
         )
-
-    # def _merge_referrals(self):
-    #     col = self._normalize_email_col()
-    #     self.appointment.set_df(pd.merge(
-    #         left=self.appointment.get_df()[self.appointment_cols],
-    #         right=self.referrals.get_df(),
-    #         on=col,
-    #         how="left"
-    #     ))
 
     def _normalize_email_col(self) -> str:
         appointment_col = self._appointment.get_col(Column.STUDENT_EMAIL)
@@ -197,11 +179,3 @@ class Referrals():
         emails = list(ref_emails) - list(res_emails)
         self._referrals.get_df()[self._referrals.get_col(Column.STUDENT_EMAIL)][emails]
 
-    # def _remove_past_appointments(self):
-    #     df = self.appointment.get_df()
-    #     self.appointment.set_df(
-    #         df[df[self.appointment.get_col(Column.DATE)] > df[self.referrals.get_col(Column.DATE)]]
-    #     )
-
-    # def combine(self):
-    #     pd.concat([self.appointment.get_df(), self.referrals.get_df().reindex(self.appointment.get_df().index)], axis=1)
