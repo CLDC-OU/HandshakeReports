@@ -92,7 +92,10 @@ The format of the Scheduled and Completed columns are formatted in such a way th
 
 ## Dependencies
 
+See [requirements.txt](requirements.txt) for a list of required packages.
 
+```py
+pip install -r requirements.txt
 ```
 
 ## Environmental Variables
