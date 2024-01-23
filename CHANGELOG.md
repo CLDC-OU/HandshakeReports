@@ -1,5 +1,22 @@
 # HandshakeReports - Change Log
 
+## Version 0.2.0 (Not Released Yet)
+
+### Major Feature Changes
+
+---
+
+### Minor Feature Changes
+
+---
+
+- Added requirements.txt
+- Removed selenium usage (see [HandshakeSurveyResults](https://github.com/CLDC/HandshakeSurveyResults) for this functionality)
+
+### Bug Fixes
+
+---
+
 ## Version 0.1.0 (2023/12/12)
 
 ### Major Feature Changes
@@ -55,4 +72,5 @@
 ### Bug Fixes
 
 ---
+
 N/A
