@@ -14,7 +14,7 @@ FILES_CONFIG_FILE = "files.config.json"
 
 class FilesConfig(Config):
     def __init__(self, config_file: str = FILES_CONFIG_FILE) -> None:
-        super().__init__(config_file, False)
+        super().__init__(config_file)
         self._files = []
         self._config = None
 
