@@ -13,9 +13,12 @@ class Driver():
     def __init__(self) -> None:
         self._config = Config()
         
+        self._config.load_config()
+
+        self._reports_config = ReportsConfig()
+        self._reports_config.load_reports()
 
     def run(self):
-        self._config.reports.loadReports()
         self._run_reports()
     
     def _getReports(self) -> list[Report]:
