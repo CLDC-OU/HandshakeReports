@@ -1,5 +1,6 @@
 import json
 import logging
+from config.config import Config
 from config.files_config import FilesConfig
 
 from src.reports.followup import Followup
@@ -16,8 +17,13 @@ from utils.type_utils import FilterType
 REPORTS_CONFIG_FILE = "reports.config.json"
 
 
-class ReportsConfig:
+class ReportsConfig(Config):
     def __init__(self, config_file: str = REPORTS_CONFIG_FILE, files_config_file: str | None = None) -> None:
+        super().__init__(config_file)
+        if files_config_file:
+            self._files = FilesConfig(files_config_file)
+        else:
+            self._files = FilesConfig()
         self._referrals = None
         self._surveys = None
         self._appointments = None
@@ -49,6 +55,10 @@ class ReportsConfig:
         if not self._reports:
             raise ValueError("Reports not initialized")
         return self._reports
+
+    def load_config(self):
+        super().load_config()
+        self.load_files()
 
     def load_files(self):
         self._appointments = []
