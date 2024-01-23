@@ -27,12 +27,12 @@ class Driver():
         for report in self._getReports():
             
             report.run_report()
-            
-            logging.info(f"Successfully ran {report.type} report")
+
+            logging.info(f"Successfully ran {report.__class__} report")
             report.save_archive()
-            logging.info(f"Saved archive of {report.type} report to {report.archive_dir}")
+            logging.info(f"Saved archive of {report.__class__} report to {report.archive_dir}")
             report.save_results()
-            logging.info(f"Saved results of {report.type} report to {report.results_dir}")
+            logging.info(f"Saved results of {report.__class__} report to {report.results_dir}")
         return True
 
 Driver().run()
