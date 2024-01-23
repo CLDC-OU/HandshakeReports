@@ -92,13 +92,7 @@ The format of the Scheduled and Completed columns are formatted in such a way th
 
 ## Dependencies
 
-### Chromium Driver
-- Download the most recent version [here](https://googlechromelabs.github.io/chrome-for-testing/). The Stable version should be good. Open the chromedriver URL for your system
-- Place it in a 
 
-```python
-python -m pip install python-dotenv
-python -m pip install selenium
 ```
 
 ## Environmental Variables
