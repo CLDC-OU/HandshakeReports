@@ -101,6 +101,7 @@ class ReportsConfig(Config):
                 return survey
         return None
 
+    # TODO: Allow for specification in config of what file(s) to load each report for (use list of files.config.json ids)
     def load_reports(self) -> list[Report] | None:
         if not self.config:
             return None

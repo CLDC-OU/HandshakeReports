@@ -1,0 +1,5 @@
+- [ ] Add support for specifying followup types in Followup (can use similar implementation to Referrals). An empty array in config specifies all appointments should be matched.
+- [ ] Move website in download_survey_results() to config 
+- [ ] Add Logger that logs all print statements to a text file each time the Driver (in main.py) is run
+- [ ] Refactor DataSet to use Composite patten
+- [ ] Refactor Repot to use Composite pattern

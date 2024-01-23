@@ -139,6 +139,7 @@ class Followup(Report):
             on=email_col
         )
 
+    # TODO: this should implement the logic of dataset.py's filter_by_col. A new function for this should be made in dataset.py
     def _get_followup_appointments(self) -> pd.DataFrame:
         if not self.followup_types:
             return self._appointments.get_df()[
