@@ -1,4 +1,3 @@
-
 from src.reports.report import Report
 from src.config.config import Config
 from src.config.reports_config import ReportsConfig
@@ -13,7 +12,6 @@ logging.info("Log started")
 class Driver():
     def __init__(self) -> None:
         self._config = Config()
-        
         self._config.load_config()
 
         self._reports_config = ReportsConfig()
@@ -21,15 +19,15 @@ class Driver():
 
     def run(self):
         self._run_reports()
-    
+
     def _getReports(self) -> list[Report]:
-    
         return self._reports_config.get_reports()
+
     def _run_reports(self):
         if not self._getReports():
             return False
         for report in self._getReports():
-            
+
             report.run_report()
 
             logging.info(f"Successfully ran {report.__class__} report")
@@ -38,5 +36,6 @@ class Driver():
             report.save_results()
             logging.info(f"Saved results of {report.__class__} report to {report.results_dir}")
         return True
+
 
 Driver().run()
