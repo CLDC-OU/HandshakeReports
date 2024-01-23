@@ -19,8 +19,8 @@ class Driver():
         self._run_reports()
     
     def _getReports(self) -> list[Report]:
-        return self._config.getReports()
     
+        return self._reports_config.get_reports()
     def _run_reports(self):
         if not self._getReports():
             return False
