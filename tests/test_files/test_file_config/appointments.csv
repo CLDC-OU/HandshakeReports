@@ -1,0 +1,11 @@
+Student Email - Institution,Staff Member Email,Appointments Start Date,Appointment Types Name,Student College (at Appt. Time) Name,Appointments ID,Student Majors (at Appt. Time) Name List,Student School Year (at Appt. Time) Name,Appointment Status,Student Card Id,Student First Name,Student Last Name,Appointments Request Date
+student@email.com,staff@email.com,2023-01-01,Appointment Type,College Name,123456789,Student Major,Student School Year,Appointment Status,123456,First Name,Last Name,2022-12-25
+student1@email.com,staff@email.com,2022-01-01,type_include,test_school_1,1234,None,None,completed,1234,First,Last,2023-12-25
+student1@email.com,staff@email.com,2024-06-01,type_include,test_school_1,1234,None,None,completed,1234,First,Last,2023-12-25
+student1@email.com,staff@email.com,2024-01-01,type_include,test_school_3,1234,None,None,completed,1234,First,Last,2023-12-25
+student1@email.com,staff@email.com,2024-01-01,type_include,test_school_1,1234,None,None,cancelled,1234,First,Last,2023-12-25
+
+student1@email.com,staff@email.com,2024-01-01,type_include,test_school_1,1234,None,None,completed,1234,First,Last,2023-12-25
+student1@email.com,staff@email.com,2023-01-04,type_include,test_school_1,1234,None,None,completed,1234,First,Last,2023-12-25
+student2@email.com,staff@email.com,2023-01-01,type_include,test_school_2,1234,None,None,completed,1234,First,Last,2023-12-25
+student2@email.com,staff@email.com,2023-01-01,type_exclude,test_school_2,1234,None,None,completed,1234,First,Last,2023-12-25
