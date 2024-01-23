@@ -114,5 +114,8 @@ It is recommended that you create a dedicated Handshake account using an extra e
 
 ## Configuring Files
 
+Files are setup in files.config.json
+
 ## Configuring Reports
 
+Reports are setup in reports.config.json
