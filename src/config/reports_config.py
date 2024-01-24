@@ -224,7 +224,14 @@ class ReportsConfig(Config):
             day_range=report["day_range"],
             target_years=report["target_years"],
             target_months=report["target_months"],
-            staff_emails=FilterType(include=report["emails"]["include"], exclude=report["emails"]["exclude"]),
+            staff_emails=FilterType.get_include_exclude(
+                dictionary=report,
+                key="emails",
+                log=True,
+                config_file=self.config_file,
+                report_index=report_index,
+                report_type="SurveyResults"
+            ),
         )
         self._reports.append(Report(
             file_prefix=report["file_prefix"],
@@ -276,11 +283,32 @@ class ReportsConfig(Config):
 
         report_obj = Followup(
             appointments=appointment.deep_copy(),
-            valid_schools=FilterType(include=report["valid_schools"]["include"], exclude=report["valid_schools"]["exclude"]),
+            valid_schools=FilterType.get_include_exclude(
+                dictionary=report,
+                key="valid_schools",
+                log=True,
+                config_file=self.config_file,
+                report_index=report_index,
+                report_type="Followup"
+            ),
             target_years=report["target_years"],
             target_months=report["target_months"],
-            require_followup=FilterType(include=report["require_followup"]["include"], exclude=report["require_followup"]["exclude"]),
-            followup_types=FilterType(include=report["followup_types"]["include"], exclude=report["followup_types"]["exclude"])
+            require_followup=FilterType.get_include_exclude(
+                dictionary=report,
+                key="require_followup",
+                log=True,
+                config_file=self.config_file,
+                report_index=report_index,
+                report_type="Followup"
+            ),
+            followup_types=FilterType.get_include_exclude(
+                dictionary=report,
+                key="followup_types",
+                log=True,
+                config_file=self.config_file,
+                report_index=report_index,
+                report_type="Followup"
+            )
         )
         self._reports.append(Report(
             file_prefix=report["file_prefix"],
@@ -308,7 +336,14 @@ class ReportsConfig(Config):
         report_obj = Referrals(
             referrals=referral.deep_copy(),
             appointment=appointment.deep_copy(),
-            complete_types=FilterType(include=report["valid_appointments"]["include"], exclude=report["valid_appointments"]["exclude"]),
+            complete_types=FilterType.get_include_exclude(
+                dictionary=report,
+                key="valid_appointments",
+                log=True,
+                config_file=self.config_file,
+                report_index=report_index,
+                report_type="Referrals"
+            ),
             enrollment=self.get_enrollment().deep_copy(),
             merge_on=report["merge_enrollment"] if "merge_enrollment" in report else None
         )
