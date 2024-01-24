@@ -24,7 +24,6 @@ class SurveyDataSet(DataSet):
         return re.sub(r'^[0-9\W]+', '', column_name)
 
     def _remove_numbers_from_columns(self) -> None:
-        new_df = self.get_df().columns.map(
+        self.get_df().columns = self.get_df().columns.map(
             SurveyDataSet._remove_numbers_from_column
         )
-        self.set_df(new_df)
