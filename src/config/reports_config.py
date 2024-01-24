@@ -30,6 +30,7 @@ class ReportsConfig(Config):
         self._enrollment = None
         self.config_file = config_file
         try:
+            logging.debug(f"Loading reports config from {config_file}")
             with open(config_file) as json_file:
                 self.config = json.load(json_file)
             logging.debug("Reports config loaded")
@@ -104,44 +105,52 @@ class ReportsConfig(Config):
     # TODO: Allow for specification in config of what file(s) to load each report for (use list of files.config.json ids)
     def load_reports(self) -> list[Report] | None:
         if not self.config:
+            message = "ERROR! No reports config initialized. Cannot load reports"
+            logging.error(message)
+            print(message)
             return None
 
         self._reports = []
 
         reports = self.config["reports"]
 
+        logging.debug(f"Loading {len(reports)} reports from {self.config_file}")
+        print(f"Loading {len(reports)} reports from {self.config_file}...")
+
         report_index = 0
         for report in reports:
             report_index += 1
-            error = False
-            if "type" not in report:
-                logging.error(f"ERROR! \"type\" key not present in "
-                              f"{self.config_file} at index {report_index}")
-                error = True
-            if "file_prefix" not in report:
-                logging.error(f"ERROR! \"file_prefix\" key not present in "
-                              f"{self.config_file} at index {report_index}")
-                error = True
-            if "results_dir" not in report:
-                logging.error(f"ERROR! \"results_dir\" key not present in "
-                              f"{self.config_file} at index {report_index}")
-                error = True
-            if error:
-                logging.error(f"ERROR! Report {report_index} could not be "
-                              f"loaded due to missing essential keys")
+            # TODO: Refactor this to use a function for key checking
+            required_keys = ["type", "file_prefix", "results_dir"]
+
+            if not self.validate_keys(
+                required_keys=required_keys,
+                warning_keys=[],
+                report=report,
+                report_index=report_index
+            ):
+                message = f"ERROR! Report {report_index} could not be loaded due to missing essential keys"
+                logging.error(message)
+                print(message)
                 break
-            type = report["type"]
-            if type == Report.Type.SURVEY_RESULTS.value:
+
+            logging.debug(f"Loading {report['type']} report from {self.config_file} at index {report_index}")
+            print(f"Loading {report['type']} report from {self.config_file} at index {report_index}...")
+            if report["type"] == "survey_results":
                 for appointment in self.get_appointments():
                     self.load_survey_results_report(report, report_index, appointment)
-
-            if type == Report.Type.FOLLOWUP.value:
+            elif report["type"] == "followup":
                 for appointment in self.get_appointments():
                     self.load_followup_report(report, report_index, appointment)
-            if type == Report.Type.REFERRALS.value:
+            elif report["type"] == "referrals":
                 for referral in self.get_referrals():
                     for appointment in self.get_appointments():
                         self.load_referrals_report(report, report_index, referral, appointment)
+            else:
+                message = f"WARNING: Report {report_index} could not be loaded. Invalid type {report['type']}. This report will be skipped"
+                logging.error(message)
+                print(message)
+                continue
         return self._reports
 
     def run_reports(self):
@@ -158,14 +167,17 @@ class ReportsConfig(Config):
             report.save_results()
             logging.info(f"Saved results of {report.__class__.__name__} report to {report.results_dir}")
 
-    def load_survey_results_report(self, report, report_index, appointment):
-        if not self._reports:
-            return
-        if "survey_id" not in report:
-            logging.error(
-                f"ERROR! \"survey_id\" key not present for {type} "
-                f"report in {self.config_file} at index "
-                f"{report_index}")
+    def load_survey_results_report(self, report: dict, report_index: int, appointment: AppointmentDataSet):
+        if not isinstance(self._reports, list):
+            raise ValueError("Reports must be a list. Reports may not have been initialized. \"load_reports()\" must be called first")
+        # TODO: Refactor this to use a function for key checking
+        if not self.validate_keys(
+            required_keys=["survey_id", "day_range"],
+            warning_keys=["target_years", "target_months", "emails"],
+            report=report,
+            report_index=report_index,
+            report_type="SurveyResults"
+        ):
             return
 
         survey_id = report["survey_id"]
@@ -176,47 +188,6 @@ class ReportsConfig(Config):
             return
         else:
             logging.info(f"Found survey with id {survey_id}")
-
-        error = False
-        if "day_range" not in report:
-            logging.error(
-                f"ERROR! \"day_range\" key not present for {type} "
-                f"report in {self.config_file} at index "
-                f"{report_index}")
-            error = True
-        if "target_year" not in report:
-            report["target_year"] = None
-            logging.warning(
-                f"WARNING! \"target_year\" key not present for "
-                f"{type} report in {self.config_file} at index "
-                f"{report_index}. Setting to default including "
-                f"all years")
-        else:
-            if report["target_year"] == "" or report["target_year"] == []:
-                report["target_year"] = None
-        if "target_months" not in report:
-            logging.warning(
-                f"WARNING! \"target_months\" key not present for {type} "
-                f"in {self.config_file} at index {report_index}. "
-                f"Setting to default including all months")
-            report["target_months"] = None
-        else:
-            if report["target_months"] == "" or report["target_months"] == []:
-                report["target_months"] = None
-
-        if "emails" not in report:
-            logging.warning(
-                f"WARNING! \"emails\" key not present for {type} "
-                f"in {self.config_file} at index {report_index}. "
-                f"Setting to default including all emails")
-            report["emails"] = None
-        else:
-            if report["emails"] == "" or report["emails"] == []:
-                report["emails"] = None
-        if error:
-            logging.error(f"ERROR! Report {report_index} could not be "
-                          f"loaded due to missing essential keys")
-            return
 
         report_obj = SurveyResults(
             appointments=appointment.deep_copy(),
@@ -244,41 +215,18 @@ class ReportsConfig(Config):
         ))
 
     def load_followup_report(self, report, report_index, appointment):
-        if not self._reports:
-            return
+        if not isinstance(self._reports, list):
+            raise ValueError("Reports must be a list. Reports may not have been initialized. \"load_reports()\" must be called first")
 
-        error = False
-        if "valid_schools" not in report:
-            logging.warning(
-                f"WARNING! \"valid_schools\" key not present for {type} report in {self.config_file} at index {report_index}. Setting to default including all schools")
-            report["valid_schools"] = None
-        else:
-            if report["valid_schools"] == "" or report["valid_schools"] == []:
-                report["valid_schools"] = None
-        if "target_year" not in report:
-            logging.warning(
-                f"WARNING! \"target_year\" key not present for {type} report in {self.config_file} at index {report_index}. Setting to default including all years")
-            report["target_year"] = None
-        else:
-            if report["target_year"] == "" or report["target_year"] == []:
-                report["target_year"] = None
-        if "target_months" not in report:
-            logging.warning(
-                f"WARNING! \"target_months\" key not present for {type} in {self.config_file} at index {report_index}. Setting to default including all months")
-            report["target_months"] = None
-        else:
-            if report["target_months"] == "" or report["target_months"] == []:
-                report["target_months"] = None
-        if "appointment_types" not in report:
-            logging.error(
-                f"WARNING! \"appointment_types\" key not present for {type} in {self.config_file} at index {report_index}")
-            error = True
-        if "followup_types" not in report:
-            logging.error(
-                f"WARNING! \"followup_types\" key not present for {type} in {self.config_file} at index {report_index}")
-            error = True
-        if error:
-            logging.error(f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
+        # TODO: Refactor this to use a function for key checking
+
+        if not self.validate_keys(
+            required_keys=["appointment_types", "followup_types"],
+            warning_keys=["target_years", "target_months", "require_followup"],
+            report=report,
+            report_index=report_index,
+            report_type="Followup"
+        ):
             return
 
         report_obj = Followup(
@@ -321,16 +269,16 @@ class ReportsConfig(Config):
         ))
 
     def load_referrals_report(self, report, report_index, referral, appointment):
-        if not self._reports:
-            return
-        error = False
-        if "valid_appointments" not in report:
-            logging.error(
-                f"ERROR! \"valid_appointments\" key not present for {type} report in {self.config_file} at index {report_index}")
-            error = True
-        if error:
-            logging.error(
-                f"ERROR! Report {report_index} could not be loaded due to missing essential keys")
+        if not isinstance(self._reports, list):
+            raise ValueError("Reports must be a list. Reports may not have been initialized. \"load_reports()\" must be called first")
+        # TODO: Refactor this to use a function for key checking
+        if not self.validate_keys(
+            required_keys=["valid_appointments"],
+            warning_keys=["merge_enrollment"],
+            report=report,
+            report_index=report_index,
+            report_type="Referrals"
+        ):
             return
 
         report_obj = Referrals(
@@ -345,7 +293,7 @@ class ReportsConfig(Config):
                 report_type="Referrals"
             ),
             enrollment=self.get_enrollment().deep_copy(),
-            merge_on=report["merge_enrollment"] if "merge_enrollment" in report else None
+            merge_on=report["merge_enrollment"]
         )
         self._reports.append(Report(
             file_prefix=report["file_prefix"],
@@ -356,3 +304,46 @@ class ReportsConfig(Config):
             rename_cols=report["rename_cols"] if "rename_cols" in report else None,
             final_cols=report["final_cols"] if "final_cols" in report else None
         ))
+
+    @staticmethod
+    def validate_key(dictionary: dict, key: str, required: bool, report_type: str, config_file: str, report_index: int) -> bool:
+        if key not in dictionary:
+            if required:
+                logging.error(
+                    f"ERROR! \"{key}\" key not present for {report_type} report in {config_file} at index {report_index}.")
+                return False
+            else:
+                logging.warning(
+                    f"WARNING! \"{key}\" key not present for {report_type} report in {config_file} at index {report_index}. Setting to default including all {key}")
+            dictionary[key] = None
+        if dictionary[key] == "" or dictionary[key] == []:
+            dictionary[key] = None
+        return True
+
+    def validate_keys(self, required_keys: list, warning_keys: list, report: dict, report_index: int, report_type: str = "Report") -> bool:
+        error = False
+        for key in required_keys:
+            if not ReportsConfig.validate_key(
+                    dictionary=report,
+                    key=key,
+                    required=True,
+                    report_type=report_type,
+                    config_file=self.config_file,
+                    report_index=report_index
+            ):
+                error = True
+        for key in warning_keys:
+            ReportsConfig.validate_key(
+                dictionary=report,
+                key=key,
+                required=False,
+                report_type=report_type,
+                config_file=self.config_file,
+                report_index=report_index
+            )
+
+        if error:
+            logging.error(f"ERROR! Report {report_index} could not be "
+                          f"loaded due to missing essential keys")
+            return False
+        return True
