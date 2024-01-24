@@ -48,10 +48,11 @@ class FilesConfig(Config):
 
     def load_config(self) -> bool:
         if not self._open_config():
-            return False
+            raise ValueError("Cannot load config file")
         return self.load_files() is not None
 
     def load_files(self) -> list[DataSet] | None:
+        logging.debug("Loading files...")
         if not self.config:
             self.files = []
             return None
@@ -60,7 +61,7 @@ class FilesConfig(Config):
         files = self.config["files"]
         for file in files:
             rename_cols, cols = FilesConfig.map_column_config(file["column_names"])
-            logging.debug(f'Loading new {file["type"]} file...')
+            logging.debug(f'Loading new {file["type"]} file...\n\t{file}')
             print(f'Loading new {file["type"]} file...')
             file["dir"] = dir_format(file["dir"])
             valid_files = filter_files(
@@ -75,7 +76,8 @@ class FilesConfig(Config):
                 logging.debug(f'Found valid file at {file["dir"]}')
 
             file_loc = get_most_recent_file(valid_files)
-            logging.debug(f'Found most recent file: {file_loc}')
+            logging.debug(f'\tFound most recent {file["type"]} file: {file_loc}')
+            print(f'\tFound most recent {file["type"]} file: {file_loc}')
 
             dataset = None
             dataset_config = (
@@ -97,8 +99,10 @@ class FilesConfig(Config):
                 dataset = SurveyDataSet(*dataset_config)
             else:
                 logging.error(f'Cannot load {file["type"]} file. Invalid type.')
+                print(f'ERROR! Cannot load {file["type"]} file. Invalid type.')
                 break
             self.files.append(dataset)
-            logging.debug(f"Loaded DataSet from file {file_loc}")
+            logging.debug(f"\tLoaded {dataset.__class__.__name__} from file: {file_loc}")
+            print(f"\tLoaded {dataset.__class__.__name__} from file: {file_loc}")
 
         return self.files
