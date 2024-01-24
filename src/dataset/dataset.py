@@ -168,8 +168,8 @@ class DataSet:
 
     def filter_appointment_status(self):
         def map_values(enum_obj: Enum) -> str:
-            if isinstance(enum_obj.value, str):
-                return enum_obj.value
+            if isinstance(enum_obj, str):
+                return enum_obj
             return ''
         valid = list(map(map_values, AppointmentStatus.VALID_SCHEDULED.value))
         valid_scheduled = FilterType(
