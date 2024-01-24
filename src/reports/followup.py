@@ -95,7 +95,7 @@ class Followup(Report):
             raise ValueError("Date or email column is not defined")
         if not self._results:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
-        self._results = self._results.loc[self._results.groupby(email_col)[date_col].idxmax()]
+        self._results = self._results.loc[self._results.groupby(by=email_col)[date_col].idxmax()]
 
     def _get_latest_valid_followup_dates(self) -> pd.DataFrame:
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
@@ -104,7 +104,7 @@ class Followup(Report):
             raise ValueError("Email or date column is not defined")
         valid_followup = self._get_followup_appointments()
         logging.debug("got valid followup appointments")
-        return valid_followup.groupby(email_col)[date_col].max().reset_index(
+        return valid_followup.groupby(by=email_col)[date_col].max().reset_index(
             name=self._latest_followup_col
         )
 
