@@ -48,7 +48,7 @@ class SurveyResults(Report):
 
     # ensure the student email columns have the same name. Rename the survey set to match
     def _normalize_email_cols(self) -> None:
-        if self._survey_results.get_col(Column.STUDENT_EMAIL) != self._appointments.get_col(Column.STUDENT_EMAIL):
+        if self._survey_results.get_col_name(Column.STUDENT_EMAIL) != self._appointments.get_col_name(Column.STUDENT_EMAIL):
             self._survey_results.get_df().rename(
                 {self._survey_results.get_col_name(Column.STUDENT_EMAIL): self._appointments.get_col_name(Column.STUDENT_EMAIL)}
             )
