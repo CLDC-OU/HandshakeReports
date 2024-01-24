@@ -1,8 +1,9 @@
 import logging
 import pandas as pd
 from src.dataset.dataset import Column, DataSet
+
 from src.reports.report import Report
-from utils.type_utils import FilterType
+from src.utils.type_utils import FilterType
 
 
 class Followup(Report):

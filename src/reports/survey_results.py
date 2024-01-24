@@ -6,7 +6,7 @@ from src.dataset.dataset import Column
 from src.dataset.survey import SurveyDataSet
 from src.utils.df_utils import filter_by_time_diff
 from src.reports.report import Report
-from utils.type_utils import FilterType
+from src.utils.type_utils import FilterType
 
 
 class SurveyResults(Report):

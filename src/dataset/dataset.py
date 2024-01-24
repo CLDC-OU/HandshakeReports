@@ -1,9 +1,9 @@
 import logging
+from typing import Self
 import pandas as pd
-from dataset.appointment_status import AppointmentStatus
+from src.dataset.appointment_status import AppointmentStatus
 
 from src.dataset.column import Column
-from src.dataset.dataset import DataSet
 from src.utils.df_utils import sort_columns_by_date
 from src.utils.general_utils import get_month_range
 
@@ -36,7 +36,7 @@ class DataSet:
             return self.get_id() == __value.get_id()
         return False
 
-    def deep_copy(self) -> DataSet:
+    def deep_copy(self) -> Self:
         return self.__class__(self.id, self.df.copy(deep=True), self.cols.copy())
 
     def same_type(self, __value: object) -> bool:
