@@ -43,7 +43,7 @@ class ReportsConfig(Config):
                 self._files = FilesConfig(files_config_file)
             else:
                 self._files = FilesConfig()
-            self._files.load_files()
+            self._files.load_config()
         self.load_files()
 
     def get_files(self) -> list[DataSet]:
