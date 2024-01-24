@@ -47,28 +47,28 @@ class Report:
 
     @property
     def results(self) -> pd.DataFrame | None:
-        if not isinstance(self.results, pd.DataFrame):
-            logging.warning(f"Invalid results type {type(self.results)}. Using None")
+        if not isinstance(self._results, pd.DataFrame):
+            logging.warning(f"Invalid results type {type(self._results)}. Using None")
             return None
-        return self.results
+        return self._results
 
     @results.setter
     def results(self, value: pd.DataFrame | None) -> None:
-        self.results = value
+        self._results = value
 
     @property
     def rename_cols(self) -> dict[str, str] | None:
-        if not isinstance(self.rename_cols, dict):
-            logging.warning(f"Invalid rename_cols type {type(self.rename_cols)}. Using None")
+        if not isinstance(self._rename_cols, dict):
+            logging.warning(f"Invalid rename_cols type {type(self._rename_cols)}. Using None")
             return None
-        return self.rename_cols
+        return self._rename_cols
 
     @rename_cols.setter
     def rename_cols(self, value: dict[str, str] | None) -> None:
-        if not isinstance(self.rename_cols, dict):
+        if not isinstance(value, dict):
             logging.warning(f"Invalid rename_cols type {type(value)}. Using None")
-            self.rename_cols = None
-        self.rename_cols = value
+            self._rename_cols = None
+        self._rename_cols = value
 
     def get_filename(self) -> str:
         return self.file_prefix + dt.now().strftime('%Y%m%d-%H%M%S') + '.csv'
