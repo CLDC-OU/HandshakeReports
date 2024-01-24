@@ -90,7 +90,7 @@ class DataSet:
         # Separate month ranges into individual months
         month_set = DataSet.split_month_ranges(months)
         if not month_set or len(month_set) == 0:
-            raise ValueError("Invalid month input")
+            raise ValueError(f"Invalid month input {months}")
 
         # Filter DataFrame by month
         self.get_df().drop(
