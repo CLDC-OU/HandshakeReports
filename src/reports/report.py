@@ -42,6 +42,9 @@ class Report:
         self.report.run_report()
         self.results = self.report.get_results()
 
+    def get_results(self):
+        pass
+
     @property
     def results(self) -> pd.DataFrame | None:
         if not isinstance(self.results, pd.DataFrame):
