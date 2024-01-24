@@ -6,7 +6,8 @@ from src.dataset.dataset import DataSet
 class ReferralDataSet(DataSet):
     type_name = 'referral'
 
-    class Column(Enum, DataSet.Column):  # type: ignore
+    class Column(Enum):
+        DataSet.Column
         STAFF_EMAIL = 'staff_email'
         STUDENT_EMAIL = 'stu_email'
         STUDENT_COLLEGE = 'college'

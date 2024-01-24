@@ -6,7 +6,8 @@ from src.dataset.dataset import DataSet
 class AppointmentDataSet(DataSet):
     type_name = 'appointments'
 
-    class Column(Enum, DataSet.Column):  # type: ignore
+    class Column(Enum):
+        DataSet.Column
         STAFF_EMAIL = 'staff_email'
         APPOINTMENT_TYPE = 'type'
         STUDENT_EMAIL = 'stu_email'

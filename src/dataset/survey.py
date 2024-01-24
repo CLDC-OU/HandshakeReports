@@ -7,7 +7,8 @@ from src.dataset.dataset import DataSet
 class SurveyDataSet(DataSet):
     type_name = 'survey_results'
 
-    class Column(Enum, DataSet.Column):  # type: ignore
+    class Column(Enum):
+        DataSet.Column
         ID = 'id'
         DATE = 'date'
         STUDENT_EMAIL = 'stu_email'
