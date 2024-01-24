@@ -2,9 +2,7 @@ from enum import Enum
 import logging
 
 import pandas as pd
-from src.reports.followup import Followup
-from src.reports.referrals import Referrals
-from src.reports.survey_results import SurveyResults
+
 from src.utils.df_utils import remove_columns
 from datetime import datetime as dt
 
@@ -22,7 +20,7 @@ class Report:
             self,
             file_prefix: str,
             results_dir: str,
-            report: SurveyResults | Followup | Referrals,
+            report: "Report",
             archive_dir: str | None = None,
             remove_cols: list[str] | None = None,
             rename_cols: dict | None = None,
