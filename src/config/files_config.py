@@ -7,7 +7,7 @@ from src.dataset.referral import ReferralDataSet
 from src.dataset.survey import SurveyDataSet
 from src.utils.df_utils import load_df
 from src.utils.file_utils import dir_format, filter_files, get_most_recent_file
-from config.config import Config
+from src.config.config import Config
 
 FILES_CONFIG_FILE = "files.config.json"
 
