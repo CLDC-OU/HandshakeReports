@@ -11,9 +11,7 @@ def get_month_range(start_m, end_m=None) -> list[str]:  # Returns an array of al
     if end_m not in months:
         return []
 
-    if months[months.index(start_m)] == months[months.index(end_m)]:
-        return months
-    if months.index(start_m) > months.index(end_m):
+    if months.index(start_m) >= months.index(end_m):
         return months[months.index(start_m):] + months[:months.index(end_m) + 1]
 
     return months[months.index(start_m):months.index(end_m) + 1]
