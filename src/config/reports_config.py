@@ -1,7 +1,7 @@
 import json
 import logging
-from config.config import Config
-from config.files_config import FilesConfig
+from src.config.config import Config
+from src.config.files_config import FilesConfig
 
 from src.reports.followup import Followup
 from src.reports.referrals import Referrals
@@ -12,7 +12,7 @@ from src.dataset.enrollment import EnrollmentDataSet
 from src.dataset.referral import ReferralDataSet
 from src.dataset.survey import SurveyDataSet
 from src.reports.survey_results import SurveyResults
-from utils.type_utils import FilterType
+from src.utils.type_utils import FilterType
 
 REPORTS_CONFIG_FILE = "reports.config.json"
 
