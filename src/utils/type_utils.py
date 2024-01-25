@@ -39,7 +39,7 @@ class FilterType():
         if "include" not in val:
             if log:
                 logging.warning(
-                    f"WARNING! \"include\" key not present for {report_type} report in {config_file} at index {report_index}. Setting to default including all")
+                    f"WARNING! \"include\" key for \"{key}\" not present for {report_type} report in {config_file} at index {report_index}. Setting to default including all")
             include = None
         else:
             include = val["include"]
@@ -50,7 +50,7 @@ class FilterType():
         if "exclude" not in val:
             if log:
                 logging.warning(
-                    f"WARNING! \"exclude\" key not present for {report_type} report in {config_file} at index {report_index}. Setting to default including all")
+                    f"WARNING! \"exclude\" key for \"{key}\" not present for {report_type} report in {config_file} at index {report_index}. Setting to default including all")
             exclude = None
         else:
             exclude = val["exclude"]
