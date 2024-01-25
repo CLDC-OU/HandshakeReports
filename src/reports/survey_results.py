@@ -54,11 +54,14 @@ class SurveyResults(Report):
             )
 
     def _filter_by_time_diff(self) -> pd.DataFrame:
+        date_col_1 = self._survey_results.get_col_name(Column.DATE)
+        date_col_2 = self._appointments.get_col_name(Column.DATE)
+        merge_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
         return filter_by_time_diff(
             df_1=self._survey_results.get_df(),
-            col_1=self._survey_results.get_col(Column.DATE),
+            col_1=date_col_1,
             df_2=self._appointments.get_df(),
-            col_2=self._appointments.get_col(Column.DATE),
+            col_2=date_col_2,
             days=self._day_range,
-            merge_col=self._appointments.get_col(Column.STUDENT_EMAIL),
+            merge_col=merge_col,
         )
