@@ -157,7 +157,9 @@ class DataSet:
         year_set = DataSet.split_year_ranges(years)
 
         # Filter DataFrame by years
-        self.get_df().drop(
+        rows_before = len(self.get_df())
+        self.get_df()[self.get_col_name(Column.DATE)] = pd.to_datetime(self.get_col(Column.DATE))  # ensure date column is datetime
+        self.get_df().drop(  # drop rows where month is not in month_set
             self.get_df()[~self.get_col(Column.DATE).dt.strftime('%Y').isin(year_set)].index,
             inplace=True
         )
