@@ -38,7 +38,7 @@ def sort_columns_by_date(df, column_name):
     return df
 
 
-def filter_by_time_diff(df_1, col_1, df_2, col_2, days, merge_col):
+def filter_by_time_diff(df_1: pd.DataFrame, col_1: str, df_2: pd.DataFrame, col_2: str, days: int, merge_col: str):
     df_1[col_1] = pd.to_datetime(df_1[col_1]).dt.tz_localize(None)
     df_2[col_2] = pd.to_datetime(df_2[col_2]).dt.tz_localize(None)
     merged_df = pd.merge_asof(df_1, df_2,
