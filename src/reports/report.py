@@ -77,13 +77,15 @@ class Report:
         if not self.archive_dir:
             logging.debug("No archive directory specified. Skipping archive")
             return
-        if not self.results or self.results.empty:
-            raise ValueError("No results to archive")
+        if self.results is None or self.results.empty:
+            logging.warning("No results to archive. Either this report did not have run correctly or the results were empty")
+            return
         self.results.to_csv(self.archive_dir + "\\" + self.get_filename(), index=False)
 
     def save_results(self):
-        if not self.results or self.results.empty:
-            raise ValueError("No results to save")
+        if self.results is None or self.results.empty:
+            logging.warning("No results to save. Either this report did not have run correctly or the results were empty")
+            return
 
         if self.remove_cols:
             self.results = remove_columns(self.results, self.remove_cols)
