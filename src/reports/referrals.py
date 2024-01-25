@@ -147,11 +147,15 @@ class Referrals(Report):
         # keep students in results who had a referral after their most recent valid appointment, or have not had any valid appointment
         self.results = self.results[~self.results[self._referrals.get_col_name(Column.DATE)].isna()]
         self._format_referral_dates()
+        # self.results = self.results[~(
+        #     (self.results[self._appointment.get_col_name(Column.DATE)].dt.day_of_year < self.results[
+        #         self._referrals.get_col_name(Column.DATE)].dt.day_of_year) | (
+        #             self.results[self._appointment.get_col_name(Column.DATE)].dt.year < self.results[
+        #                 self._appointment.get_col_name(Column.DATE)].dt.year)
+        # )]
         self.results = self.results[~(
-            (self.results[self._appointment.get_col(Column.DATE)].dt.day_of_year < self.results[
-                self._referrals.get_col(Column.DATE)].dt.day_of_year) | (
-                    self.results[self._appointment.get_col(Column.DATE)].dt.year < self.results[
-                        self._appointment.get_col(Column.DATE)].dt.year)
+            (self.results[self._appointment.get_col_name(Column.DATE)] < self.results[
+                self._referrals.get_col_name(Column.DATE)])
         )]
 
     def _format_referral_dates(self):
