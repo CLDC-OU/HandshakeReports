@@ -15,7 +15,7 @@ class SurveyResults(Report):
             raise ValueError('Invalid DataSet types provided at filter_appointment_surveys')
         self._appointments = appointments
         self._survey_results = survey_results
-        self._results = None
+        self.results = None
         self._day_range = day_range
         self._years = target_years
         self._months = target_months
@@ -40,11 +40,11 @@ class SurveyResults(Report):
             logging.debug("Filtered staff emails")
 
         self._normalize_email_cols()
-        self._results = self._filter_by_time_diff()
+        self.results = self._filter_by_time_diff()
         logging.debug("Filtered time difference")
 
     def get_results(self) -> pd.DataFrame | None:
-        return self._results
+        return self.results
 
     # ensure the student email columns have the same name. Rename the survey set to match
     def _normalize_email_cols(self) -> None:
