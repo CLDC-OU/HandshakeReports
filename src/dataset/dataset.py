@@ -5,7 +5,7 @@ from src.dataset.appointment_status import AppointmentStatus
 
 from src.dataset.column import Column
 from src.utils.df_utils import sort_columns_by_date
-from src.utils.general_utils import get_month_range
+from src.utils.general_utils import get_month_range, int_month_to_str
 
 from enum import Enum
 
@@ -93,8 +93,10 @@ class DataSet:
             raise ValueError(f"Invalid month input {months}")
 
         # Filter DataFrame by month
-        self.get_df().drop(
-            self.get_df()[~self.get_col(Column.DATE).dt.strftime('%B').isin(month_set)].index,
+        self.get_df()[self.get_col_name(Column.DATE)] = pd.to_datetime(self.get_col(Column.DATE))  # ensure date column is datetime
+        rows_before = len(self.get_df())
+        self.get_df().drop(  # drop rows where month is not in month_set
+            index=self.get_df()[~(self.get_col(Column.DATE).dt.month.map(int_month_to_str).isin(month_set))].index,
             inplace=True
         )
 
