@@ -57,6 +57,9 @@ class SurveyResults(Report):
         date_col_1 = self._survey_results.get_col_name(Column.DATE)
         date_col_2 = self._appointments.get_col_name(Column.DATE)
         merge_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        if not date_col_1 or not date_col_2 or not merge_col:
+            raise ValueError("One or more columns are not defined")
+
         return filter_by_time_diff(
             df_1=self._survey_results.get_df(),
             col_1=date_col_1,
