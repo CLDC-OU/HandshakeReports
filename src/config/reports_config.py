@@ -221,8 +221,8 @@ class ReportsConfig(Config):
         # TODO: Refactor this to use a function for key checking
 
         if not self.validate_keys(
-            required_keys=["appointment_types", "followup_types"],
-            warning_keys=["target_years", "target_months", "require_followup"],
+            required_keys=["require_followup"],
+            warning_keys=["target_years", "target_months", "valid_schools", "followup_types"],
             report=report,
             report_index=report_index,
             report_type="Followup"
