@@ -30,11 +30,11 @@ class Driver():
 
             report.run_report()
 
-            logging.info(f"Successfully ran {report.__class__} report")
+            logging.info(f"Successfully ran {report.report.__class__.__name__} report")
             report.save_archive()
-            logging.info(f"Saved archive of {report.__class__} report to {report.archive_dir}")
+            logging.info(f"Saved archive of {report.report.__class__.__name__} report to {report.archive_dir}")
             report.save_results()
-            logging.info(f"Saved results of {report.__class__} report to {report.results_dir}")
+            logging.info(f"Saved results of {report.report.__class__.__name__} report to {report.results_dir}")
         return True
 
 
