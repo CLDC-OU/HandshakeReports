@@ -92,6 +92,8 @@ class DataSet:
         if not month_set or len(month_set) == 0:
             raise ValueError(f"Invalid month input {months}")
 
+        logging.debug("Month set: " + str(month_set))
+
         # Filter DataFrame by month
         self.get_df()[self.get_col_name(Column.DATE)] = pd.to_datetime(self.get_col(Column.DATE))  # ensure date column is datetime
         rows_before = len(self.get_df())
@@ -99,6 +101,7 @@ class DataSet:
             index=self.get_df()[~(self.get_col(Column.DATE).dt.month.map(int_month_to_str).isin(month_set))].index,
             inplace=True
         )
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     @staticmethod
     def split_month_range(range: str) -> list[str]:
@@ -163,14 +166,21 @@ class DataSet:
             self.get_df()[~self.get_col(Column.DATE).dt.strftime('%Y').isin(year_set)].index,
             inplace=True
         )
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_staff_emails(self, emails: FilterType):
+        rows_before = len(self.get_df())
         self.filter_by_col(Column.STAFF_EMAIL, emails)
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_student_emails(self, emails: FilterType):
+        rows_before = len(self.get_df())
         self.filter_by_col(Column.STUDENT_EMAIL, emails)
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_appointment_status(self):
+        rows_before = len(self.get_df())
+
         def map_values(enum_obj: Enum) -> str:
             if isinstance(enum_obj, str):
                 return enum_obj
@@ -181,8 +191,10 @@ class DataSet:
             exclude=None
         )
         self.filter_by_col(Column.STATUS, valid_scheduled)
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_by_col(self, col: Enum, filter: FilterType):
+        rows_before = len(self.get_df())
         if not filter:
             logging.debug("No filter to apply")
             return
@@ -200,15 +212,22 @@ class DataSet:
             ].index,
             inplace=True
         )
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_majors(self, majors: FilterType):
+        rows_before = len(self.get_df())
         self.filter_by_col(Column.STUDENT_MAJOR, majors)
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_schools(self, schools: FilterType):
+        rows_before = len(self.get_df())
         self.filter_by_col(Column.STUDENT_COLLEGE, schools)
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_appointment_type(self, appointment_types: FilterType):
+        rows_before = len(self.get_df())
         self.filter_by_col(Column.APPOINTMENT_TYPE, appointment_types)
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
 
 def get_year_input():
