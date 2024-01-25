@@ -60,7 +60,11 @@ class FilterType():
         return FilterType(include, exclude)
 
     def get_include(self) -> str:
+        if self.include is None:
+            return ".*?"
         return list_to_regex_includes(FilterType.get_set(self.include)).pattern
 
     def get_exclude(self) -> str:
+        if self.exclude is None:
+            return "a^"
         return list_to_regex_includes(FilterType.get_set(self.exclude)).pattern
