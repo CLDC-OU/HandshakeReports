@@ -51,8 +51,8 @@ class Referrals(Report):
             raise TypeError("Results is not a DataFrame")
         self._results = value
 
-    # def get_results(self) -> pd.DataFrame:
-    #     return self.results
+    def get_results(self) -> pd.DataFrame:
+        return self.results
 
     def _remove_duplicates(self):
         unique_col = self._referrals.get_col(Column.UNIQUE_REFERRAL)
