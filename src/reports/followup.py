@@ -128,7 +128,7 @@ class Followup(Report):
         duplicate_appointment_count = self._get_followup_appointments().pivot_table(
             index=[email_col],
             aggfunc='size'
-        ).reset_index(col_fill=col_name)
+        ).reset_index().rename(columns={0: col_name})
 
         if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
