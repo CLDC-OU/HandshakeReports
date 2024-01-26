@@ -133,8 +133,8 @@ class Followup(Report):
         if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
 
-        self._results = pd.merge(
-            left=self._results,
+        self.results = pd.merge(
+            left=self.results,
             right=duplicate_appointment_count,
             how="left",
             on=email_col
