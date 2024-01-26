@@ -38,6 +38,7 @@ class Referrals(Report):
 
         self.filter_valid_departments()
         logging.debug("Filtered valid referring departments in referrals DataSet")
+        self._remove_duplicate_referrals()
 
         self._normalize_email_col()
         logging.debug("Normalized email columns between appointments and referrals DataSet")
@@ -60,8 +61,7 @@ class Referrals(Report):
         logging.debug("Set student name to preferred name")
         self._merge_enrollment()
         logging.debug("Merged enrollment data")
-        self._remove_duplicate_referrals()
-        logging.debug("Removed duplicate rows")
+
         self.sort_results()
 
     @property
