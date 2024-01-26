@@ -60,7 +60,7 @@ class Referrals(Report):
         logging.debug("Set student name to preferred name")
         self._merge_enrollment()
         logging.debug("Merged enrollment data")
-        self._remove_duplicates()
+        self._remove_duplicate_referrals()
         logging.debug("Removed duplicate rows")
         self.sort_results()
 
@@ -109,7 +109,7 @@ class Referrals(Report):
         )
         self.results.reset_index(drop=True, inplace=True)
 
-    def _remove_duplcates(self):
+    def _remove_duplicate_referrals(self):
         unique_col = self._referrals.get_col_name(ReferralDataSet.Column.UNIQUE_REFERRAL)
         if unique_col is None:
             logging.debug(
