@@ -1,4 +1,3 @@
-from enum import Enum
 import logging
 
 import pandas as pd
@@ -41,9 +40,19 @@ class Report:
         return self.__class__.__name__
 
     def run_report(self) -> None:
-        logging.debug(f"Running report for {self.__class__.__name__}")
+        message = f"Running {self.report.get_class_name()} report"
+        logging.debug(message)
+        print(message)
         self.report.run_report()
         self.results = self.report.get_results()
+        if self.results is None or self.results.empty:
+            message = f"\tRan {self.report.get_class_name()} report, but got no results."
+            logging.debug(message)
+            print(message)
+        else:
+            message = f"\tSuccessfully ran {self.report.get_class_name()} report with {len(self.results)} results"
+            logging.debug(message)
+            print(message)
 
     def get_results(self) -> pd.DataFrame | None:
         return None
@@ -84,6 +93,9 @@ class Report:
             logging.warning("No results to archive. Either this report did not have run correctly or the results were empty")
             return
         self.results.to_csv(self.archive_dir + "\\" + self.get_filename(), index=False)
+        message = f"\tSaved archive of {self.report.get_class_name()} to {self.results_dir}\\{self.get_filename()}"
+        print(message)
+        logging.debug(message)
 
     def save_results(self):
         if self.results is None or self.results.empty:
@@ -98,3 +110,6 @@ class Report:
             self.results = self.results[self.final_cols]
 
         self.results.to_csv(self.results_dir + "\\" + self.get_filename())
+        message = f"\tSaved results of {self.report.get_class_name()} to {self.results_dir}\\{self.get_filename()}"
+        print(message)
+        logging.debug(message)
