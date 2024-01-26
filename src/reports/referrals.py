@@ -1,21 +1,24 @@
 import logging
 import pandas as pd
+from dataset.appointment import AppointmentDataSet
+from dataset.enrollment import EnrollmentDataSet
+from dataset.referral import ReferralDataSet
 
 from src.dataset.appointment_status import AppointmentStatus
-from src.dataset.dataset import Column, DataSet
+from src.dataset.dataset import DataSet
 from src.reports.report import Report
 from src.utils.type_utils import FilterType
 
 
 class Referrals(Report):
-    def __init__(self, referrals: DataSet, appointment: DataSet, complete_types: FilterType, enrollment: DataSet | None = None, merge_on: Column | None = None) -> None:
+    def __init__(self, referrals: ReferralDataSet, appointment: AppointmentDataSet, complete_types: FilterType, enrollment: DataSet | None = None, merge_on: EnrollmentDataSet.Column | None = None) -> None:
         self._referrals = referrals
         self._appointment = appointment
         self._valid_appointment_pattern = complete_types
         self._enrollment = enrollment
         self._merge_on = merge_on
-        self._appointment_cols = [appointment.get_col(Column.STUDENT_EMAIL), appointment.get_col(Column.DATE),
-                                  appointment.get_col(Column.STATUS)]
+        self._appointment_cols = [appointment.get_col(AppointmentDataSet.Column.STUDENT_EMAIL), appointment.get_col(DataSet.Column.DATE),
+                                  appointment.get_col(AppointmentDataSet.Column.STATUS)]
         self.results = pd.DataFrame(None)
 
     def run_report(self) -> None:
@@ -55,7 +58,7 @@ class Referrals(Report):
         return self.results
 
     def _remove_duplicates(self):
-        unique_col = self._referrals.get_col_name(Column.UNIQUE_REFERRAL)
+        unique_col = self._referrals.get_col_name(ReferralDataSet.Column.UNIQUE_REFERRAL)
         if unique_col is None:
             logging.debug(
                 "No unique col name to remove duplicates. If no unique_col is specified in files.config.json, this is expected behavior.")
@@ -65,7 +68,7 @@ class Referrals(Report):
         logging.debug("Removed duplicate rows")
 
     def _add_scheduled(self):
-        dates = self.results[self._appointment.get_col_name(Column.DATE_SCHEDULED)].values.tolist()
+        dates = self.results[self._appointment.get_col_name(AppointmentDataSet.Column.DATE_SCHEDULED)].values.tolist()
         scheduled = list(map(lambda x: "FALSE" if pd.isna(x) else "TRUE", dates))
 
         self.results.insert(
@@ -87,17 +90,17 @@ class Referrals(Report):
             )
 
     def _set_preferred_name(self):
-        pref_names = self.results[self._referrals.get_col_name(Column.STUDENT_PREFERRED_NAME)].values.tolist()
-        f_names = self.results[self._referrals.get_col_name(Column.STUDENT_FIRST_NAME)].values.tolist()
+        pref_names = self.results[self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_PREFERRED_NAME)].values.tolist()
+        f_names = self.results[self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_FIRST_NAME)].values.tolist()
         names = []
         for i in range(len(f_names)):
             names.append((pref_names[i], f_names[i]))
 
         names = list(map(lambda x: x[1] if pd.isna(x[0]) else x[0], names))
-        self.results[self._referrals.get_col_name(Column.STUDENT_FIRST_NAME)] = names
+        self.results[self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_FIRST_NAME)] = names
 
     def _add_completed(self):
-        statuses = self.results[self._appointment.get_col_name(Column.STATUS)].values.tolist()
+        statuses = self.results[self._appointment.get_col_name(AppointmentDataSet.Column.STATUS)].values.tolist()
         completed = list(map(lambda x: "TRUE" if x in AppointmentStatus.VALID_COMPLETED.value else "FALSE", statuses))
 
         self.results.insert(
@@ -114,12 +117,12 @@ class Referrals(Report):
             left=self._referrals.get_df(),
             right=self._appointment.get_df(),
             how="outer",
-            on=self._referrals.get_col_name(Column.STUDENT_EMAIL)
+            on=self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL)
         )
 
     def _normalize_email_col(self) -> str:
-        appointment_col = self._appointment.get_col_name(Column.STUDENT_EMAIL)
-        referral_col = self._referrals.get_col_name(Column.STUDENT_EMAIL)
+        appointment_col = self._appointment.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL)
+        referral_col = self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL)
         if not appointment_col or not referral_col:
             raise ValueError("Appointment or referral email column is not defined")
         if appointment_col != referral_col:
@@ -132,8 +135,8 @@ class Referrals(Report):
     def _normalize_card_id(self):
         if not self._enrollment:
             return
-        enrollment_col = self._enrollment.get_col_name(Column.STUDENT_CARD_ID)
-        referral_col = self._referrals.get_col_name(Column.STUDENT_CARD_ID)
+        enrollment_col = self._enrollment.get_col_name(EnrollmentDataSet.Column.STUDENT_CARD_ID)
+        referral_col = self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_CARD_ID)
         if referral_col != enrollment_col:
             self.results = self.results.rename(
                 columns={referral_col: enrollment_col}
@@ -159,8 +162,8 @@ class Referrals(Report):
         )]
 
     def _format_referral_dates(self):
-        self.results[self._referrals.get_col_name(Column.DATE)] = pd.to_datetime(
-            self.results[self._referrals.get_col_name(Column.DATE)]).dt.tz_localize(None)
+        self.results[self._referrals.get_col_name(ReferralDataSet.Column.DATE)] = pd.to_datetime(
+            self.results[self._referrals.get_col_name(ReferralDataSet.Column.DATE)]).dt.tz_localize(None)
         # self._results[self._referrals.get_col(Column.DATE)] = self._results[self._referrals.get_col(Column.DATE)].str.replace(' GMT-0400 (Eastern Daylight Time)', '')
         # self._results[self._referrals.get_col(Column.DATE)] = pd.to_datetime(self._results[self._referrals.get_col(Column.DATE)], format='%a %b %d %Y %H:%M:%S').dt.strftime('%Y-%m-%d')
 
@@ -169,7 +172,7 @@ class Referrals(Report):
             left=self._referrals.get_df(),
             right=self.results,
             how="outer",
-            on=self._referrals.get_col_name(Column.STUDENT_EMAIL),
+            on=self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL),
             suffixes=('', '_')
         )
 
@@ -177,8 +180,8 @@ class Referrals(Report):
         # from referrals add rows for students that are no longer in results
 
         # get a list of unique emails in referrals
-        ref_emails = self._referrals.get_df()[self._referrals.get_col_name(Column.STUDENT_EMAIL)].unique()
+        ref_emails = self._referrals.get_df()[self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL)].unique()
         # get a list of unique emails in results
-        res_emails = self.results[self._referrals.get_col_name(Column.STUDENT_EMAIL)].unique()
+        res_emails = self.results[self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL)].unique()
         emails = list(set(ref_emails) - set(res_emails))
-        self._referrals.get_df()[self._referrals.get_col_name(Column.STUDENT_EMAIL)][emails]
+        self._referrals.get_df()[self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL)][emails]

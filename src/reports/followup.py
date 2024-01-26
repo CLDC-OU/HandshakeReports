@@ -1,13 +1,12 @@
 import logging
 import pandas as pd
-from src.dataset.dataset import Column, DataSet
-
+from dataset.appointment import AppointmentDataSet
 from src.reports.report import Report
 from src.utils.type_utils import FilterType
 
 
 class Followup(Report):
-    def __init__(self, appointments: DataSet, valid_schools: FilterType, target_years: str | None, target_months: str | None,
+    def __init__(self, appointments: AppointmentDataSet, valid_schools: FilterType, target_years: str | None, target_months: str | None,
                  require_followup: FilterType, followup_types: FilterType) -> None:
         if not isinstance(valid_schools, FilterType):
             raise ValueError("valid_schools must be a FilterType")
@@ -59,7 +58,7 @@ class Followup(Report):
         self._appointments.filter_schools(self._valid_schools)
 
     def _get_all_need_followup(self):
-        app_type_col = self._appointments.get_col_name(Column.APPOINTMENT_TYPE)
+        app_type_col = self._appointments.get_col_name(AppointmentDataSet.Column.APPOINTMENT_TYPE)
         if not app_type_col:
             raise ValueError("Appointment type column is not defined")
         self._appointments.get_df()[app_type_col] = self._appointments.get_df()[app_type_col].fillna('MissingData')
@@ -75,7 +74,7 @@ class Followup(Report):
         ]
 
     def _remove_followed_up(self):
-        date_col = self._appointments.get_col_name(Column.DATE)
+        date_col = self._appointments.get_col_name(AppointmentDataSet.Column.DATE)
 
         if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
@@ -90,8 +89,8 @@ class Followup(Report):
         )]
 
     def _keep_max_date(self):
-        date_col = self._appointments.get_col_name(Column.DATE)
-        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        date_col = self._appointments.get_col_name(AppointmentDataSet.Column.DATE)
+        email_col = self._appointments.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL)
         if not date_col or not email_col:
             raise ValueError("Date or email column is not defined")
         if self.results is None or self.results.empty:
@@ -99,8 +98,8 @@ class Followup(Report):
         self.results = self.results.loc[self.results.groupby(by=email_col)[date_col].idxmax()]
 
     def _get_latest_valid_followup_dates(self) -> pd.DataFrame:
-        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
-        date_col = self._appointments.get_col_name(Column.DATE)
+        email_col = self._appointments.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL)
+        date_col = self._appointments.get_col_name(AppointmentDataSet.Column.DATE)
         if not email_col or not date_col:
             raise ValueError("Email or date column is not defined")
         valid_followup = self._get_followup_appointments()
@@ -110,7 +109,7 @@ class Followup(Report):
         )
 
     def _add_latest_followup(self):
-        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        email_col = self._appointments.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL)
         if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
         self.results = pd.merge(
@@ -121,7 +120,7 @@ class Followup(Report):
         )
 
     def _add_past_followup_count(self):
-        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        email_col = self._appointments.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL)
 
         col_name = '# of past followup appointments'
 
@@ -145,22 +144,22 @@ class Followup(Report):
         if not self.followup_types:
             return self._appointments.get_df()[
                 ~(
-                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
+                    self._appointments.get_col(AppointmentDataSet.Column.APPOINTMENT_TYPE).str.contains(
                         self._require_followup.get_include()
                     )
                 ) | (
-                    self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
+                    self._appointments.get_col(AppointmentDataSet.Column.APPOINTMENT_TYPE).str.contains(
                         self._require_followup.get_exclude()
                     )
                 )
             ]
-        app_type_col = self._appointments.get_col_name(Column.APPOINTMENT_TYPE)
-        self._appointments.get_df()[app_type_col] = self._appointments.get_col(Column.APPOINTMENT_TYPE).fillna('MissingData')
+        app_type_col = self._appointments.get_col_name(AppointmentDataSet.Column.APPOINTMENT_TYPE)
+        self._appointments.get_df()[app_type_col] = self._appointments.get_col(AppointmentDataSet.Column.APPOINTMENT_TYPE).fillna('MissingData')
         return self._appointments.get_df()[
-            self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
+            self._appointments.get_col(AppointmentDataSet.Column.APPOINTMENT_TYPE).str.contains(
                 self.followup_types.get_include()
             ) & ~(
-                self._appointments.get_col(Column.APPOINTMENT_TYPE).str.contains(
+                self._appointments.get_col(AppointmentDataSet.Column.APPOINTMENT_TYPE).str.contains(
                     self.followup_types.get_exclude()
                 )
             )
