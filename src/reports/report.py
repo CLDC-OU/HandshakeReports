@@ -35,15 +35,15 @@ class Report:
         self.remove_cols = remove_cols
         self.rename_cols = rename_cols
         self.final_cols = final_cols
-        self.results = None
+        self.results = pd.DataFrame()
 
     def run_report(self) -> None:
         logging.debug(f"Running report for {self.__class__.__name__}")
         self.report.run_report()
         self.results = self.report.get_results()
 
-    def get_results(self):
-        pass
+    def get_results(self) -> pd.DataFrame | None:
+        return None
 
     @property
     def results(self) -> pd.DataFrame | None:
