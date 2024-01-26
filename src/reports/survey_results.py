@@ -1,8 +1,6 @@
 import logging
 import pandas as pd
 from src.dataset.appointment import AppointmentDataSet
-from src.dataset.dataset import DataSet
-from src.dataset.dataset import Column
 from src.dataset.survey import SurveyDataSet
 from src.utils.df_utils import filter_by_time_diff
 from src.reports.report import Report
@@ -10,7 +8,7 @@ from src.utils.type_utils import FilterType
 
 
 class SurveyResults(Report):
-    def __init__(self, appointments: DataSet, survey_results: DataSet, day_range: int, target_years: str | None, target_months: str | None, staff_emails: FilterType) -> None:
+    def __init__(self, appointments: AppointmentDataSet, survey_results: SurveyDataSet, day_range: int, target_years: str | None, target_months: str | None, staff_emails: FilterType) -> None:
         if not isinstance(appointments, AppointmentDataSet) or not isinstance(survey_results, SurveyDataSet):
             raise ValueError('Invalid DataSet types provided at filter_appointment_surveys')
         self._appointments = appointments
@@ -48,15 +46,15 @@ class SurveyResults(Report):
 
     # ensure the student email columns have the same name. Rename the survey set to match
     def _normalize_email_cols(self) -> None:
-        if self._survey_results.get_col_name(Column.STUDENT_EMAIL) != self._appointments.get_col_name(Column.STUDENT_EMAIL):
+        if self._survey_results.get_col_name(SurveyDataSet.Column.STUDENT_EMAIL) != self._appointments.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL):
             self._survey_results.get_df().rename(
-                {self._survey_results.get_col_name(Column.STUDENT_EMAIL): self._appointments.get_col_name(Column.STUDENT_EMAIL)}
+                {self._survey_results.get_col_name(SurveyDataSet.Column.STUDENT_EMAIL): self._appointments.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL)}
             )
 
     def _filter_by_time_diff(self) -> pd.DataFrame:
-        date_col_1 = self._survey_results.get_col_name(Column.DATE)
-        date_col_2 = self._appointments.get_col_name(Column.DATE)
-        merge_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
+        date_col_1 = self._survey_results.get_col_name(SurveyDataSet.Column.DATE)
+        date_col_2 = self._appointments.get_col_name(AppointmentDataSet.Column.DATE)
+        merge_col = self._appointments.get_col_name(AppointmentDataSet.Column.STUDENT_EMAIL)
         if not date_col_1 or not date_col_2 or not merge_col:
             raise ValueError("One or more columns are not defined")
 
