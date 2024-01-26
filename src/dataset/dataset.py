@@ -168,31 +168,6 @@ class DataSet:
         )
         logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
-    def filter_staff_emails(self, emails: FilterType):
-        rows_before = len(self.get_df())
-        self.filter_by_col(Column.STAFF_EMAIL, emails)
-        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
-
-    def filter_student_emails(self, emails: FilterType):
-        rows_before = len(self.get_df())
-        self.filter_by_col(Column.STUDENT_EMAIL, emails)
-        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
-
-    def filter_appointment_status(self):
-        rows_before = len(self.get_df())
-
-        def map_values(enum_obj: Enum) -> str:
-            if isinstance(enum_obj, str):
-                return enum_obj
-            return ''
-        valid = list(map(map_values, AppointmentStatus.VALID_SCHEDULED.value))
-        valid_scheduled = FilterType(
-            include=valid,
-            exclude=None
-        )
-        self.filter_by_col(Column.STATUS, valid_scheduled)
-        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
-
     def filter_by_col(self, col: Enum, filter: FilterType):
         rows_before = len(self.get_df())
         if not filter:
@@ -212,21 +187,6 @@ class DataSet:
             ].index,
             inplace=True
         )
-        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
-
-    def filter_majors(self, majors: FilterType):
-        rows_before = len(self.get_df())
-        self.filter_by_col(Column.STUDENT_MAJOR, majors)
-        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
-
-    def filter_schools(self, schools: FilterType):
-        rows_before = len(self.get_df())
-        self.filter_by_col(Column.STUDENT_COLLEGE, schools)
-        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
-
-    def filter_appointment_type(self, appointment_types: FilterType):
-        rows_before = len(self.get_df())
-        self.filter_by_col(Column.APPOINTMENT_TYPE, appointment_types)
         logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
 
