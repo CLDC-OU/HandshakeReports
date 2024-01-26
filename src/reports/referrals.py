@@ -230,6 +230,13 @@ class Referrals(Report):
             on=referral_email_col,
             suffixes=('', '_')
         )
+        logging.debug(f"Re-merged referrals dataset with results dataset (on referrals student email col: \"{referral_email_col}\") to add back students with no appointments")
+        rows_before = len(self.results)
+        self.results.drop_duplicates(inplace=True, subset=[
+            self._referrals.get_col_name(ReferralDataSet.Column.UNIQUE_REFERRAL),
+            self._appointment.get_col_name(AppointmentDataSet.Column.ID)
+        ])
+        logging.debug(f"Removed {rows_before - len(self.results)} duplicate rows from merge")
 
     def _repair_only_past_appointments(self):
         # from referrals add rows for students that are no longer in results
