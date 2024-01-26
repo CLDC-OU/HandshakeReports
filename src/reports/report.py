@@ -8,13 +8,13 @@ from datetime import datetime as dt
 
 
 class Report:
-    class Type(Enum):
-        SURVEY_RESULTS = 'survey_results'
-        FOLLOWUP = 'followup'
-        REFERRALS = 'referrals'
+    # class Type(Enum):
+    #     SURVEY_RESULTS = 'survey_results'
+    #     FOLLOWUP = 'followup'
+    #     REFERRALS = 'referrals'
 
-        def __eq__(self, __value: object) -> bool:
-            return self.value.__eq__(__value)
+    #     def __eq__(self, __value: object) -> bool:
+    #         return self.value.__eq__(__value)
 
     def __init__(
             self,
