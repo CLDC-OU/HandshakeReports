@@ -61,8 +61,9 @@ class FilesConfig(Config):
         files = self.config["files"]
         for file in files:
             rename_cols, cols = FilesConfig.map_column_config(file["column_names"])
-            logging.debug(f'Loading new {file["type"]} file...\n\t{file}')
-            print(f'Loading new {file["type"]} file...')
+            message = f'Loading new {file["type"]} file...'
+            logging.debug(f'{message}\n\t{file}')
+            print(message)
             file["dir"] = dir_format(file["dir"])
             valid_files = filter_files(
                 file_dir=file["dir"],
@@ -76,8 +77,9 @@ class FilesConfig(Config):
                 logging.debug(f'Found valid file at {file["dir"]}')
 
             file_loc = get_most_recent_file(valid_files)
-            logging.debug(f'\tFound most recent {file["type"]} file: {file_loc}')
-            print(f'\tFound most recent {file["type"]} file: {file_loc}')
+            message = f'\tFound most recent {file["type"]} file: {file_loc}'
+            logging.debug(message)
+            print(message)
 
             dataset = None
             dataset_config = (
@@ -98,11 +100,13 @@ class FilesConfig(Config):
             elif file["type"] == SurveyDataSet.type_name:
                 dataset = SurveyDataSet(*dataset_config)
             else:
-                logging.error(f'Cannot load {file["type"]} file. Invalid type.')
-                print(f'ERROR! Cannot load {file["type"]} file. Invalid type.')
+                message = f'ERROR: Cannot load {file["type"]} file. Invalid type.'
+                logging.error(message)
+                print(message)
                 break
             self.files.append(dataset)
-            logging.debug(f"\tLoaded {dataset.__class__.__name__} from file: {file_loc}")
-            print(f"\tLoaded {dataset.__class__.__name__} from file: {file_loc}")
+            message = f'\tLoaded {dataset.__class__.__name__} from file: {file_loc}'
+            logging.debug(message)
+            print(message)
 
         return self.files
