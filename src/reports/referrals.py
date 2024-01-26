@@ -37,7 +37,7 @@ class Referrals(Report):
         logging.debug("Filtered valid appointment types in appointments DataSet")
 
         self.filter_valid_departments()
-        logging.debug("Filtered valid departments in referrals DataSet")
+        logging.debug("Filtered valid referring departments in referrals DataSet")
 
         self._normalize_email_col()
         logging.debug("Normalized email columns between appointments and referrals DataSet")
@@ -82,11 +82,12 @@ class Referrals(Report):
         unique_col = self._referrals.get_col_name(ReferralDataSet.Column.UNIQUE_REFERRAL)
         if unique_col is None:
             logging.debug(
-                "No unique col name to remove duplicates. If no unique_col is specified in files.config.json, this is expected behavior.")
+                "No unique col name to remove duplicates. This is expected behavior if no unique_col is specified in files.config.json")
             return
-        logging.debug(f"Removing duplicate rows on: {unique_col}")
         self.results.drop_duplicates(inplace=True, subset=[unique_col])
-        logging.debug("Removed duplicate rows")
+        logging.debug(f"Removing duplicate referral rows on: {unique_col}")
+        rows_before = len(self._referrals.get_df())
+        logging.debug(f"Removed {rows_before - len(self._referrals.get_df())} duplicate referral rows")
 
     def _add_scheduled(self):
         dates = self.results[self._appointment.get_col_name(AppointmentDataSet.Column.DATE_SCHEDULED)].values.tolist()
