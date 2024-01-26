@@ -8,8 +8,8 @@ class SurveyDataSet(DataSet):
     type_name = 'survey_results'
 
     class Column(Enum):
-        DATE = DataSet.Column.DATE
-        ID = DataSet.Column.ID
+        DATE = DataSet.Column.DATE.value
+        ID = DataSet.Column.ID.value
         STUDENT_EMAIL = 'stu_email'
         STUDENT_FIRST_NAME = 'fname'
         STUDENT_LAST_NAME = 'lname'

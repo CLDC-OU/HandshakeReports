@@ -7,8 +7,8 @@ class EnrollmentDataSet(DataSet):
     type_name = 'enrollment'
 
     class Column(Enum):
-        DATE = DataSet.Column.DATE
-        ID = DataSet.Column.ID
+        DATE = DataSet.Column.DATE.value
+        ID = DataSet.Column.ID.value
         STUDENT_CARD_ID = 'card_id'
 
     def __init__(self, id: str, df: pd.DataFrame, cols: dict) -> None:
