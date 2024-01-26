@@ -114,8 +114,9 @@ class ReportsConfig(Config):
 
         reports = self.config["reports"]
 
-        logging.debug(f"Loading {len(reports)} reports from {self.config_file}")
-        print(f"Loading {len(reports)} reports from {self.config_file}...")
+        message = f"Loading {len(reports)} reports from {self.config_file}"
+        logging.info(message)
+        print(message)
 
         report_index = 0
         for report in reports:
@@ -129,13 +130,14 @@ class ReportsConfig(Config):
                 report=report,
                 report_index=report_index
             ):
-                message = f"ERROR! Report {report_index} could not be loaded due to missing essential keys"
+                message = f"\tERROR! Report {report_index} could not be loaded due to missing essential keys"
                 logging.error(message)
                 print(message)
                 break
 
-            logging.debug(f"Loading {report['type']} report from {self.config_file} at index {report_index}")
-            print(f"Loading {report['type']} report from {self.config_file} at index {report_index}...")
+            message = f"\tLoading {report['type']} report from {self.config_file} at index {report_index}"
+            logging.debug(message)
+            print(message)
             if report["type"] == "survey_results":
                 for appointment in self.get_appointments():
                     self.load_survey_results_report(report, report_index, appointment)
@@ -147,7 +149,7 @@ class ReportsConfig(Config):
                     for appointment in self.get_appointments():
                         self.load_referrals_report(report, report_index, referral, appointment)
             else:
-                message = f"WARNING: Report {report_index} could not be loaded. Invalid type {report['type']}. This report will be skipped"
+                message = f"\tWARNING: Report {report_index} could not be loaded. Invalid type {report['type']}. This report will be skipped"
                 logging.error(message)
                 print(message)
                 continue
@@ -213,6 +215,9 @@ class ReportsConfig(Config):
             rename_cols=report["rename_cols"] if "rename_cols" in report else None,
             final_cols=report["final_cols"] if "final_cols" in report else None
         ))
+        message = f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}"
+        print(message)
+        logging.info(message)
 
     def load_followup_report(self, report, report_index, appointment):
         if not isinstance(self._reports, list):
@@ -267,6 +272,9 @@ class ReportsConfig(Config):
             rename_cols=report["rename_cols"] if "rename_cols" in report else None,
             final_cols=report["final_cols"] if "final_cols" in report else None
         ))
+        message = f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}"
+        print(message)
+        logging.info(message)
 
     def load_referrals_report(self, report, report_index, referral, appointment):
         if not isinstance(self._reports, list):
@@ -304,6 +312,9 @@ class ReportsConfig(Config):
             rename_cols=report["rename_cols"] if "rename_cols" in report else None,
             final_cols=report["final_cols"] if "final_cols" in report else None
         ))
+        message = f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}"
+        print(message)
+        logging.info(message)
 
     @staticmethod
     def validate_key(dictionary: dict, key: str, required: bool, report_type: str, config_file: str, report_index: int) -> bool:
