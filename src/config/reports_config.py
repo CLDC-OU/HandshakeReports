@@ -12,7 +12,7 @@ from src.dataset.enrollment import EnrollmentDataSet
 from src.dataset.referral import ReferralDataSet
 from src.dataset.survey import SurveyDataSet
 from src.reports.survey_results import SurveyResults
-from src.utils.type_utils import FilterType
+from src.utils.type_utils import DepartmentsFilter, FilterType
 
 REPORTS_CONFIG_FILE = "reports.config.json"
 
@@ -219,7 +219,7 @@ class ReportsConfig(Config):
         print(message)
         logging.info(message)
 
-    def load_followup_report(self, report, report_index, appointment):
+    def load_followup_report(self, report: dict, report_index: int, appointment: AppointmentDataSet):
         if not isinstance(self._reports, list):
             raise ValueError("Reports must be a list. Reports may not have been initialized. \"load_reports()\" must be called first")
 
@@ -276,13 +276,13 @@ class ReportsConfig(Config):
         print(message)
         logging.info(message)
 
-    def load_referrals_report(self, report, report_index, referral, appointment):
+    def load_referrals_report(self, report: dict, report_index: int, referral: ReferralDataSet, appointment: AppointmentDataSet):
         if not isinstance(self._reports, list):
             raise ValueError("Reports must be a list. Reports may not have been initialized. \"load_reports()\" must be called first")
         # TODO: Refactor this to use a function for key checking
         if not self.validate_keys(
             required_keys=["valid_appointments"],
-            warning_keys=["merge_enrollment"],
+            warning_keys=["merge_enrollment", "department"],
             report=report,
             report_index=report_index,
             report_type="Referrals"
@@ -292,6 +292,7 @@ class ReportsConfig(Config):
         report_obj = Referrals(
             referrals=referral.deep_copy(),
             appointment=appointment.deep_copy(),
+            departments=DepartmentsFilter(report["department"]),
             complete_types=FilterType.get_include_exclude(
                 dictionary=report,
                 key="valid_appointments",
