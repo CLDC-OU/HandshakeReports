@@ -202,9 +202,8 @@ class Referrals(Report):
 
     def _remove_past_appointments(self):
         # first remove any null referral dates (students that had a valid appointment but not a referral)
-        self.results = self.results[~self.results[self._referrals.get_col_name(Column.DATE)].isnull()]
-        # keep students in results who had a referral after their most recent valid appointment, or have not had any valid appointment
-        self.results = self.results[~self.results[self._referrals.get_col_name(Column.DATE)].isna()]
+        self.results.dropna(subset=[self._referrals.get_col_name(ReferralDataSet.Column.DATE)], inplace=True)
+        self.results.drop(index=self.results[self.results[self._referrals.get_col_name(ReferralDataSet.Column.DATE)].isnull()].index, inplace=True)
         self._format_referral_dates()
         # self.results = self.results[~(
         #     (self.results[self._appointment.get_col_name(Column.DATE)].dt.day_of_year < self.results[
