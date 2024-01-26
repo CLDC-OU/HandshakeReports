@@ -10,7 +10,8 @@ class AppointmentDataSet(DataSet):
     type_name = 'appointments'
 
     class Column(Enum):
-        DataSet.Column
+        DATE = DataSet.Column.DATE
+        ID = DataSet.Column.ID
         STAFF_EMAIL = 'staff_email'
         APPOINTMENT_TYPE = 'type'
         STUDENT_EMAIL = 'stu_email'

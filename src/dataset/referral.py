@@ -7,7 +7,8 @@ class ReferralDataSet(DataSet):
     type_name = 'referral'
 
     class Column(Enum):
-        DataSet.Column
+        DATE = DataSet.Column.DATE
+        ID = DataSet.Column.ID
         STAFF_EMAIL = 'staff_email'
         STUDENT_EMAIL = 'stu_email'
         STUDENT_COLLEGE = 'college'
