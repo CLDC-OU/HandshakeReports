@@ -121,7 +121,7 @@ class Followup(Report):
         )
 
     def _add_past_followup_count(self):
-        email_col = self._appointments.get_col(Column.STUDENT_EMAIL)
+        email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
 
         col_name = '# of past followup appointments'
 
