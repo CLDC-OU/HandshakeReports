@@ -1,8 +1,8 @@
 import logging
 import pandas as pd
-from dataset.appointment import AppointmentDataSet
-from dataset.enrollment import EnrollmentDataSet
-from dataset.referral import ReferralDataSet
+from src.dataset.appointment import AppointmentDataSet
+from src.dataset.enrollment import EnrollmentDataSet
+from src.dataset.referral import ReferralDataSet
 
 from src.dataset.appointment_status import AppointmentStatus
 from src.dataset.dataset import DataSet

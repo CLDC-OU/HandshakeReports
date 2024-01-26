@@ -1,6 +1,6 @@
 import logging
 import pandas as pd
-from dataset.appointment import AppointmentDataSet
+from src.dataset.appointment import AppointmentDataSet
 from src.reports.report import Report
 from src.utils.type_utils import FilterType
 

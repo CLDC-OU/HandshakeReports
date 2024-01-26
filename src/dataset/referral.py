@@ -2,7 +2,7 @@ from enum import Enum
 import logging
 import pandas as pd
 from src.dataset.dataset import DataSet
-from utils.type_utils import FilterType
+from src.utils.type_utils import FilterType
 
 
 class ReferralDataSet(DataSet):

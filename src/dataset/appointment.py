@@ -1,9 +1,9 @@
 from enum import Enum
 import logging
 import pandas as pd
-from dataset.appointment_status import AppointmentStatus
+from src.dataset.appointment_status import AppointmentStatus
 from src.dataset.dataset import DataSet
-from utils.type_utils import FilterType
+from src.utils.type_utils import FilterType
 
 
 class AppointmentDataSet(DataSet):
