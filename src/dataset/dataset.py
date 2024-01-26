@@ -1,9 +1,7 @@
 import logging
 from typing import Self
 import pandas as pd
-from src.dataset.appointment_status import AppointmentStatus
 
-from src.dataset.column import Column
 from src.utils.df_utils import sort_columns_by_date
 from src.utils.general_utils import get_month_range, int_month_to_str
 
@@ -51,7 +49,7 @@ class DataSet:
         return self.df
 
     def get_col(self, col_id: Enum) -> pd.Series:
-        if not isinstance(col_id, Column):
+        if not isinstance(col_id, DataSet.Column):
             raise ValueError("col_id must be a Column Enum")
         if col_id.value not in self.cols:
             raise ValueError("col_id must be a defined column")
@@ -61,7 +59,7 @@ class DataSet:
         return self.get_df()[self.get_col_name(col_id)]
 
     def get_col_name(self, col_id: Enum) -> str | None:
-        if not isinstance(col_id, Column):
+        if not isinstance(col_id, DataSet.Column):
             raise ValueError("col_id must be a Column Enum")
 
         if col_id.value in self.cols:
@@ -73,10 +71,10 @@ class DataSet:
 
     def sort_date(self) -> None:
         try:
-            self.get_col(Column.DATE)
+            self.get_col(DataSet.Column.DATE)
         except ValueError:
             raise ValueError("DataFrame must have a date column")
-        self.set_df(sort_columns_by_date(self.get_df(), self.get_col_name(Column.DATE)))
+        self.set_df(sort_columns_by_date(self.get_df(), self.get_col_name(DataSet.Column.DATE)))
 
     def reset_index(self) -> None:
         self.set_df(self.get_df().reset_index(drop=True))
@@ -95,10 +93,10 @@ class DataSet:
         logging.debug("Month set: " + str(month_set))
 
         # Filter DataFrame by month
-        self.get_df()[self.get_col_name(Column.DATE)] = pd.to_datetime(self.get_col(Column.DATE))  # ensure date column is datetime
+        self.get_df()[self.get_col_name(DataSet.Column.DATE)] = pd.to_datetime(self.get_col(DataSet.Column.DATE))  # ensure date column is datetime
         rows_before = len(self.get_df())
         self.get_df().drop(  # drop rows where month is not in month_set
-            index=self.get_df()[~(self.get_col(Column.DATE).dt.month.map(int_month_to_str).isin(month_set))].index,
+            index=self.get_df()[~(self.get_col(DataSet.Column.DATE).dt.month.map(int_month_to_str).isin(month_set))].index,
             inplace=True
         )
         logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
@@ -161,9 +159,9 @@ class DataSet:
 
         # Filter DataFrame by years
         rows_before = len(self.get_df())
-        self.get_df()[self.get_col_name(Column.DATE)] = pd.to_datetime(self.get_col(Column.DATE))  # ensure date column is datetime
+        self.get_df()[self.get_col_name(DataSet.Column.DATE)] = pd.to_datetime(self.get_col(DataSet.Column.DATE))  # ensure date column is datetime
         self.get_df().drop(  # drop rows where month is not in month_set
-            self.get_df()[~self.get_col(Column.DATE).dt.strftime('%Y').isin(year_set)].index,
+            self.get_df()[~self.get_col(DataSet.Column.DATE).dt.strftime('%Y').isin(year_set)].index,
             inplace=True
         )
         logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
@@ -176,7 +174,7 @@ class DataSet:
         if not isinstance(filter, FilterType):
             logging.warn("Invalid filter type")
             return
-        if not isinstance(col, Column):
+        if not isinstance(col, DataSet.Column):
             logging.warn("Invalid column type")
             return
 
