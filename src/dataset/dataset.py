@@ -49,8 +49,8 @@ class DataSet:
         return self.df
 
     def get_col(self, col_id: Enum) -> pd.Series:
-        if not isinstance(col_id, DataSet.Column):
-            raise ValueError("col_id must be a Column Enum")
+        if not isinstance(col_id, Enum):
+            raise ValueError("col_id must be an Enum")
         if col_id.value not in self.cols:
             raise ValueError("col_id must be a defined column")
         if self.get_col_name(col_id) not in self.get_df().columns:
@@ -59,8 +59,8 @@ class DataSet:
         return self.get_df()[self.get_col_name(col_id)]
 
     def get_col_name(self, col_id: Enum) -> str | None:
-        if not isinstance(col_id, DataSet.Column):
-            raise ValueError("col_id must be a Column Enum")
+        if not isinstance(col_id, Enum):
+            raise ValueError("col_id must be an Enum")
 
         if col_id.value in self.cols:
             return self.cols[col_id.value]
@@ -174,7 +174,7 @@ class DataSet:
         if not isinstance(filter, FilterType):
             logging.warn("Invalid filter type")
             return
-        if not isinstance(col, DataSet.Column):
+        if not isinstance(col, Enum):
             logging.warn("Invalid column type")
             return
 
