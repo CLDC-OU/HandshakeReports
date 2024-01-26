@@ -7,14 +7,14 @@ from dataset.referral import ReferralDataSet
 from src.dataset.appointment_status import AppointmentStatus
 from src.dataset.dataset import DataSet
 from src.reports.report import Report
-from src.utils.type_utils import DepartmentFilter, DepartmentsFilter, FilterType
+from src.utils.type_utils import FilterType
 
 
 class Referrals(Report):
-    def __init__(self, referrals: ReferralDataSet, appointment: AppointmentDataSet, departments: DepartmentsFilter, complete_types: FilterType, enrollment: DataSet | None = None, merge_on: EnrollmentDataSet.Column | None = None) -> None:
+    def __init__(self, referrals: ReferralDataSet, appointment: AppointmentDataSet, valid_departments: FilterType, complete_types: FilterType, enrollment: DataSet | None = None, merge_on: EnrollmentDataSet.Column | None = None) -> None:
         self._referrals = referrals
         self._appointment = appointment
-        self.departments = departments
+        self.valid_departments = valid_departments
         self._valid_appointment_pattern = complete_types
         self._enrollment = enrollment
         self._merge_on = merge_on
@@ -23,49 +23,45 @@ class Referrals(Report):
         self.results = pd.DataFrame(None)
 
     @property
-    def departments(self) -> DepartmentsFilter:
-        return self._departments
+    def valid_departments(self) -> FilterType:
+        return self._valid_departments
 
-    @departments.setter
-    def departments(self, value: DepartmentsFilter) -> None:
-        if not isinstance(value, DepartmentsFilter):
+    @valid_departments.setter
+    def valid_departments(self, value: FilterType) -> None:
+        if not isinstance(value, FilterType):
             raise TypeError("Departments is not a DepartmentsFilter")
-        self._departments = value
+        self._valid_departments = value
 
     def run_report(self) -> None:
-        full_results = pd.DataFrame(None)
-        self._appointment_copy = self._appointment.deep_copy()
-        self._referral_copy = self._referrals.deep_copy()
-        for department in self.departments:
-            self._filter_valid_appointments()
-            logging.debug("Filtered base valid appointment types")
-            self._filter_valid_appointments(department)
-            logging.debug(f"Filtered valid appointment types for {department} referrals")
-            self._normalize_email_col()
-            logging.debug("Normalized email column")
-            self._merge_referrals()
-            logging.debug("Merged referrals with appointments")
-            self._remove_past_appointments()
-            logging.debug("Removed past appointments")
-            self._add_scheduled()
-            logging.debug("Added appointment scheduled columns")
-            self._add_completed()
-            logging.debug("Added appointment completed columns")
-            self._set_preferred_name()
-            logging.debug("Set student name to preferred name")
-            self._merge_enrollment()
-            logging.debug("Merged enrollment data")
-            self._remove_duplicates()
-            logging.debug("Removed duplicate rows")
-            full_results.add(self.results, fill_value=0)
-            logging.debug("Added results to full results")
-            if self.departments.__next__() is not None:
-                self._appointment = self._appointment_copy.deep_copy()
-                self._referrals = self._referral_copy.deep_copy()
+        self._filter_valid_appointments()
+        logging.debug("Filtered valid appointment types in appointments DataSet")
 
-        self.results = full_results
+        self.filter_valid_departments()
+        logging.debug("Filtered valid departments in referrals DataSet")
+
+        self._normalize_email_col()
+        logging.debug("Normalized email columns between appointments and referrals DataSet")
+
+        self._merge_referrals()
+        logging.debug("Merged referrals DataSet with appointments DataSet")
+
+        self._remove_past_appointments()
+        logging.debug("Removed appointments from before the referral date")
+
         self._re_merge()
-        logging.debug("Re-merged removed referrals")
+        logging.debug("Re-merged removed referrals into results")
+
+        self._add_scheduled()
+        logging.debug("Added appointment scheduled columns")
+        self._add_completed()
+        logging.debug("Added appointment completed columns")
+
+        self._set_preferred_name()
+        logging.debug("Set student name to preferred name")
+        self._merge_enrollment()
+        logging.debug("Merged enrollment data")
+        self._remove_duplicates()
+        logging.debug("Removed duplicate rows")
 
     @property
     def results(self) -> pd.DataFrame:
@@ -134,12 +130,11 @@ class Referrals(Report):
             value=completed
         )
 
-    def _filter_valid_appointments(self, department: DepartmentFilter | None = None) -> None:
-        if department is None:
-            self._appointment.filter_appointment_type(self._valid_appointment_pattern)
-            return
-        if not isinstance(department, DepartmentFilter):
-            raise TypeError("Department is not a DepartmentFilter")
+    def _filter_valid_appointments(self) -> None:
+        self._appointment.filter_appointment_type(self._valid_appointment_pattern)
+
+    def filter_valid_departments(self) -> None:
+        self._referrals.filter_department(self.valid_departments)
 
     def _merge_referrals(self):
         self.results = pd.merge(

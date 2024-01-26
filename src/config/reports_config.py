@@ -12,7 +12,7 @@ from src.dataset.enrollment import EnrollmentDataSet
 from src.dataset.referral import ReferralDataSet
 from src.dataset.survey import SurveyDataSet
 from src.reports.survey_results import SurveyResults
-from src.utils.type_utils import DepartmentsFilter, FilterType
+from src.utils.type_utils import FilterType
 
 REPORTS_CONFIG_FILE = "reports.config.json"
 
@@ -281,8 +281,8 @@ class ReportsConfig(Config):
             raise ValueError("Reports must be a list. Reports may not have been initialized. \"load_reports()\" must be called first")
         # TODO: Refactor this to use a function for key checking
         if not self.validate_keys(
-            required_keys=["valid_appointments"],
-            warning_keys=["merge_enrollment", "department"],
+            required_keys=[],
+            warning_keys=["valid_appointments", "merge_enrollment", "valid_department"],
             report=report,
             report_index=report_index,
             report_type="Referrals"
@@ -292,7 +292,14 @@ class ReportsConfig(Config):
         report_obj = Referrals(
             referrals=referral.deep_copy(),
             appointment=appointment.deep_copy(),
-            departments=DepartmentsFilter(report["department"]),
+            valid_departments=FilterType.get_include_exclude(
+                dictionary=report,
+                key="valid_departments",
+                log=True,
+                config_file=self.config_file,
+                report_index=report_index,
+                report_type="Referrals"
+            ),
             complete_types=FilterType.get_include_exclude(
                 dictionary=report,
                 key="valid_appointments",
