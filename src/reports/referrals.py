@@ -115,9 +115,9 @@ class Referrals(Report):
             logging.debug(
                 "No unique col name to remove duplicates. This is expected behavior if no unique_col is specified in files.config.json")
             return
-        self.results.drop_duplicates(inplace=True, subset=[unique_col])
         logging.debug(f"Removing duplicate referral rows on: {unique_col}")
         rows_before = len(self._referrals.get_df())
+        self._referrals.get_df().drop_duplicates(inplace=True, subset=unique_col)
         logging.debug(f"Removed {rows_before - len(self._referrals.get_df())} duplicate referral rows")
 
     def _add_scheduled(self):
