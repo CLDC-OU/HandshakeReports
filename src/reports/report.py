@@ -37,6 +37,9 @@ class Report:
         self.final_cols = final_cols
         self.results = pd.DataFrame()
 
+    def get_class_name(self) -> str:
+        return self.__class__.__name__
+
     def run_report(self) -> None:
         logging.debug(f"Running report for {self.__class__.__name__}")
         self.report.run_report()
