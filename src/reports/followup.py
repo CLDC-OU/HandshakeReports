@@ -16,7 +16,7 @@ class Followup(Report):
         if not isinstance(followup_types, FilterType):
             raise ValueError("followup_types must be a FilterType")
         self._appointments = appointments
-        self._results = None
+        self.results = None
         self._valid_schools = valid_schools
         self._years = target_years
         self._months = target_months
@@ -43,7 +43,7 @@ class Followup(Report):
         logging.debug("Added previous followup appointment count")
 
     def get_results(self):
-        return self._results
+        return self.results
 
     def _filter_year(self):
         if not self._years:
@@ -64,7 +64,7 @@ class Followup(Report):
             raise ValueError("Appointment type column is not defined")
         self._appointments.get_df()[app_type_col] = self._appointments.get_df()[app_type_col].fillna('MissingData')
 
-        self._results = self._appointments.get_df()[
+        self.results = self._appointments.get_df()[
             self._appointments.get_df()[app_type_col].str.contains(
                 self._require_followup.get_include()
             ) & ~(
@@ -77,15 +77,15 @@ class Followup(Report):
     def _remove_followed_up(self):
         date_col = self._appointments.get_col_name(Column.DATE)
 
-        if not self._results:
+        if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
 
         # keep only rows where the latest followup appointment is before the latest needs followup, or the student
         # has never had a valid followup appointment
-        self._results = self._results[(
-            (self._results[date_col].notna()) & (
-                (self._results[self._latest_followup_col].isna()) | (
-                    self._results[date_col] >= self._results[self._latest_followup_col])
+        self.results = self.results[(
+            (self.results[date_col].notna()) & (
+                (self.results[self._latest_followup_col].isna()) | (
+                    self.results[date_col] >= self.results[self._latest_followup_col])
             )
         )]
 
@@ -94,9 +94,9 @@ class Followup(Report):
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
         if not date_col or not email_col:
             raise ValueError("Date or email column is not defined")
-        if not self._results:
+        if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
-        self._results = self._results.loc[self._results.groupby(by=email_col)[date_col].idxmax()]
+        self.results = self.results.loc[self.results.groupby(by=email_col)[date_col].idxmax()]
 
     def _get_latest_valid_followup_dates(self) -> pd.DataFrame:
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
@@ -111,10 +111,10 @@ class Followup(Report):
 
     def _add_latest_followup(self):
         email_col = self._appointments.get_col_name(Column.STUDENT_EMAIL)
-        if not self._results:
+        if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
-        self._results = pd.merge(
-            left=self._results,
+        self.results = pd.merge(
+            left=self.results,
             right=self._get_latest_valid_followup_dates(),
             on=email_col,
             how='left'
@@ -130,7 +130,7 @@ class Followup(Report):
             aggfunc='size'
         ).reset_index(col_fill=col_name)
 
-        if not self._results:
+        if self.results is None or self.results.empty:
             raise ValueError("Results are undefined. Is the script running in the correct order?")
 
         self._results = pd.merge(
