@@ -62,6 +62,7 @@ class Referrals(Report):
         logging.debug("Merged enrollment data")
         self._remove_duplicates()
         logging.debug("Removed duplicate rows")
+        self.sort_results()
 
     @property
     def results(self) -> pd.DataFrame:
@@ -78,7 +79,37 @@ class Referrals(Report):
     def get_results(self) -> pd.DataFrame:
         return self.results
 
-    def _remove_duplicates(self):
+    def sort_results(self) -> None:
+        referrals_date_col = self._referrals.get_col_name(ReferralDataSet.Column.DATE)
+        unique_referral_col = self._referrals.get_col_name(ReferralDataSet.Column.UNIQUE_REFERRAL)
+        referrals_email_col = self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL)
+        appointment_date_col = self._appointment.get_col_name(AppointmentDataSet.Column.DATE_SCHEDULED)
+
+        sort_order = [
+            referrals_date_col,
+            referrals_email_col,
+            unique_referral_col,
+            appointment_date_col,
+            "Completed",
+        ]
+        ascending_order = [
+            True,
+            True,
+            True,
+            True,
+            True,
+        ]
+        self.results[referrals_date_col] = self.results[referrals_date_col].apply(pd.to_datetime)
+        self.results[appointment_date_col] = self.results[appointment_date_col].apply(pd.to_datetime)
+
+        self.results.sort_values(
+            by=sort_order,
+            inplace=True,
+            ascending=ascending_order
+        )
+        self.results.reset_index(drop=True, inplace=True)
+
+    def _remove_duplcates(self):
         unique_col = self._referrals.get_col_name(ReferralDataSet.Column.UNIQUE_REFERRAL)
         if unique_col is None:
             logging.debug(
