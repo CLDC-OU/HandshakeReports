@@ -222,11 +222,12 @@ class Referrals(Report):
         # self._results[self._referrals.get_col(Column.DATE)] = pd.to_datetime(self._results[self._referrals.get_col(Column.DATE)], format='%a %b %d %Y %H:%M:%S').dt.strftime('%Y-%m-%d')
 
     def _re_merge(self):
+        referral_email_col = self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL)
         self.results = pd.merge(
             left=self._referrals.get_df(),
             right=self.results,
             how="outer",
-            on=self._referrals.get_col_name(ReferralDataSet.Column.STUDENT_EMAIL),
+            on=referral_email_col,
             suffixes=('', '_')
         )
 
