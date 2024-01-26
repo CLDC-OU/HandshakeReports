@@ -205,16 +205,15 @@ class Referrals(Report):
         self.results.dropna(subset=[self._referrals.get_col_name(ReferralDataSet.Column.DATE)], inplace=True)
         self.results.drop(index=self.results[self.results[self._referrals.get_col_name(ReferralDataSet.Column.DATE)].isnull()].index, inplace=True)
         self._format_referral_dates()
-        # self.results = self.results[~(
-        #     (self.results[self._appointment.get_col_name(Column.DATE)].dt.day_of_year < self.results[
-        #         self._referrals.get_col_name(Column.DATE)].dt.day_of_year) | (
-        #             self.results[self._appointment.get_col_name(Column.DATE)].dt.year < self.results[
-        #                 self._appointment.get_col_name(Column.DATE)].dt.year)
-        # )]
-        self.results = self.results[~(
-            (self.results[self._appointment.get_col_name(Column.DATE)] < self.results[
-                self._referrals.get_col_name(Column.DATE)])
-        )]
+
+        # only keep students in results who had a referral after their most recent valid appointment, or have not had any valid appointment
+        self.results.drop(index=self.results[
+            self.results[
+                self._appointment.get_col_name(AppointmentDataSet.Column.DATE)
+            ] < self.results[
+                self._referrals.get_col_name(ReferralDataSet.Column.DATE)
+            ]
+        ].index, inplace=True)
 
     def _format_referral_dates(self):
         self.results[self._referrals.get_col_name(ReferralDataSet.Column.DATE)] = pd.to_datetime(
