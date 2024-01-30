@@ -6,8 +6,15 @@
 
 ---
 
-- Added in-depth validation methods for config keys
-- Added FilterType helper methods for getting include/exclude filters
+- Significantly improved logging comprehensiveness and readability
+- Refactored entire codebase to use `src` folder and a package structure
+- Added type checking throughout codebase
+- Added FilterType class to handle include/exclude filters
+- Config Updates
+  - Separated config types into separate classes (Config, ReportsConfig, FilesConfig, EnvConfig)
+  - Added extensive type checking and validation methods for all config keys and values
+  - Split config types into separate files: `config.json`, `reports.config.json`, and `files.config.json`
+  - Added include/exclude keys for config values that represent filters (see [FilterType](src/utils/type_utils.py))
 - Improved Date Ranges
   - Added support for multiple comma-separated month ranges
   - Added support for month ranges spanning multiple years
@@ -16,30 +23,12 @@
   - Added support for date ranges without an end date
   - Added error handling for invalid date ranges
   - Unified date range parsing
-- Significantly improved logging
-- Split config types into separate files: `config.json`, `reports.config.json`, and `files.config.json`
-- Refactored entire codebase to use `src` folder and a package structure
-- Added type checking throughout codebase
-- Added include/exclude keys for config values that represent filters (see [FilterType](src/utils/type_utils.py))
-- Added department to referrals report
-  - Added `valid_departments` to Referrals report
+- Reports Updates
+  - Added Report class as the parent of all report types
+  - Added departments
+  - Added sorting options
+  - Added `valid_departments` to Referrals report as an optional config key
   - Added filter by departments (include/exclude)
-  - Added `valid_departments` key to reports config - loaded as FilterType
-  - Made `valid_departments` optional
-- Added sorting options for referrals report
-  - Sort by referral date -> referred student email -> unique referral column -> appointment date -> appointment status
-
-### Minor Feature Changes
-
-- General Code Enhancements
-  - Added requirements.txt
-  - Removed download survey results functionality (see [HandshakeSurveyResults](https://github.com/CLDC/HandshakeSurveyResults) for this feature)
-  - Unified modules and imports
-  - Changed to use property attributes within classes and added type checking with .setter attributes
-  - Added `__init__` files
-  - Added typing hints for arguments and return types
-  - Updated to follow PEP8 style guide throughout codebase
-  - Updated Python version to 3.12.1
 - DataSet Updates
   - Improved filter patterns
     - Changed filter functions to modify DataSets in place
@@ -52,19 +41,25 @@
   - Separated DataSet types into separate files and classes (appointment, enrollment, referral, survey)
   - Added Column class to DataSet and overloaded for DataSet types
   - Moved type specific DataSet functions to the respective DataSet sub-classes
-- Config Updates
-  - Separated classes of config types into separate files (`config.json`, `reports.config.json`, and `files.config.json`)
-  - Added extensive type checking for all config keys and values
+
+### Minor Feature Changes
+
+- General Code Enhancements
+  - Added requirements.txt
+  - Removed download survey results functionality (see [HandshakeSurveyResults](https://github.com/CLDC/HandshakeSurveyResults) for this feature)
+  - Unified modules and imports
+  - Changed to use property attributes within classes and added type checking with .setter attributes
+  - Added `__init__` files
+  - Added typing hints for arguments and return types
+  - Updated to follow PEP8 style guide throughout codebase
+  - Updated Python version to 3.12.1
 - Report Logic Refactoring
-  - Refactored report specific logic into report classes
+  - Refactored report-specific logic into report classes
   - Added Report class as the parent of all report types
   - Removed report type property from Report class - Now uses type checking to determine report type
   - Removed `remove_cols`, `rename_cols`, and `final_cols` from individual report classes and moved to `Report` class
   - Moved handling of save/archive to `Report` class
   - Made archive optional
-- Type Checking and Validation
-  - Added extensive type checking for all config keys and values
-  - Removed initialization of DataSet using type
 - Referrals Report Updates
   - Modified `remove_duplicates` from referrals report module
     - Changed name to `remove_duplicate_referrals`
@@ -72,8 +67,9 @@
     - Changed to drop duplicate referrals instead of results (since it runs first, directly modify the results)
     - Added additional remove duplicates from results after re-merging students that were referred but had no appointment
   - Removed `remove_cols`, `rename_cols`, and `final_cols` (handled in Report class)
-  - Renamed `valid_appointment_pattern` to `complete_types` in referrals report
-  - Added existence checking for enrollment DataSet in referrals report
+  - Renamed `valid_appointment_pattern` to `complete_types`
+  - Added existence checking for enrollment DataSet
+  - Added sorting by referral date -> referred student email -> unique referral column -> appointment date -> appointment status
 - Survey Results Report Updates
   - Renamed `year` to `target_years`
   - Renamed `month` to `target_months`
@@ -104,7 +100,7 @@
 - Fixed bugs related to inconsistent parsing of datetimes
 - Fixed bugs where dataframes could not merge with series due to missing column names
 - Fixed bugs where Reports were not independent of each other by deep copying the DataSets for each report
-- Fixed issues where the class name for inherited classes was only being loged as the parent class name
+- Fixed issues where the class name for inherited classes was only being logged as the parent class name
 
 ## Version 0.1.0 (2023/12/12)
 
