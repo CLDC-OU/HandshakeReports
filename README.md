@@ -20,8 +20,8 @@ This script can currently create 3 different types of reports based on a user-de
 - [x] Report students that need a followup appointment
 - [x] Report referrals with merged followup appointment data
 - [x] Fully configurable reports
-    - [x] Filter one or more months and by year
-    - [ ] Filter a range of followup appointments
+  - [x] Filter one or more months and by year
+  - [ ] Filter a range of followup appointments
 - [x] Variable number of files to run reports on
 - [x] Variable number of reports
 - [x] Creates csv files in variable locations for each report
@@ -40,7 +40,7 @@ The purpose of this report is to easily see which staff member each response ref
 > [!IMPORTANT]
 >
 > **The results of this report are an approximation of the true report data!** There may be inconsistencies.
-> 
+>
 > Since Handshake does not include an appointment ID (or any other identifier) with survey responses that were filled out through post appointment survey links, the script tries to associate each survey response with an appointment using the student's email address and completion dates. This may identify incorrect appointments if a student had multiple appointments in a short period of time (defined in the config).
 
 Reports can be filtered by months, year, and staff member email addresses
@@ -62,15 +62,15 @@ This report can be filtered by months, year, student college/school (e.g. Colleg
 
 > [!NOTE]
 >
-> This report uses data collected external to Handshake. 
+> This report uses data collected external to Handshake.
 >
 > We use a Google Apps Script to save student referrals sent by email in a Google Sheet that is downloaded (with another Apps Script) to then be accessed by this script.
 
 Searches appointment data to merge with the referral data to add columns for whether each referred student has scheduled or completed a followup appointment. The resulting data will look something like this:
 
-| ...[Referral Columns] | Scheduled | [Date Scheduled] | [Appointment Date] | [Appointment Type] | Completed |
-|--|--|--|--|--|--|
-| ... | TRUE \| FALSE | DateTime | DateTime | AppointmentTypeName | TRUE \| FALSE |
+| ...[Referral Columns] | Scheduled     | [Date Scheduled] | [Appointment Date] | [Appointment Type]  | Completed     |
+| --------------------- | ------------- | ---------------- | ------------------ | ------------------- | ------------- |
+| ...                   | TRUE \| FALSE | DateTime         | DateTime           | AppointmentTypeName | TRUE \| FALSE |
 
 The ...Referral Columns, Date Scheduled, Appointment Date, and Appointment Type columns may be specified in config. The Scheduled and Completed columns are static.
 
@@ -82,26 +82,20 @@ The format of the Scheduled and Completed columns are formatted in such a way th
 
 1. Ensure all [dependencies](#dependencies) are configured and running properly
 2. Clone the repository
-    - If installing from github, use `-git clone https://github.com/CLDC-OU/HandshakeReports.git`
+   - If installing from github, use `-git clone https://github.com/CLDC-OU/HandshakeReports.git`
 3. Configure the [Environmental Variables](#environmental-variables)
 4. Configure [Files](#configuring-files)
 5. Configure [Reports](#configuring-reports)
 6. Run main.py
 
 > [!IMPORTANT]
-> 
-> 
-> 
 
 ## Dependencies
 
-### Chromium Driver
-- Download the most recent version [here](https://googlechromelabs.github.io/chrome-for-testing/). The Stable version should be good. Open the chromedriver URL for your system
-- Place it in a 
+See [requirements.txt](requirements.txt) for a list of required packages.
 
-```python
-python -m pip install python-dotenv
-python -m pip install selenium
+```py
+pip install -r requirements.txt
 ```
 
 ## Environmental Variables
@@ -114,12 +108,14 @@ It is recommended that you create a dedicated Handshake account using an extra e
 
 1. Create a file called ".env" in the root of the project directory.
 2. Add the following environmental variables (see an example in [example.env](example.env)):
-    - `HS_USERNAME` - The username of the Handshake account that will be downloading the survey results
-    - `HS_PASSWORD` - The password of the Handshake account that will be downloading the survey results
-    - (optional) `INSTITUTIONAL_EMAIL` - TRUE if `HS_USERNAME` refers to an institutional email address (e.g. oakland.edu). FALSE or omitted otherwise.
-
+   - `HS_USERNAME` - The username of the Handshake account that will be downloading the survey results
+   - `HS_PASSWORD` - The password of the Handshake account that will be downloading the survey results
+   - (optional) `INSTITUTIONAL_EMAIL` - TRUE if `HS_USERNAME` refers to an institutional email address (e.g. oakland.edu). FALSE or omitted otherwise.
 
 ## Configuring Files
 
+Files are setup in files.config.json
+
 ## Configuring Reports
 
+Reports are setup in reports.config.json
