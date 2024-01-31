@@ -2,11 +2,12 @@ import logging
 import pandas as pd
 from src.dataset.appointment import AppointmentDataSet
 from src.reports.report import Report
+from src.utils.general_utils import get_date_ranges
 from src.utils.type_utils import FilterType
 
 
 class Followup(Report):
-    def __init__(self, appointments: AppointmentDataSet, valid_schools: FilterType, target_years: str | None, target_months: str | None,
+    def __init__(self, appointments: AppointmentDataSet, valid_schools: FilterType, target_dates: str | None,
                  require_followup: FilterType, followup_types: FilterType) -> None:
         if not isinstance(valid_schools, FilterType):
             raise ValueError("valid_schools must be a FilterType")
@@ -17,19 +18,16 @@ class Followup(Report):
         self._appointments = appointments
         self.results = None
         self._valid_schools = valid_schools
-        self._years = target_years
-        self._months = target_months
+        self.target_dates = target_dates
         self._require_followup = require_followup
         self._latest_followup_col = 'date of last followup appointment'
         self.followup_types = followup_types
 
     def run_report(self):
-        self._filter_year()
-        logging.debug("Filtered appointment year")
-        self._filter_months()
-        logging.debug("Filtered appointment months")
+        self._filter_target_dates()
+        logging.debug(f"Filtered appointments for target dates: {self.target_dates}")
         self._filter_schools()
-        logging.debug("Filtered student schools")
+        logging.debug(f"Filtered student schools: {self._valid_schools}")
         self._get_all_need_followup()
         logging.debug(f"Filtered students that need a followup {self._latest_followup_col} appointment")
         self._add_latest_followup()
@@ -44,15 +42,9 @@ class Followup(Report):
     def get_results(self):
         return self.results
 
-    def _filter_year(self):
-        if not self._years:
-            return
-        self._appointments.filter_years(*self._years.split(','))
-
-    def _filter_months(self):
-        if not self._months:
-            return
-        self._appointments.filter_months(*self._months.split(','))
+    def _filter_target_dates(self):
+        if self.target_dates is not None:
+            self._appointments.filter_dates(*get_date_ranges(self.target_dates))
 
     def _filter_schools(self):
         self._appointments.filter_schools(self._valid_schools)
