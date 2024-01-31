@@ -170,7 +170,7 @@ class DataSet:
     def filter_dates(self, *date_ranges: tuple[date, date]):
         rows_before = len(self.get_df())
 
-        self.get_df()[self.get_col_name(DataSet.Column.DATE)] = pd.to_datetime(self.get_col(DataSet.Column.DATE))
+        self.get_df()[self.get_col_name(DataSet.Column.DATE)] = pd.to_datetime(self.get_col(DataSet.Column.DATE)).dt.date
 
         for date_range in date_ranges:
             self.get_df().drop(
