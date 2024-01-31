@@ -1,6 +1,28 @@
 # HandshakeReports - Change Log
 
-## Version 0.2.0 (Not Released Yet)
+## Version 0.2.1 (Not Released Yet)
+
+### Major Feature Changes
+
+---
+
+- Changed date filtering configuration to use `target_date_ranges` instead of `target_months` and `target_years`
+
+### Minor Feature Changes
+
+---
+
+- Removed `target_months` and `target_years` from `SurveyResults` and `Followup` reports
+- Added `target_date_ranges` to `SurveyResults` and `Followup` reports
+- Added `filter_target_date_ranges` to `DataSet` class
+
+### Bug Fixes
+
+---
+
+- Fixed bug where date ranges would include months in overlapping years when they should not
+
+## Version 0.2.0 (2024-01-30)
 
 ### Major Feature Changes
 
