@@ -7,7 +7,7 @@ from src.utils.type_utils import FilterType
 
 
 class Followup(Report):
-    def __init__(self, appointments: AppointmentDataSet, valid_schools: FilterType, target_dates: str | None,
+    def __init__(self, appointments: AppointmentDataSet, valid_schools: FilterType, target_date_ranges: str | None,
                  require_followup: FilterType, followup_types: FilterType) -> None:
         if not isinstance(valid_schools, FilterType):
             raise ValueError("valid_schools must be a FilterType")
@@ -18,14 +18,14 @@ class Followup(Report):
         self._appointments = appointments
         self.results = None
         self._valid_schools = valid_schools
-        self.target_dates = target_dates
+        self.target_date_ranges = target_date_ranges
         self._require_followup = require_followup
         self._latest_followup_col = 'date of last followup appointment'
         self.followup_types = followup_types
 
     def run_report(self):
-        self._filter_target_dates()
-        logging.debug(f"Filtered appointments for target dates: {self.target_dates}")
+        self._filter_target_date_ranges()
+        logging.debug(f"Filtered appointments for target date ranges: {self.target_date_ranges}")
         self._filter_schools()
         logging.debug(f"Filtered student schools: {self._valid_schools}")
         self._get_all_need_followup()
@@ -42,9 +42,9 @@ class Followup(Report):
     def get_results(self):
         return self.results
 
-    def _filter_target_dates(self):
-        if self.target_dates is not None:
-            self._appointments.filter_dates(*get_date_ranges(self.target_dates))
+    def _filter_target_date_ranges(self):
+        if self.target_date_ranges is not None:
+            self._appointments.filter_dates(*get_date_ranges(self.target_date_ranges))
 
     def _filter_schools(self):
         self._appointments.filter_schools(self._valid_schools)

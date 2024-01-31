@@ -9,14 +9,14 @@ from src.utils.type_utils import FilterType
 
 
 class SurveyResults(Report):
-    def __init__(self, appointments: AppointmentDataSet, survey_results: SurveyDataSet, day_range: int, target_dates: str | None, staff_emails: FilterType) -> None:
+    def __init__(self, appointments: AppointmentDataSet, survey_results: SurveyDataSet, day_range: int, target_date_ranges: str | None, staff_emails: FilterType) -> None:
         if not isinstance(appointments, AppointmentDataSet) or not isinstance(survey_results, SurveyDataSet):
             raise ValueError('Invalid DataSet types provided at filter_appointment_surveys')
         self._appointments = appointments
         self._survey_results = survey_results
         self.results = None
         self._day_range = day_range
-        self.target_dates = target_dates
+        self.target_date_ranges = target_date_ranges
         self._staff_emails = staff_emails
 
     def run_report(self) -> None:
@@ -27,8 +27,8 @@ class SurveyResults(Report):
 
         self._appointments.filter_appointment_status()
         logging.debug("Filtered valid appointment statuses")
-        if self.target_dates is not None:
-            self._appointments.filter_dates(*get_date_ranges(self.target_dates))
+        if self.target_date_ranges is not None:
+            self._appointments.filter_dates(*get_date_ranges(self.target_date_ranges))
             logging.debug("Filtered target dates")
         if self._staff_emails is not None:
             self._appointments.filter_staff_emails(self._staff_emails)
