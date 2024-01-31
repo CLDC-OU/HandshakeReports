@@ -69,7 +69,7 @@ class SurveyResults(Report):
 
     @property
     def day_range(self) -> int:
-        return self.day_range
+        return self._day_range
 
     @day_range.setter
     def day_range(self, value: int) -> None:
