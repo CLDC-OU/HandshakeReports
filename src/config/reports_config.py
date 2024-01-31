@@ -175,7 +175,7 @@ class ReportsConfig(Config):
         # TODO: Refactor this to use a function for key checking
         if not self.validate_keys(
             required_keys=["survey_id", "day_range"],
-            warning_keys=["target_years", "target_months", "emails"],
+            warning_keys=["target_date_ranges" "emails"],
             report=report,
             report_index=report_index,
             report_type="SurveyResults"
@@ -195,8 +195,7 @@ class ReportsConfig(Config):
             appointments=appointment.deep_copy(),
             survey_results=survey.deep_copy(),
             day_range=report["day_range"],
-            target_years=report["target_years"],
-            target_months=report["target_months"],
+            target_date_ranges=report["target_date_ranges"],
             staff_emails=FilterType.get_include_exclude(
                 dictionary=report,
                 key="emails",
@@ -227,7 +226,7 @@ class ReportsConfig(Config):
 
         if not self.validate_keys(
             required_keys=["require_followup"],
-            warning_keys=["target_years", "target_months", "valid_schools", "followup_types"],
+            warning_keys=["target_date_ranges", "valid_schools", "followup_types"],
             report=report,
             report_index=report_index,
             report_type="Followup"
@@ -244,8 +243,7 @@ class ReportsConfig(Config):
                 report_index=report_index,
                 report_type="Followup"
             ),
-            target_years=report["target_years"],
-            target_months=report["target_months"],
+            target_date_ranges=report["target_date_ranges"],
             require_followup=FilterType.get_include_exclude(
                 dictionary=report,
                 key="require_followup",

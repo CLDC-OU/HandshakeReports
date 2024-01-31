@@ -4,20 +4,20 @@ from src.dataset.appointment import AppointmentDataSet
 from src.dataset.survey import SurveyDataSet
 from src.utils.df_utils import filter_by_time_diff
 from src.reports.report import Report
+from src.utils.general_utils import get_date_ranges
 from src.utils.type_utils import FilterType
 
 
 class SurveyResults(Report):
-    def __init__(self, appointments: AppointmentDataSet, survey_results: SurveyDataSet, day_range: int, target_years: str | None, target_months: str | None, staff_emails: FilterType) -> None:
+    def __init__(self, appointments: AppointmentDataSet, survey_results: SurveyDataSet, day_range: int, target_date_ranges: str | None, staff_emails: FilterType) -> None:
         if not isinstance(appointments, AppointmentDataSet) or not isinstance(survey_results, SurveyDataSet):
             raise ValueError('Invalid DataSet types provided at filter_appointment_surveys')
-        self.appointments = appointments
-        self.survey_results = survey_results
+        self._appointments = appointments
+        self._survey_results = survey_results
         self.results = pd.DataFrame(None)
-        self.day_range = day_range
-        self.years = target_years
-        self.months = target_months
-        self.staff_emails = staff_emails
+        self._day_range = day_range
+        self.target_date_ranges = target_date_ranges
+        self._staff_emails = staff_emails
 
     def run_report(self) -> None:
         self.appointments.sort_date()
@@ -27,14 +27,11 @@ class SurveyResults(Report):
 
         self.appointments.filter_appointment_status()
         logging.debug("Filtered valid appointment statuses")
-        if self.years is not None:
-            self.appointments.filter_years(*self.years.split(','))
-            logging.debug("Filtered years")
-        if self.months is not None:
-            self.appointments.filter_months(*self.months.split(','))
-            logging.debug("Filtered months")
-        if self.staff_emails is not None:
-            self.appointments.filter_staff_emails(self.staff_emails)
+        if self.target_date_ranges is not None:
+            self._appointments.filter_dates(*get_date_ranges(self.target_date_ranges))
+            logging.debug("Filtered target dates")
+        if self._staff_emails is not None:
+            self._appointments.filter_staff_emails(self._staff_emails)
             logging.debug("Filtered staff emails")
 
         self._normalize_email_cols()
