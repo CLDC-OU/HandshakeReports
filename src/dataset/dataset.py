@@ -1,3 +1,4 @@
+from datetime import date
 import logging
 from typing import Self
 import pandas as pd
@@ -164,6 +165,19 @@ class DataSet:
             self.get_df()[~self.get_col(DataSet.Column.DATE).dt.strftime('%Y').isin(year_set)].index,
             inplace=True
         )
+        logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
+
+    def filter_dates(self, *date_ranges: tuple[date, date]):
+        rows_before = len(self.get_df())
+
+        self.get_df()[self.get_col_name(DataSet.Column.DATE)] = pd.to_datetime(self.get_col(DataSet.Column.DATE))
+
+        for date_range in date_ranges:
+            self.get_df().drop(
+                self.get_df()[~self.get_col(DataSet.Column.DATE).between(left=date_range[0], right=date_range[1], inclusive='left')].index,
+                inplace=True
+            )
+
         logging.debug(f"Filtered out {rows_before - len(self.get_df())} rows")
 
     def filter_by_col(self, col: Enum, filter: FilterType):
