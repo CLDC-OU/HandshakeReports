@@ -175,7 +175,7 @@ class ReportsConfig(Config):
         # TODO: Refactor this to use a function for key checking
         if not self.validate_keys(
             required_keys=["survey_id", "day_range"],
-            warning_keys=["target_date_ranges" "emails"],
+            warning_keys=["target_date_ranges", "emails"],
             report=report,
             report_index=report_index,
             report_type="SurveyResults"
