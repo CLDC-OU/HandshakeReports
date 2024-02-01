@@ -1,5 +1,7 @@
 import json
 import logging
+from colorama import Style, Fore
+
 from src.config.config import Config
 from src.config.files_config import FilesConfig
 
@@ -105,18 +107,16 @@ class ReportsConfig(Config):
     # TODO: Allow for specification in config of what file(s) to load each report for (use list of files.config.json ids)
     def load_reports(self) -> list[Report] | None:
         if not self.config:
-            message = "ERROR! No reports config initialized. Cannot load reports"
-            logging.error(message)
-            print(message)
+            logging.error("ERROR! No reports config initialized. Cannot load reports")
+            print(f'{Fore.RED}ERROR! {Fore.LIGHTRED_EX}No {Fore.LIGHTWHITE_EX}reports config {Fore.LIGHTRED_EX}initialized. Cannot load reports.{Style.RESET_ALL}')
             return None
 
         self._reports = []
 
         reports = self.config["reports"]
 
-        message = f"Loading {len(reports)} reports from {self.config_file}"
-        logging.info(message)
-        print(message)
+        logging.info(f"Loading {len(reports)} reports from {self.config_file}")
+        print(f'{Fore.CYAN}Loading {Fore.LIGHTMAGENTA_EX}{len(reports)}{Fore.CYAN} reports from {Fore.LIGHTBLACK_EX}{self.config_file}{Style.RESET_ALL}')
 
         report_index = 0
         for report in reports:
@@ -130,14 +130,12 @@ class ReportsConfig(Config):
                 report=report,
                 report_index=report_index
             ):
-                message = f"\tERROR! Report {report_index} could not be loaded due to missing essential keys"
-                logging.error(message)
-                print(message)
+                logging.error(f"\tERROR! Report {report_index} could not be loaded due to missing essential keys")
+                print(f'\t{Fore.RED}ERROR! {Fore.LIGHTRED_EX}Report {Fore.LIGHTMAGENTA_EX}{report_index} {Fore.LIGHTRED_EX}could not be loaded due to missing essential keys{Style.RESET_ALL}')
                 break
 
-            message = f"\tLoading {report['type']} report from {self.config_file} at index {report_index}"
-            logging.debug(message)
-            print(message)
+            logging.debug(f"\tLoading {report['type']} report from {self.config_file} at index {report_index}")
+            print(f'\t{Fore.CYAN}Loading {Fore.LIGHTWHITE_EX}{report["type"]}{Fore.CYAN} report from {Fore.LIGHTBLACK_EX}{self.config_file}{Fore.CYAN} at index {Fore.LIGHTMAGENTA_EX}{report_index}{Style.RESET_ALL}')
             if report["type"] == "survey_results":
                 for appointment in self.get_appointments():
                     self.load_survey_results_report(report, report_index, appointment)
@@ -149,9 +147,8 @@ class ReportsConfig(Config):
                     for appointment in self.get_appointments():
                         self.load_referrals_report(report, report_index, referral, appointment)
             else:
-                message = f"\tWARNING: Report {report_index} could not be loaded. Invalid type {report['type']}. This report will be skipped"
-                logging.error(message)
-                print(message)
+                logging.error(f"\tWARNING: Report {report_index} could not be loaded. Invalid type {report['type']}. This report will be skipped")
+                print(f'\t{Fore.YELLOW}WARNING: {Fore.LIGHTYELLOW_EX}Report {Fore.LIGHTMAGENTA_EX}{report_index} {Fore.LIGHTYELLOW_EX}could not be loaded. Invalid type {Fore.LIGHTWHITE_EX}{report["type"]}{Fore.LIGHTYELLOW_EX}. This report will be skipped{Style.RESET_ALL}')
                 continue
         return self._reports
 
@@ -214,9 +211,8 @@ class ReportsConfig(Config):
             rename_cols=report["rename_cols"] if "rename_cols" in report else None,
             final_cols=report["final_cols"] if "final_cols" in report else None
         ))
-        message = f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}"
-        print(message)
-        logging.info(message)
+        print(f'\t\t{Fore.LIGHTGREEN_EX}Loaded {Fore.LIGHTYELLOW_EX}{report_obj.__class__.__name__} {Fore.LIGHTGREEN_EX}report from {Fore.LIGHTBLACK_EX}{self.config_file} {Fore.LIGHTGREEN_EX}at index {Fore.LIGHTMAGENTA_EX}{report_index}{Style.RESET_ALL}')
+        logging.info(f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}")
 
     def load_followup_report(self, report: dict, report_index: int, appointment: AppointmentDataSet):
         if not isinstance(self._reports, list):
@@ -270,9 +266,8 @@ class ReportsConfig(Config):
             rename_cols=report["rename_cols"] if "rename_cols" in report else None,
             final_cols=report["final_cols"] if "final_cols" in report else None
         ))
-        message = f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}"
-        print(message)
-        logging.info(message)
+        logging.info(f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}")
+        print(f'\t\t{Fore.LIGHTGREEN_EX}Loaded {Fore.LIGHTYELLOW_EX}{report_obj.__class__.__name__} {Fore.LIGHTGREEN_EX}report from {Fore.LIGHTBLACK_EX}{self.config_file}{Fore.LIGHTGREEN_EX} at index {Fore.LIGHTMAGENTA_EX}{report_index}{Style.RESET_ALL}')
 
     def load_referrals_report(self, report: dict, report_index: int, referral: ReferralDataSet, appointment: AppointmentDataSet):
         if not isinstance(self._reports, list):
@@ -318,9 +313,8 @@ class ReportsConfig(Config):
             rename_cols=report["rename_cols"] if "rename_cols" in report else None,
             final_cols=report["final_cols"] if "final_cols" in report else None
         ))
-        message = f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}"
-        print(message)
-        logging.info(message)
+        logging.info(f"\t\tLoaded {report_obj.__class__.__name__} report from {self.config_file} at index {report_index}")
+        print(f'\t\t{Fore.LIGHTGREEN_EX}Loaded {Fore.LIGHTYELLOW_EX}{report_obj.__class__.__name__} {Fore.LIGHTGREEN_EX}report from {Fore.LIGHTBLACK_EX}{self.config_file}{Fore.LIGHTGREEN_EX} at index {Fore.LIGHTMAGENTA_EX}{report_index}{Style.RESET_ALL}')
 
     @staticmethod
     def validate_key(dictionary: dict, key: str, required: bool, report_type: str, config_file: str, report_index: int) -> bool:

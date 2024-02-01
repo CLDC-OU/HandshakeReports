@@ -1,4 +1,5 @@
 import logging
+from colorama import Fore, Style
 
 from src.dataset.dataset import DataSet
 from src.dataset.appointment import AppointmentDataSet
@@ -63,7 +64,7 @@ class FilesConfig(Config):
             rename_cols, cols = FilesConfig.map_column_config(file["column_names"])
             message = f'Loading new {file["type"]} file...'
             logging.debug(f'{message}\n\t{file}')
-            print(message)
+            print(f'{Fore.CYAN}Loading new {Fore.LIGHTWHITE_EX}{file["type"]}{Fore.CYAN} file...{Style.RESET_ALL}')
             file["dir"] = dir_format(file["dir"])
             valid_files = filter_files(
                 file_dir=file["dir"],
@@ -77,9 +78,8 @@ class FilesConfig(Config):
                 logging.debug(f'Found valid file at {file["dir"]}')
 
             file_loc = get_most_recent_file(valid_files)
-            message = f'\tFound most recent {file["type"]} file: {file_loc}'
-            logging.debug(message)
-            print(message)
+            logging.debug(f'\tFound most recent {file["type"]} file: {file_loc}')
+            print(f'\t{Fore.LIGHTGREEN_EX}Found most recent {Fore.LIGHTYELLOW_EX}{file["type"]}{Fore.LIGHTGREEN_EX} file: {Fore.LIGHTBLACK_EX}{file_loc}{Style.RESET_ALL}')
 
             dataset = None
             dataset_config = (
@@ -102,11 +102,10 @@ class FilesConfig(Config):
             else:
                 message = f'ERROR: Cannot load {file["type"]} file. Invalid type.'
                 logging.error(message)
-                print(message)
+                print(f'{Fore.RED}ERROR: {Fore.LIGHTRED_EX}Cannot load {Fore.LIGHTYELLOW_EX}{file["type"]}{Fore.LIGHTRED_EX} file. Invalid type.{Style.RESET_ALL}')
                 break
             self.files.append(dataset)
-            message = f'\tLoaded {dataset.__class__.__name__} from file: {file_loc}'
-            logging.debug(message)
-            print(message)
+            logging.debug(f'\tLoaded {dataset.__class__.__name__} from file: {file_loc}')
+            print(f'\t{Fore.GREEN}Loaded {Fore.LIGHTYELLOW_EX}{dataset.__class__.__name__}{Fore.GREEN} from file: {Fore.LIGHTBLACK_EX}{file_loc}{Style.RESET_ALL}')
 
         return self.files
