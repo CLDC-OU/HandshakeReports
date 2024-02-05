@@ -2,7 +2,7 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from config.config import Config
+from src.config.config import Config
 
 DEFAULT_ENV_PATH = ".env"
 
