@@ -8,7 +8,7 @@ __pycache__/
 
 .env
 *config.json
-!test_config*
+!test*config.json
 
 ignore/
 logs/
