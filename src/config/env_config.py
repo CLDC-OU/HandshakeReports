@@ -10,7 +10,7 @@ DEFAULT_ENV_PATH = ".env"
 class EnvConfig(Config):
     def __init__(self, config_file: str = "config.json", use_env: bool = True) -> None:
         self._use_env = use_env
-        self._env_dir = DEFAULT_ENV_PATH
+        self._env_path = DEFAULT_ENV_PATH
         self.env = False
         super().__init__(config_file)
 
