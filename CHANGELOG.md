@@ -7,6 +7,12 @@
 ---
 
 - Changed date filtering configuration to use `target_date_ranges` instead of `target_months` and `target_years`
+- Created `/tests` module for unit tests
+  - Added tests for the `config` module
+  - Added tests for the `env_config` module
+  - Added test config files for `config` and `env_config`
+
+
 
 ### Minor Feature Changes
 
@@ -15,12 +21,17 @@
 - Removed `target_months` and `target_years` from `SurveyResults` and `Followup` reports
 - Added `target_date_ranges` to `SurveyResults` and `Followup` reports
 - Added `filter_target_date_ranges` to `DataSet` class
+- Added `about.py` to display information about the project
+- Added colorful console logging
 
 ### Bug Fixes
 
 ---
 
 - Fixed bug where date ranges would include months in overlapping years when they should not
+- Fixed bug with env_config imports
+- Fixed bug where env_config was saving the env path to an unused variable
+- GitHub Actions workflows now no longer fail due to missing tests
 
 ## Version 0.2.0 (2024-01-30)
 
