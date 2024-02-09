@@ -2,4 +2,3 @@ python-dotenv
 pandas
 logging
 colorama
-unittest
